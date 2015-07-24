@@ -25,12 +25,13 @@ end;
 
 
 Virr := function(irr, rep) # compute the list of bases of W(x_1^{k})
-    local p, G, n, W, p_a1, r, B, V1, v;
+    local F, p, G, n, W, p_a1, r, B, V1, v;
 
     W := Range(irr);
     n := Length(W.1);
+    F := FieldOfMatrixGroup(Range(rep));
     p_a1 := List([1..n], p->projs(irr, rep, p, 1));
-    V1 := VectorSpace(Rationals, p_a1[1]);
+    V1 := VectorSpace(F, p_a1[1]);
     B := [];
     for v in Basis(V1) do
        r := []; 
@@ -60,6 +61,9 @@ end;
 
 sparsify := function(p, M)
     local n, k, B;
+    if p=[] then
+       return [];
+    fi;
     k:=1;
     B:=[];
     for n in p do
@@ -69,9 +73,13 @@ sparsify := function(p, M)
     return B;
 end;
 
-exppat := function(r)
-    local x;
-    return List([1..r.mul], x->r.dim);
+exppat := function(recs)
+    local x, l, r;
+    l := [];
+    for r in recs do
+       Append(l,List([1..r.mul], x->r.dim));
+    od;
+    return l;
 end; 
 
 tomat := function(r, u) # convert a vector u of length r.dim*r.mul to (r.mul x r.dim)-matrix 
