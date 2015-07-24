@@ -15,11 +15,13 @@ projs := function(irr,rep,a,b) # p_{ab}, after Serre
 end;
 
 
-regrep :=function(G) # for testing purposes: 2 copies of the regular rep of G
+regrep :=function(G, nc) # for testing purposes: nc copies of the regular rep of G
     local r, a, m, x; 
     r := Range(RegularActionHomomorphism(G));
     m := List(GeneratorsOfGroup(r), a->PermutationMat(a, Order(G), Rationals));
-    #m := List(m, x-> BlockMatrix([[1,1,x],[2,2,x]],2,2)); # double up
+    if nc>1 then 
+        m := List(m, x-> BlockMatrix(List([1..nc], a-> [a,a,x]), nc, nc));
+    fi;
     return GroupHomomorphismByImages(G, Group(m), GeneratorsOfGroup(G), m);
 end;
 
@@ -111,10 +113,10 @@ symmsquare := function(rep)
       for i in [1..dim] do
          for j in [i..dim] do
             row:=[];
-            for m in [1..dim] do
-               for k in [m..dim] do
+            for k in [1..dim] do
+               for m in [k..dim] do
                   x:=mat[m][j] * mat[k][i]+mat[m][i]*mat[k][j];
-                  if k>m then 
+                  if k<m then 
                       Add (row, x);
                   else
                       Add (row, (1/2)*x);
