@@ -134,7 +134,7 @@ symmsquare := function(rep)
     return GroupHomomorphismByImages(G, Group(gens), GeneratorsOfGroup(G), gens);
 end;
 
-
+# decompose the submodule spanned by v
 decomvec := function(B, pat, v)
 local u, k;
 u := B*v;
