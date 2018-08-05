@@ -88,7 +88,7 @@ useful. Serre gives us an easy way to concretely decompose $V_i$.
 
 Each component arises as the base space of the codomain of a
 homomorphism $\rho : G \to GL(W_i)$. If we pick a basis $(e_1, \ldots,
-e_m)$ for $W_i$, we can write this representation in what is called
+e_n)$ for $W_i$, we can write this representation in what is called
 matrix form. For each element $s \in G$, if $\rho_s$ is it's image,
 then write $R_s$ for the matrix of $\rho_s$ in the basis $(e_j)$.
 
@@ -115,8 +115,47 @@ p_{\alpha\beta} = \frac{n}{g}\sum_{t \in G} r_{\beta\alpha}(t^{-1})\rho_t \tag{$
     i$ as well as on the $V_{i,\gamma}$ for $\gamma \neq \beta$; it
     defines an isomorphism from $V_{i, \beta}$ onto $V_{i, \alpha}$.
 
-  \item Let $x_1$
+  \item Let $x_1 \neq 0$ be an element of $V_{i,1}$ and let $x_\alpha
+    = p_{\alpha,1} \in V_{i,\alpha}$. The $x_\alpha$ are linearly
+    independent and generate a vector subspace $W(x_1)$ stable under
+    $G$ and of dimension $n$. For each $s \in G$, we have:
+
+    $$\rho_s(x_\alpha) = \sum_\beta r_{\beta\alpha}(s)x_\beta$$
+
+    (in particular, $W(x_1)$ is isomorphic to $W_i$)
+
+  \item If $(x_1^{(1)}, \ldots, x_1^{(m)})$ is a basis of $V_{i,1}$,
+    the representation $V_i$ is the direct sum of the
+    subrepresentations $W(x_1^{(1)}), \ldots, W(x_1^{(m)})$ defined in
+    (c).
 \end{enumerate}
+
+(Thus the choice of a basis of $V_{i,1}$ gives a decomposition of
+$V_i$ into a direct sum of representations isomorphic to $W_i$).
 \end{proposition}
+
+\begin{proof}
+See Serre Proposition 8.
+\end{proof}
+
+Having previously computed the canonical decompositions, we can use
+Proposition 8 to decompose each component.
+
+\section{Benchmarks?}
+
+\section{Optimisation}
+
+Notice that, for large groups, this algorithm will be very slow. In
+calculating projections, there is a lot of summation over elements of
+$G$. This is wasted effort, since we know that any character is a
+class function, so we need only calculate the summand once for each
+class.
+
+This reduces the time taken greatly for some groups with large numbers
+of elements but small numbers of conjugacy classes, for example the
+dihedral groups with $2n$ elements but only $(n+k)/2$ classes (where
+$k$ is either 3 or 6).
+
+\section{More benchmarks?}
 
 \end{document}
