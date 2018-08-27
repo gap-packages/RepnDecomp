@@ -1,0 +1,8 @@
+*.aux
+*.toc
+*.log
+*.aux
+
+# These are generated
+decomp.pdf
+decomp.tex
