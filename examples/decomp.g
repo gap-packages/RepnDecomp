@@ -29,4 +29,4 @@ rho := GroupHomomorphismByImages(G, H, gens, images);
 LoadPackage("RepnDecomp");
 
 # And decompose rho
-Print(DecomposeRepresentationSerre(rho));
+Print(DecomposeRepresentationIrreducible(rho));

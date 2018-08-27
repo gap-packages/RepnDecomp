@@ -3,20 +3,36 @@
 #
 # Implementations
 #
-InstallGlobalFunction( DecomposeRepresentationSerre, function(rho)
-    local irreps, chars, char_to_proj, canonical_projections, matrix_image, zero, canonical_summands, decompose_summand, N, full_decomposition, G, F, n, V;
+
+# Calculates p(V) for p a linear map (given as a matrix in the
+# standard basis) and a vector space V
+MatrixImage@ := function(p, V)
+    local F;
+
+    # F is the base field of V
+    F := LeftActingDomain(V);
+
+    # We return the span of the images of the basis under p, which
+    # gives p(V)
+    return VectorSpace(F,
+                       List(Basis(V), v -> p * v),
+                       Zero(V));
+end;
+
+InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho)
+    local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
 
     # The group we are taking representations of
     G := Source(rho);
 
     # The field we are working over: it's always the Cyclotomics
     F := Cyclotomics;
-    
+
     # The dimension of the V in rho : G -> GL(V). Since we have the
     # images of rho as matrices, this is just the width or height of
     # any image of any generator of G.
     n := Length(Range(rho).1);
-    
+
     # The vector space that the linear maps act on
     V := F^n;
 
@@ -42,66 +58,73 @@ InstallGlobalFunction( DecomposeRepresentationSerre, function(rho)
     # The list of the p_i in matrix form
     canonical_projections := List(chars, char_to_proj);
 
-    # Calculates p(space) for p a linear map (given as a matrix in the
-    # standard basis) and a vector space
-    matrix_image := function(p, space, zero)
-        return VectorSpace(F, List(Basis(space), v -> p * v), zero);
-    end;
-
-    # The zero of our space (need this for when bases are empty)
-    zero := List([1..n], _ -> 0);
-
     # The list of the V_i
-    canonical_summands := List(canonical_projections, p -> matrix_image(p, V, zero));
+    canonical_summands := List(canonical_projections, p -> MatrixImage@(p, V));
 
-    # Now we need to, given each V_i, decompose it into the W(x_1^j) (summing over
-    # j), which are the actual vector subspaces isomorphic to W_i.
+    return canonical_summands;
+end );
 
-    decompose_summand := function(irrep, V_i)
-        local projection, p_11, V_i1, basis, W, n, step_c;
+# Decomposes the representation V_i into a direct sum of some number
+# (maybe zero) of spaces, all isomorphic to W_i. W_i is the space
+# corresponding to the irrep : G -> GL(W_i). rho is the "full"
+# representation that we're decomposing.
+DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
+    local projection, p_11, V_i1, basis, n, step_c, G, H, F, V, m;
+    
+    G := Source(irrep);
 
-        # This is the general linear group of some space, we don't really
-        # know or care what the space actually is
-        W := Range(irrep);
+    # This is the general linear group of some space, we don't really
+    # know or care what the space actually is
+    H := Range(irrep);
 
-        # This gives the dimension of the space of which W is the general
-        # linear group (the size of the matrices representing the maps)
-        n := Length(W.1);
+    # This gives the dimension of the space of which W is the general
+    # linear group (the size of the matrices representing the maps)
+    n := Length(H.1);
+    
+    m := Length(Range(rho).1);
+    F := Cyclotomics;
+    V := F^m;
 
-        # First compute the projections p_ab
-        projection := function(a, b)
-            return (n/Order(G))*Sum(Elements(G),
-                                    t -> Image(irrep,t^-1)[b][a]*Image(rho,t));
-        end;
-
-        p_11 := projection(1, 1);
-        V_i1 := matrix_image(p_11, V_i, zero);
-        basis := Basis(V_i1);
-
-        # Now we define the map taking x to W(x), a subrepresentation of
-        # V_i isomorphic to W_i. (This is step (c) of Proposition 8)
-        step_c := function(x1)
-            # This is the list of basis vectors for W(x1)
-            return List([1..n],
-                        alpha -> projection(alpha, 1) * x1);
-        end;
-
-        # If x1^1 .. x1^m is a basis for V_i1 (this is in the `basis`
-        # variable), then V_i decomposes into the direct sum W(x1^1)
-        # ... W(x1^m), each isomorphic to W_i.
-        #
-        # We give this decomposition as a list of bases for each W(x1^j).
-
-        return List(basis, step_c);
+    # First compute the projections p_ab
+    projection := function(a, b)
+        return (n/Order(G))*Sum(Elements(G),
+                                t -> Image(irrep,t^-1)[b][a]*Image(rho,t));
     end;
 
-    # Now we decompose each V_i into a list of lists of basis vectors for
-    # each W(x1^j).
+    p_11 := projection(1, 1);
+    V_i1 := MatrixImage@(p_11, V_i);
+    basis := Basis(V_i1);
+
+    # Now we define the map taking x to W(x), a subrepresentation of
+    # V_i isomorphic to W_i. (This is step (c) of Proposition 8)
+    step_c := function(x1)
+        # This is the list of basis vectors for W(x1)
+        return List([1..n],
+                    alpha -> projection(alpha, 1) * x1);
+    end;
+
+    # If x1^1 .. x1^m is a basis for V_i1 (this is in the `basis`
+    # variable), then V_i decomposes into the direct sum W(x1^1)
+    # ... W(x1^m), each isomorphic to W_i.
+    return List(basis, x -> VectorSpace(F, step_c(x), Zero(V)));
+end;
+
+InstallGlobalFunction( DecomposeRepresentationIrreducible, function(rho)
+    local irreps, N, canonical_summands, full_decomposition, G, F, n, V;
+                         
+    G := Source(rho);
+    F := Cyclotomics;
+    n := Length(Range(rho).1);
+    V := F^n;
+
+    irreps := IrreducibleRepresentations(G, F);
 
     N := Size(irreps);
 
-    full_decomposition := List([1..N],
-                               i -> decompose_summand(irreps[i], canonical_summands[i]));
+    canonical_summands := DecomposeRepresentationCanonical(rho);
 
-    return full_decomposition;
+    full_decomposition := List([1..N],
+                               i -> DecomposeCanonicalSummand@(rho, irreps[i], canonical_summands[i]));
+
+    return List(full_decomposition, basis -> VectorSpace(F, basis, Zero(V)));
 end );
