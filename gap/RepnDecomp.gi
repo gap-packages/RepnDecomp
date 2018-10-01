@@ -70,7 +70,7 @@ end );
 # representation that we're decomposing.
 DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     local projection, p_11, V_i1, basis, n, step_c, G, H, F, V, m;
-    
+
     G := Source(irrep);
 
     # This is the general linear group of some space, we don't really
@@ -80,7 +80,7 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     # This gives the dimension of the space of which W is the general
     # linear group (the size of the matrices representing the maps)
     n := Length(H.1);
-    
+
     m := Length(Range(rho).1);
     F := Cyclotomics;
     V := F^m;
@@ -109,10 +109,29 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     return List(basis, x -> VectorSpace(F, step_c(x), Zero(V)));
 end;
 
-InstallGlobalFunction( DecomposeRepresentationIrreducible, function(rho)
-    local irreps, N, canonical_summands, full_decomposition, G, F, n, V;
-                         
+InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho)
+    local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
+
+    rho := orig_rho;
     G := Source(rho);
+
+    # We want rho to be a homomorphism to a matrix group since this
+    # algorithm works on matrices. We convert a permutation group into
+    # an isomorphic matrix group so that this is the case. If we don't
+    # know how to convert to a matrix group, we just fail.
+    if not IsMatrixGroup(Range(rho)) then
+        if IsPermGroup(Range(rho)) then
+            gens := GeneratorsOfGroup(G);
+            ims := List(gens, g -> Image(rho, g));
+            high := LargestMovedPoint(ims);
+            new_ims := List(ims, i -> PermutationMat(i, high));
+            new_range := Group(new_ims);
+            rho := GroupHomomorphismByImages(G, new_range, gens, new_ims);
+        else
+            Error("rho is not a matrix or permutation group!");
+        fi;
+    fi;
+
     F := Cyclotomics;
     n := Length(Range(rho).1);
     V := F^n;
