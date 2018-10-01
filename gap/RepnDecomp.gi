@@ -121,10 +121,15 @@ InstallGlobalFunction( DecomposeRepresentationIrreducible, function(rho)
 
     N := Size(irreps);
 
+    # This gives a list of vector spaces, each a canonical summand
     canonical_summands := DecomposeRepresentationCanonical(rho);
 
+    # This gives a list of lists of vector spaces, each a
+    # decomposition of a canonical summand into irreducibles.
     full_decomposition := List([1..N],
                                i -> DecomposeCanonicalSummand@(rho, irreps[i], canonical_summands[i]));
 
-    return List(full_decomposition, basis -> VectorSpace(F, basis, Zero(V)));
+    # This gives the list of vector spaces in the direct sum
+    # decomposition of rho : G -> GL(V) into irreducibles.
+    return Flat(full_decomposition);
 end );
