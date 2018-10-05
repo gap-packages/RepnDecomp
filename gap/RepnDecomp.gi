@@ -106,10 +106,21 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     # If x1^1 .. x1^m is a basis for V_i1 (this is in the `basis`
     # variable), then V_i decomposes into the direct sum W(x1^1)
     # ... W(x1^m), each isomorphic to W_i.
-    return List(basis, x -> VectorSpace(F, step_c(x), Zero(V)));
+    #
+    # We return a list of lists of (vector space, basis) pairs where
+    # the basis (TODO: confirm this?) has the special property
+    return List(basis, function(x)
+                   local b;
+                   b := step_c(x);
+                   return rec(space := VectorSpace(F, b, Zero(V)), basis := b);
+               end);
 end;
 
-InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho)
+# Decompose rho into irreducible representations with the reps that
+# are isomorphic collected together. This returns a list of lists of
+# vector spaces (L) with each element of L being a list of vector
+# spaces arising from the same irreducible.
+DecomposeIsomorphicCollected@ := function(orig_rho)
     local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
 
     rho := orig_rho;
@@ -148,7 +159,38 @@ InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho)
     full_decomposition := List([1..N],
                                i -> DecomposeCanonicalSummand@(rho, irreps[i], canonical_summands[i]));
 
-    # This gives the list of vector spaces in the direct sum
-    # decomposition of rho : G -> GL(V) into irreducibles.
-    return Flat(full_decomposition);
+    return full_decomposition;
+end;
+
+# Takes a rho that goes to a matrix group only. Returns a basis change
+# matrix which, when used on a given rho(g) (matrix), block
+# diagonalises rho(g) such that each block corresponds to an irrep.
+#
+# TODO: Make it so that blocks from isomorphic representations are the
+# same. Or maybe they already are, further testing required.
+BlockDiagonalizeRepresentation@ := function(rho)
+    local decomp, new_bases, new_basis;
+
+    # First decompose rho, keeping the information about which irreps
+    # are isomorphic and which is the special basis to use
+    decomp := DecomposeIsomorphicCollected@(rho);
+
+    # Extract the basis vectors, this is now a list of lists of bases
+    # (each basis is a list of vectors)
+    new_bases := List(decomp,
+                      rec_list -> List(rec_list, r -> r.basis));
+
+    # List of new basis row vectors
+    new_basis := Concatenation(Concatenation(new_bases));
+
+    # Base change matrix from new basis to standard basis
+    return TransposedMat(new_basis);
+end;
+
+# This gives the list of vector spaces in the direct sum
+# decomposition of rho : G -> GL(V) into irreducibles.
+InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho)
+    # We only want to return the vector spaces here
+    return Flat(List(DecomposeIsomorphicCollected@(orig_rho),
+                     rec_list -> List(rec_list, r -> r.space)));
 end );
