@@ -200,10 +200,68 @@ BlockDiagonalizeRepresentation@ := function(rho)
     return GroupHomomorphismByImages(G, range, gens, imgs);
 end;
 
-# This gives the list of vector spaces in the direct sum
+# Gives the list of vector spaces in the direct sum
 # decomposition of rho : G -> GL(V) into irreducibles.
-InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho)
+InstallGlobalFunction( DecomposeRepresentationIrreducible, function(rho)
     # We only want to return the vector spaces here
-    return Flat(List(DecomposeIsomorphicCollected@(orig_rho).decomp,
+    return Flat(List(DecomposeIsomorphicCollected@(rho).decomp,
                      rec_list -> List(rec_list, r -> r.space)));
 end );
+
+# Returns list of first n elems from list
+Take@ := function(list, n)
+    local result, count;
+    result := [];
+    count := 0;
+    while count < n do
+        Add(result, list[count+1]);
+        count := count + 1;
+    od;
+    return result;
+end;
+
+# Returns list of all but first n elems from list
+Drop@ := function(list, n)
+    local result, count, elem;
+    result := [];
+    count := 0;
+    for elem in list do
+        if count >= n then
+            Add(result, elem);
+        fi;
+        count := count + 1;
+    od;
+    return result;
+end;
+
+# Decomposes a block-diagonal matrix into a list of blocks given a
+# list of block sizes
+# 
+# WARNING: It's not checked whether the bits thrown away were actually
+# all zero, it is just assumed. Make sure the block sizes are correct.
+DecomposeMatrixIntoBlocks@ := function(matrix, block_sizes)
+    local blocks, my_matrix, block, new_matrix, block_size;
+
+    if Length(matrix) <> Sum(block_sizes) then
+        Error("block sizes don't match matrix size");
+    fi;
+    
+    blocks := [];
+    my_matrix := matrix;
+    
+    for block_size in block_sizes do
+        # First cut the matrix in two, with the desired block above
+        # and the rest below
+        block := Take@(my_matrix, block_size);
+        new_matrix := Drop@(my_matrix, block_size);
+        
+        # Then cut off the zero parts
+        block := List(block, row -> Take@(row, block_size));
+        new_matrix := List(new_matrix, row -> Drop@(row, block_size));
+        
+        Add(blocks, block);
+        my_matrix := new_matrix;
+    od;
+    
+    return blocks;
+end;
