@@ -305,9 +305,49 @@ BlockDiagonalMatrix@ := function(blocks)
     return result;
 end;
 
+# Takes a size of small block (dimension) and size of grid of small
+# blocks (nblocks).
+#
+# Returns a list of big matrices (square of size dimension*nblocks)
+# each with exactly 1 small block nonzero, equal to the identity, in
+# all possible ways. Result will be nblocks^2 long.
+GenerateAllBlocks@ := function(dimension, nblocks)
+    local result, coords, coord, i, j, gen;
+    result := [];
+    
+    # Possible locations of the I block
+    coords := Cartesian([1..nblocks], [1..nblocks]);
+    
+    for coord in coords do
+        i := coord[1];
+        j := coord[2];
+        
+        # a single block at position (i,j)
+        gen := BlockMatrix([[i, j, IdentityMat(dimension)]], nblocks, nblocks);
+        
+        Add(result, gen);
+    od;
+    
+    return result;
+end;
+
+# Returns a list of matrices (not list of blocks) where zero_blocks[i]
+# has been replaced with each block in blocks, then converted to a
+# full matrix.
+ReplaceBlocks@ := function(i, blocks, zero_blocks)
+    local result, block, full_matrix_blocks;
+    result := [];
+    for block in blocks do
+        full_matrix_blocks := ShallowCopy(zero_blocks);
+        full_matrix_blocks[i] := block;
+        Add(result, BlockDiagonalMatrix@(full_matrix_blocks));
+    od;
+    return result;
+end;
+
 # Computes the centralizer C of rho
 Centralizer@ := function(rho)
-    local decomp, irrep_lists, used_rho, sizes, make_std_gens, possible_blocks, zero_blocks, make_full_matrices, std_gens;
+    local decomp, irrep_lists, used_rho, sizes, possible_blocks, zero_blocks, make_full_matrices, std_gens;
     decomp := DecomposeIsomorphicCollected@(rho);
     irrep_lists := decomp.decomp;
     used_rho := decomp.used_rho;
@@ -332,58 +372,20 @@ Centralizer@ := function(rho)
     # with X_i isomorphic to X_j (the irreps they correspond to) and
     # the block equal to I_{dim X_i} (for all possible i and j).
     #
-    # This function takes a dimension of block n and size of big block
-    # m and gives a list of standard generators. That is, all possible
-    # big matrices with an mxm grid of nxn blocks blocks with exactly
-    # 1 nonzero, equal to I_n
     
-    make_std_gens := function(dimension, nblocks)
-        local result, coords, coord, i, j, gen;
-        result := [];
-        
-        # Possible locations of the I block
-        coords := Cartesian([1..nblocks], [1..nblocks]);
-        
-        for coord in coords do
-            i := coord[1];
-            j := coord[2];
-            
-            # a single block at position (i,j)
-            gen := BlockMatrix([[i, j, IdentityMat(dimension)]], nblocks, nblocks);
-            
-            Add(result, gen);
-        od;
-        
-        return result;
-    end;
     
     # For each collection of isomorphic blocks, we want all possible
     # nonzero big blocks, a list of lists of blocks
-    possible_blocks := List(sizes, size -> make_std_gens(size.dimension, size.nblocks));
+    possible_blocks := List(sizes, size -> GenerateAllBlocks@(size.dimension, size.nblocks));
     
     # A list of correctly sized zero blocks. Big blocks, not
     # individual small blocks
     zero_blocks := List(sizes, size -> NullMat(size.dimension * size.nblocks,
                                                size.dimension * size.nblocks));
     
-    # Each possible block is just the nonzero part of the full matrix,
-    # we can construct the full matrices
-    #
-    # This function takes an index into possible blocks and gives all
-    # the full matrices corresponding to the blocks in possible_blocks[i]
-    make_full_matrices := function(i)
-        local result, block, full_matrix_blocks;
-        result := [];
-        for block in possible_blocks[i] do
-            full_matrix_blocks := ShallowCopy(zero_blocks);
-            full_matrix_blocks[i] := block;
-            Add(result, BlockDiagonalMatrix@(full_matrix_blocks));
-        od;
-        return result;
-    end;
-    
     # All standard generators
-    std_gens := Concatenation(List([1..Length(possible_blocks)], i -> make_full_matrices(i)));
+    std_gens := Concatenation(List([1..Length(possible_blocks)],
+                                   i ->ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
     
     # TODO: Generate the centralizer here
     
