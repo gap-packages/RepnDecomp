@@ -325,28 +325,28 @@ GenerateAllBlocks@ := function(dimension, nblocks)
         # a single block at position (i,j)
         gen := BlockMatrix([[i, j, IdentityMat(dimension)]], nblocks, nblocks);
         
-        Add(result, gen);
+        Add(result, MatrixByBlockMatrix(gen));
     od;
     
     return result;
 end;
 
-# Returns a list of matrices (not list of blocks) where zero_blocks[i]
-# has been replaced with each block in blocks, then converted to a
-# full matrix.
+# Returns a list of block matrices where zero_blocks[i]
+# has been replaced with each block in blocks
 ReplaceBlocks@ := function(i, blocks, zero_blocks)
     local result, block, full_matrix_blocks;
     result := [];
     for block in blocks do
         full_matrix_blocks := ShallowCopy(zero_blocks);
         full_matrix_blocks[i] := block;
-        Add(result, BlockDiagonalMatrix@(full_matrix_blocks));
+        Add(result, full_matrix_blocks);
     od;
     return result;
 end;
 
-# Computes the centralizer C of rho
-Centralizer@ := function(rho)
+# Computes the centralizer C of rho, returning generators of C as
+# lists of blocks
+CentralizerBlocks@ := function(rho)
     local decomp, irrep_lists, used_rho, sizes, possible_blocks, zero_blocks, make_full_matrices, std_gens;
     decomp := DecomposeIsomorphicCollected@(rho);
     irrep_lists := decomp.decomp;
@@ -372,8 +372,6 @@ Centralizer@ := function(rho)
     # with X_i isomorphic to X_j (the irreps they correspond to) and
     # the block equal to I_{dim X_i} (for all possible i and j).
     #
-    
-    
     # For each collection of isomorphic blocks, we want all possible
     # nonzero big blocks, a list of lists of blocks
     possible_blocks := List(sizes, size -> GenerateAllBlocks@(size.dimension, size.nblocks));
@@ -385,9 +383,12 @@ Centralizer@ := function(rho)
     
     # All standard generators
     std_gens := Concatenation(List([1..Length(possible_blocks)],
-                                   i ->ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
-    
-    # TODO: Generate the centralizer here
+                                   i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
     
     return std_gens;
+end;
+
+# Same as CentralizerBlocks but converts to full matrices
+Centralizer@ := function(rho)
+    return List(CentralizerBlocks@(rho), BlockDiagonalMatrix@);
 end;
