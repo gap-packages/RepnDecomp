@@ -246,7 +246,7 @@ end;
 
 # Decomposes a block-diagonal matrix into a list of blocks given a
 # list of block sizes
-# 
+#
 # WARNING: It's not checked whether the bits thrown away were actually
 # all zero, it is just assumed. Make sure the block sizes are correct.
 DecomposeMatrixIntoBlocks@ := function(matrix, block_sizes)
@@ -255,24 +255,24 @@ DecomposeMatrixIntoBlocks@ := function(matrix, block_sizes)
     if Length(matrix) <> Sum(block_sizes) then
         Error("block sizes don't match matrix size");
     fi;
-    
+
     blocks := [];
     my_matrix := matrix;
-    
+
     for block_size in block_sizes do
         # First cut the matrix in two, with the desired block above
         # and the rest below
         block := Take@(my_matrix, block_size);
         new_matrix := Drop@(my_matrix, block_size);
-        
+
         # Then cut off the zero parts
         block := List(block, row -> Take@(row, block_size));
         new_matrix := List(new_matrix, row -> Drop@(row, block_size));
-        
+
         Add(blocks, block);
         my_matrix := new_matrix;
     od;
-    
+
     return blocks;
 end;
 
@@ -286,22 +286,22 @@ BlockDiagonalMatrix@ := function(blocks)
         local len1, len2, new_b1, new_b2;
         len1 := Length(b1);
         len2 := Length(b2);
-        
+
         # Add len2 zeroes to the end of each row in b1
         new_b1 := List(b1, row -> Concatenation(row, Replicate@(0, len2)));
-        
+
         # Add len1 zeroes to the start of each row in b2
         new_b2 := List(b2, row -> Concatenation(Replicate@(0, len1), row));
-        
+
         return Concatenation(new_b1, new_b2);
     end;
-    
+
     result := [];
-    
+
     for block in blocks do
         result := combine_blocks(result, block);
     od;
-    
+
     return result;
 end;
 
@@ -314,20 +314,20 @@ end;
 GenerateAllBlocks@ := function(dimension, nblocks)
     local result, coords, coord, i, j, gen;
     result := [];
-    
+
     # Possible locations of the I block
     coords := Cartesian([1..nblocks], [1..nblocks]);
-    
+
     for coord in coords do
         i := coord[1];
         j := coord[2];
-        
+
         # a single block at position (i,j)
         gen := BlockMatrix([[i, j, IdentityMat(dimension)]], nblocks, nblocks);
-        
+
         Add(result, MatrixByBlockMatrix(gen));
     od;
-    
+
     return result;
 end;
 
@@ -351,7 +351,7 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
     decomp := DecomposeIsomorphicCollected@(rho);
     irrep_lists := decomp.decomp;
     used_rho := decomp.used_rho;
-    
+
     # There are two "levels" of blocks. First, the blocks
     # corresponding to each irreducible individually. Second, the
     # blocks that are the isomorphic blocks all grouped together.
@@ -362,11 +362,11 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
     #
     # To work out the standard generators, we only need to know the
     # block sizes and collect together the isomorphic blocks.
-    
+
     sizes := List(irrep_lists,
                   irrep_list -> rec(dimension := Dimension(irrep_list[1].space),
                                     nblocks := Length(irrep_list)));
-    
+
     # If a list of isomorphic blocks is n long, it gives n^2 standard
     # generators, each with exactly 1 block, in the (i,j) position
     # with X_i isomorphic to X_j (the irreps they correspond to) and
@@ -375,16 +375,16 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
     # For each collection of isomorphic blocks, we want all possible
     # nonzero big blocks, a list of lists of blocks
     possible_blocks := List(sizes, size -> GenerateAllBlocks@(size.dimension, size.nblocks));
-    
+
     # A list of correctly sized zero blocks. Big blocks, not
     # individual small blocks
     zero_blocks := List(sizes, size -> NullMat(size.dimension * size.nblocks,
                                                size.dimension * size.nblocks));
-    
+
     # All standard generators
     std_gens := Concatenation(List([1..Length(possible_blocks)],
                                    i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
-    
+
     return std_gens;
 end );
 
