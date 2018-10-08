@@ -186,7 +186,7 @@ end;
 # Takes a representation going to a matrix group and gives you an
 # isomorphic representation where the images are block-diagonal with
 # each block corresponding to an irreducible representation
-BlockDiagonalizeRepresentation@ := function(rho)
+InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho)
     local decomp, A, G, gens, imgs, range;
 
     decomp := DecomposeIsomorphicCollected@(rho);
@@ -198,7 +198,7 @@ BlockDiagonalizeRepresentation@ := function(rho)
     range := Group(imgs);
 
     return GroupHomomorphismByImages(G, range, gens, imgs);
-end;
+end );
 
 # Gives the list of vector spaces in the direct sum
 # decomposition of rho : G -> GL(V) into irreducibles.
@@ -346,7 +346,7 @@ end;
 
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks
-CentralizerBlocks@ := function(rho)
+InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
     local decomp, irrep_lists, used_rho, sizes, possible_blocks, zero_blocks, make_full_matrices, std_gens;
     decomp := DecomposeIsomorphicCollected@(rho);
     irrep_lists := decomp.decomp;
@@ -386,9 +386,9 @@ CentralizerBlocks@ := function(rho)
                                    i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
     
     return std_gens;
-end;
+end );
 
-# Same as CentralizerBlocks but converts to full matrices
-Centralizer@ := function(rho)
-    return List(CentralizerBlocks@(rho), BlockDiagonalMatrix@);
-end;
+# Same as DecomposeCentralizerBlocks but converts to full matrices
+InstallGlobalFunction( RepresentationCentralizer, function(rho)
+    return List(RepresentationCentralizerBlocks(rho), BlockDiagonalMatrix@);
+end );
