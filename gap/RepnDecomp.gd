@@ -39,6 +39,19 @@ DeclareGlobalFunction( "BlockDiagonalizeRepresentation" );
 DeclareGlobalFunction( "RepresentationCentralizer" );
 
 #! @Arguments rho
+#! @Returns list of decomposed standard generators for centralizer of
+#!   rho(G) in block form
+#! @Description
+#!   Decomposes rho into irreducibles, block diagonalizes rho, then
+#!   uses the block sizes to calculate the centralizer of rho. This is
+#!   the same as RepresentationCentralizerBlocks, but with all
+#!   identity blocks compressed into 1x1 cells.
+#!
+#!   This shows that C is isomorphic to C' a direct sum of m(X_k) x
+#!   m(X_k) matrices.
+DeclareGlobalFunction( "RepresentationCentralizerDecomposed" );
+
+#! @Arguments rho
 #! @Returns list of standard generators for centralizer of rho(G) in block form
 #! @Description
 #!   Decomposes rho into irreducibles, block diagonalizes rho, then

@@ -388,6 +388,23 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
     return std_gens;
 end );
 
+# This does the same as the previous, but uses 1x1 identity blocks always
+InstallGlobalFunction( RepresentationCentralizerDecomposed, function(rho)
+    local decomp, irrep_lists, used_rho, sizes, cmp_possible_blocks, cmp_zero_blocks, cmp_std_gens;
+    decomp := DecomposeIsomorphicCollected@(rho);
+    irrep_lists := decomp.decomp;
+    used_rho := decomp.used_rho;
+    sizes := List(irrep_lists,
+                  irrep_list -> rec(dimension := Dimension(irrep_list[1].space),
+                                    nblocks := Length(irrep_list)));
+    cmp_possible_blocks := List(sizes, size -> GenerateAllBlocks@(1, size.nblocks));
+    cmp_zero_blocks := List(sizes, size -> NullMat(size.nblocks,
+                                                   size.nblocks));
+    cmp_std_gens := Concatenation(List([1..Length(cmp_possible_blocks)],
+                                       i -> ReplaceBlocks@(i, cmp_possible_blocks[i], cmp_zero_blocks)));
+    return cmp_std_gens;
+end );
+
 # Same as DecomposeCentralizerBlocks but converts to full matrices
 InstallGlobalFunction( RepresentationCentralizer, function(rho)
     return List(RepresentationCentralizerBlocks(rho), BlockDiagonalMatrix@);
