@@ -19,7 +19,7 @@ MatrixImage@ := function(p, V)
                        Zero(V));
 end;
 
-InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho)
+InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho, arg...)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
 
     # The group we are taking representations of
@@ -37,7 +37,14 @@ InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho)
     V := F^n;
 
     # The full list of irreps W_i of G over F
-    irreps := IrreducibleRepresentations(G, F);
+    #
+    # If we are given a list of irreps, we use that instead of
+    # calculating it
+    if Size(arg) > 0 then
+        irreps := arg[1];
+    else
+        irreps := IrreducibleRepresentations(G, F);
+    fi;
 
     # The characters chi_i of each irrep W_i
     chars := List(irreps,
@@ -116,20 +123,15 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
                end);
 end;
 
-# Decompose rho into irreducible representations with the reps that
-# are isomorphic collected together. This returns a list of lists of
-# vector spaces (L) with each element of L being a list of vector
-# spaces arising from the same irreducible.
-DecomposeIsomorphicCollected@ := function(orig_rho)
-    local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
-
-    rho := orig_rho;
+# Converts rho to a matrix representation if necessary
+ConvertRhoIfNeeded@ := function(rho)
+    local gens, ims, high, new_ims, new_range, new_rho, G;
     G := Source(rho);
-
     # We want rho to be a homomorphism to a matrix group since this
     # algorithm works on matrices. We convert a permutation group into
     # an isomorphic matrix group so that this is the case. If we don't
     # know how to convert to a matrix group, we just fail.
+    new_rho := rho;
     if not IsMatrixGroup(Range(rho)) then
         if IsPermGroup(Range(rho)) then
             gens := GeneratorsOfGroup(G);
@@ -137,22 +139,44 @@ DecomposeIsomorphicCollected@ := function(orig_rho)
             high := LargestMovedPoint(ims);
             new_ims := List(ims, i -> PermutationMat(i, high));
             new_range := Group(new_ims);
-            rho := GroupHomomorphismByImages(G, new_range, gens, new_ims);
+            new_rho := GroupHomomorphismByImages(G, new_range, gens, new_ims);
         else
             Error("rho is not a matrix or permutation group!");
         fi;
     fi;
+    return new_rho;
+end;
+
+# Decompose rho into irreducible representations with the reps that
+# are isomorphic collected together. This returns a list of lists of
+# vector spaces (L) with each element of L being a list of vector
+# spaces arising from the same irreducible.
+DecomposeIsomorphicCollected@ := function(orig_rho, arg...)
+    local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
+
+    rho := ConvertRhoIfNeeded@(orig_rho);
+    G := Source(rho);
 
     F := Cyclotomics;
     n := Length(Range(rho).1);
     V := F^n;
 
-    irreps := IrreducibleRepresentations(G, F);
+    # Use the list of irreps if given
+    if Size(arg) > 0 then
+        irreps := arg[1];
+    else
+        irreps := IrreducibleRepresentations(G, F);
+    fi;
 
     N := Size(irreps);
 
     # This gives a list of vector spaces, each a canonical summand
-    canonical_summands := DecomposeRepresentationCanonical(rho);
+    # Try to use a precomputed decomposition, if given
+    if Size(arg) > 1 then
+        canonical_summands := arg[2];
+    else
+        canonical_summands := DecomposeRepresentationCanonical(rho, irreps);
+    fi;
 
     # This gives a list of lists of vector spaces, each a
     # decomposition of a canonical summand into irreducibles.
@@ -186,10 +210,16 @@ end;
 # Takes a representation going to a matrix group and gives you an
 # isomorphic representation where the images are block-diagonal with
 # each block corresponding to an irreducible representation
-InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho)
+InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho, arg...)
     local decomp, A, G, gens, imgs, range;
 
-    decomp := DecomposeIsomorphicCollected@(rho);
+    # Use precomputed decomposition, if available
+    if Size(arg) > 0 then
+        decomp := arg[1];
+    else
+        decomp := DecomposeIsomorphicCollected@(rho);
+    fi;
+
     A := BaseChangeMatrix@(rho, decomp.decomp);
     G := Source(rho);
     gens := GeneratorsOfGroup(G);
@@ -202,9 +232,26 @@ end );
 
 # Gives the list of vector spaces in the direct sum
 # decomposition of rho : G -> GL(V) into irreducibles.
-InstallGlobalFunction( DecomposeRepresentationIrreducible, function(rho)
+InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho, arg...)
+    local irreps, canonical_summands, rho;
+    rho := ConvertRhoIfNeeded@(orig_rho);
+
+    # Use the list of irreps if given
+    if Size(arg) > 0 then
+        irreps := arg[1];
+    else
+        irreps := IrreducibleRepresentations(Source(rho), Cyclotomics);
+    fi;
+
+    # Try to use a precomputed decomposition, if given
+    if Size(arg) > 1 then
+        canonical_summands := arg[2];
+    else
+        canonical_summands := DecomposeRepresentationCanonical(rho, irreps);
+    fi;
+
     # We only want to return the vector spaces here
-    return Flat(List(DecomposeIsomorphicCollected@(rho).decomp,
+    return Flat(List(DecomposeIsomorphicCollected@(rho, irreps, canonical_summands).decomp,
                      rec_list -> List(rec_list, r -> r.space)));
 end );
 
@@ -346,9 +393,15 @@ end;
 
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks
-InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
+InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho, arg...)
     local decomp, irrep_lists, used_rho, sizes, possible_blocks, zero_blocks, make_full_matrices, std_gens;
-    decomp := DecomposeIsomorphicCollected@(rho);
+
+    if Size(arg) > 0 then
+        decomp := arg[1];
+    else
+        decomp := DecomposeIsomorphicCollected@(rho);
+    fi;
+
     irrep_lists := decomp.decomp;
     used_rho := decomp.used_rho;
 
@@ -389,9 +442,15 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho)
 end );
 
 # This does the same as the previous, but uses 1x1 identity blocks always
-InstallGlobalFunction( RepresentationCentralizerDecomposed, function(rho)
+InstallGlobalFunction( RepresentationCentralizerDecomposed, function(rho, arg...)
     local decomp, irrep_lists, used_rho, sizes, cmp_possible_blocks, cmp_zero_blocks, cmp_std_gens;
-    decomp := DecomposeIsomorphicCollected@(rho);
+
+    if Size(arg) > 0 then
+        decomp := arg[1];
+    else
+        decomp := DecomposeIsomorphicCollected@(rho);
+    fi;
+
     irrep_lists := decomp.decomp;
     used_rho := decomp.used_rho;
     sizes := List(irrep_lists,
@@ -406,6 +465,12 @@ InstallGlobalFunction( RepresentationCentralizerDecomposed, function(rho)
 end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices
-InstallGlobalFunction( RepresentationCentralizer, function(rho)
-    return List(RepresentationCentralizerBlocks(rho), BlockDiagonalMatrix@);
+InstallGlobalFunction( RepresentationCentralizer, function(rho, arg...)
+    local decomp;
+    if Size(arg) > 0 then
+        decomp := arg[1];
+    else
+        decomp := DecomposeIsomorphicCollected@(rho);
+    fi;
+    return List(RepresentationCentralizerBlocks(rho, decomp), BlockDiagonalMatrix@);
 end );
