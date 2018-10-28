@@ -46,29 +46,21 @@ InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho, arg...)
         irreps := IrreducibleRepresentations(G, F);
     fi;
 
-    # The characters chi_i of each irrep W_i
-    chars := List(irreps,
-                  irrep -> GroupHomomorphismByFunction(G, F,
-                                                       g -> Trace(Image(irrep, g))));
+    return List(irreps, function (irrep)
+                   local character, degree, projection, canonical_summand;
 
-    # Given a character chi_i, calculate the projection onto V_i using Theorem 8
-    # This is given as a matrix
-    char_to_proj := function(char)
-        local degree;
+                   # In Serre's text, irrep is called W_i, this character is chi_i
+                   character := GroupHomomorphismByFunction(G, F, g -> Trace(Image(irrep, g)));
+                   degree := Image(character, One(G));
 
-        # The degree n_i of char
-        degree := Image(char, One(G));
-        return (degree/Order(G)) * Sum(G,
-                                       t -> ComplexConjugate(Image(char, t)) * Image(rho, t));
-    end;
+                   # Calculate the projection map from V to irrep using Theorem 8 (Serre)
+                   # Given as a matrix, p_i
+                   projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(Image(character, t)) * Image(rho, t));
 
-    # The list of the p_i in matrix form
-    canonical_projections := List(chars, char_to_proj);
-
-    # The list of the V_i
-    canonical_summands := List(canonical_projections, p -> MatrixImage@(p, V));
-
-    return canonical_summands;
+                   # Calculate V_i, the canonical summand
+                   canonical_summand := MatrixImage@(projection, V);
+                   return canonical_summand;
+               end );
 end );
 
 # Decomposes the representation V_i into a direct sum of some number
@@ -76,7 +68,7 @@ end );
 # corresponding to the irrep : G -> GL(W_i). rho is the "full"
 # representation that we're decomposing.
 DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
-    local projection, p_11, V_i1, basis, n, step_c, G, H, F, V, m;
+    local projections, p_11, V_i1, basis, n, step_c, G, H, F, V, m;
 
     G := Source(irrep);
 
@@ -92,13 +84,12 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     F := Cyclotomics;
     V := F^m;
 
-    # First compute the projections p_ab
-    projection := function(a, b)
-        return (n/Order(G))*Sum(Elements(G),
-                                t -> Image(irrep,t^-1)[b][a]*Image(rho,t));
-    end;
+    # First compute the projections p_ab. We only actually use projections with
+    # a=1..n and b=1, so we can just compute those. projections[a] is p_{a1}
+    # from Serre.
+    projections := List([1..n], a -> (n/Order(G)) * Sum(G, t -> Image(irrep,t^-1)[1][a]*Image(rho,t)));
 
-    p_11 := projection(1, 1);
+    p_11 := projections[1];
     V_i1 := MatrixImage@(p_11, V_i);
     basis := Basis(V_i1);
 
@@ -106,8 +97,7 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     # V_i isomorphic to W_i. (This is step (c) of Proposition 8)
     step_c := function(x1)
         # This is the list of basis vectors for W(x1)
-        return List([1..n],
-                    alpha -> projection(alpha, 1) * x1);
+        return List([1..n], alpha -> projections[alpha] * x1);
     end;
 
     # If x1^1 .. x1^m is a basis for V_i1 (this is in the `basis`
