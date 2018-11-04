@@ -392,7 +392,8 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho, arg...)
         decomp := DecomposeIsomorphicCollected@(rho);
     fi;
 
-    irrep_lists := decomp.decomp;
+    # We only want the irreps that actually appear
+    irrep_lists := Filtered(decomp.decomp, l -> not IsEmpty(l));
     used_rho := decomp.used_rho;
 
     # There are two "levels" of blocks. First, the blocks
