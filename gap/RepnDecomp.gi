@@ -381,20 +381,59 @@ ReplaceBlocks@ := function(i, blocks, zero_blocks)
     return result;
 end;
 
+# Takes the inner product of two characters, given as rows of the
+# character table
+CharacterInnerProduct@ := function(chi1, chi2, G)
+    local classes;
+
+    # We avoid summing over the whole group
+    classes := ConjugacyClasses(G);
+
+    return (1/Size(G)) * Sum(List([1..Size(classes)],
+                                  i -> Size(classes[i]) * chi1[i] * ComplexConjugate(chi2[i])));
+end;
+
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks
-InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho, arg...)
-    local decomp, irrep_lists, used_rho, sizes, possible_blocks, zero_blocks, make_full_matrices, std_gens;
+InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, arg...)
+    local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
 
+    rho := ConvertRhoIfNeeded@(orig_rho);
+    G := Source(rho);
+
+    # If we are given a full decomposition, we can just use it.
     if Size(arg) > 0 then
         decomp := arg[1];
-    else
-        decomp := DecomposeIsomorphicCollected@(rho);
-    fi;
 
-    # We only want the irreps that actually appear
-    irrep_lists := Filtered(decomp.decomp, l -> not IsEmpty(l));
-    used_rho := decomp.used_rho;
+        # We only want the irreps that actually appear
+        irrep_lists := Filtered(decomp.decomp, l -> not IsEmpty(l));
+        rho := decomp.used_rho;
+
+        sizes := List(irrep_lists,
+                      irrep_list -> rec(dimension := Dimension(irrep_list[1].space),
+                                        nblocks := Length(irrep_list)));
+    else
+        # Otherwise, we just compute using characters
+        classes := ConjugacyClasses(G);
+        irr_chars := Irr(G);
+        char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
+
+        # Write char_rho in the irr_chars basis for class functions
+        char_rho_basis := List(irr_chars,
+                               irr_char -> CharacterInnerProduct@(char_rho, irr_char, G));
+
+        # Calculate sizes based on the fact irr_char[1] is the degree
+        all_sizes := List([1..Size(irr_chars)],
+                          i -> rec(dimension := irr_chars[i][1],
+                                   nblocks := char_rho_basis[i]));
+
+        # Now we remove all of the ones with nblocks = 0
+        sizes := Filtered(all_sizes, r -> r.nblocks > 0);
+
+        # We sort so we get the same ordering as Serre's formula's decomposition
+        # TODO: Make sure this is actually true!!
+        SortBy(sizes, r -> r.dimension);
+    fi;
 
     # There are two "levels" of blocks. First, the blocks
     # corresponding to each irreducible individually. Second, the
@@ -405,12 +444,9 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(rho, arg...)
     # (larger) blocks.
     #
     # To work out the standard generators, we only need to know the
-    # block sizes and collect together the isomorphic blocks.
-
-    sizes := List(irrep_lists,
-                  irrep_list -> rec(dimension := Dimension(irrep_list[1].space),
-                                    nblocks := Length(irrep_list)));
-
+    # block sizes and collect together the isomorphic blocks, this is
+    # what is calculated in "sizes".
+    #
     # If a list of isomorphic blocks is n long, it gives n^2 standard
     # generators, each with exactly 1 block, in the (i,j) position
     # with X_i isomorphic to X_j (the irreps they correspond to) and

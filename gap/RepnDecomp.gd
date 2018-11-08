@@ -34,8 +34,8 @@ DeclareGlobalFunction( "BlockDiagonalizeRepresentation" );
 #! @Arguments rho
 #! @Returns list of standard generators for centralizer of rho(G)
 #! @Description
-#!   Decomposes rho into irreducibles, block diagonalizes rho, then
-#!   uses the block sizes to calculate the centralizer of rho
+#!   Decomposes character of rho into sum of irreducible characters,
+#!   uses that to calculate basis for centralizer of rho.
 DeclareGlobalFunction( "RepresentationCentralizer" );
 
 #! @Arguments rho
