@@ -393,47 +393,48 @@ CharacterInnerProduct@ := function(chi1, chi2, G)
                                   i -> Size(classes[i]) * chi1[i] * ComplexConjugate(chi2[i])));
 end;
 
+# Writes the character of rho as a vector in the basis given by the
+# irreducible characters
+# TODO: Check if we can rely on the ordering
+DecomposeCharacter@ := function(rho)
+    local G, classes, irr_chars, char_rho, char_rho_basis;
+
+    G := Source(rho);
+
+    # Otherwise, we just compute using characters
+    classes := ConjugacyClasses(G);
+    irr_chars := Irr(G);
+    char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
+
+    # Write char_rho in the irr_chars basis for class functions
+    char_rho_basis := List(irr_chars,
+                           irr_char -> CharacterInnerProduct@(char_rho, irr_char, G));
+
+    return char_rho_basis;
+end;
+
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks
-InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, arg...)
+InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho)
     local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
 
     rho := ConvertRhoIfNeeded@(orig_rho);
     G := Source(rho);
 
-    # If we are given a full decomposition, we can just use it.
-    if Size(arg) > 0 then
-        decomp := arg[1];
+    irr_chars := Irr(G);
+    char_rho_basis := DecomposeCharacter@(rho);
 
-        # We only want the irreps that actually appear
-        irrep_lists := Filtered(decomp.decomp, l -> not IsEmpty(l));
-        rho := decomp.used_rho;
+    # Calculate sizes based on the fact irr_char[1] is the degree
+    all_sizes := List([1..Size(irr_chars)],
+                      i -> rec(dimension := irr_chars[i][1],
+                               nblocks := char_rho_basis[i]));
 
-        sizes := List(irrep_lists,
-                      irrep_list -> rec(dimension := Dimension(irrep_list[1].space),
-                                        nblocks := Length(irrep_list)));
-    else
-        # Otherwise, we just compute using characters
-        classes := ConjugacyClasses(G);
-        irr_chars := Irr(G);
-        char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
+    # Now we remove all of the ones with nblocks = 0
+    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
 
-        # Write char_rho in the irr_chars basis for class functions
-        char_rho_basis := List(irr_chars,
-                               irr_char -> CharacterInnerProduct@(char_rho, irr_char, G));
-
-        # Calculate sizes based on the fact irr_char[1] is the degree
-        all_sizes := List([1..Size(irr_chars)],
-                          i -> rec(dimension := irr_chars[i][1],
-                                   nblocks := char_rho_basis[i]));
-
-        # Now we remove all of the ones with nblocks = 0
-        sizes := Filtered(all_sizes, r -> r.nblocks > 0);
-
-        # We sort so we get the same ordering as Serre's formula's decomposition
-        # TODO: Make sure this is actually true!!
-        SortBy(sizes, r -> r.dimension);
-    fi;
+    # We sort so we get the same ordering as Serre's formula's decomposition
+    # TODO: Make sure this is actually true!!
+    SortBy(sizes, r -> r.dimension);
 
     # There are two "levels" of blocks. First, the blocks
     # corresponding to each irreducible individually. Second, the
@@ -468,36 +469,67 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, arg..
     return std_gens;
 end );
 
-# This does the same as the previous, but uses 1x1 identity blocks always
-InstallGlobalFunction( RepresentationCentralizerDecomposed, function(rho, arg...)
-    local decomp, irrep_lists, used_rho, sizes, cmp_possible_blocks, cmp_zero_blocks, cmp_std_gens;
+# This does the same as the previous, but uses 1x1 identity blocks
+# always. This is the minimal dimension matrix presentation of the
+# centraliser of rho.
+InstallGlobalFunction( RepresentationCentralizerDecomposed, function(orig_rho)
+    local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
 
-    if Size(arg) > 0 then
-        decomp := arg[1];
-    else
-        decomp := DecomposeIsomorphicCollected@(rho);
-    fi;
-
-    irrep_lists := decomp.decomp;
-    used_rho := decomp.used_rho;
-    sizes := List(irrep_lists,
-                  irrep_list -> rec(dimension := Dimension(irrep_list[1].space),
-                                    nblocks := Length(irrep_list)));
-    cmp_possible_blocks := List(sizes, size -> GenerateAllBlocks@(1, size.nblocks));
-    cmp_zero_blocks := List(sizes, size -> NullMat(size.nblocks,
-                                                   size.nblocks));
-    cmp_std_gens := Concatenation(List([1..Length(cmp_possible_blocks)],
-                                       i -> ReplaceBlocks@(i, cmp_possible_blocks[i], cmp_zero_blocks)));
-    return cmp_std_gens;
+    rho := ConvertRhoIfNeeded@(orig_rho);
+    G := Source(rho);
+    irr_chars := Irr(G);
+    char_rho_basis := DecomposeCharacter@(rho);
+    all_sizes := List([1..Size(irr_chars)],
+                      i -> rec(dimension := irr_chars[i][1],
+                               nblocks := char_rho_basis[i]));
+    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
+    SortBy(sizes, r -> r.dimension);
+    possible_blocks := List(sizes, size -> GenerateAllBlocks@(1, size.nblocks));
+    zero_blocks := List(sizes, size -> NullMat(size.nblocks,
+                                               size.nblocks));
+    std_gens := Concatenation(List([1..Length(possible_blocks)],
+                                   i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
+    return std_gens;
 end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices
-InstallGlobalFunction( RepresentationCentralizer, function(rho, arg...)
-    local decomp;
-    if Size(arg) > 0 then
-        decomp := arg[1];
-    else
-        decomp := DecomposeIsomorphicCollected@(rho);
-    fi;
-    return List(RepresentationCentralizerBlocks(rho, decomp), BlockDiagonalMatrix@);
+InstallGlobalFunction( RepresentationCentralizer, function(rho)
+    return List(RepresentationCentralizerBlocks(rho), BlockDiagonalMatrix@);
 end );
+
+# Block diagonalize the representation not using Serre's formula
+BlockDiagonalizeRepresentationAlternate@ := function(rho, args...)
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img;
+
+    G := Source(rho);
+
+    # Write the character of rho in the basis of irreducible characters
+    char_rho_basis := DecomposeCharacter@(rho);
+
+    if Size(args) > 0 then
+        irreps := args[1];
+    else
+        irreps := IrreducibleRepresentations(G, Cyclotomics);
+    fi;
+
+    # TODO: Check if the ordering is safe to rely on!
+    # Relying on the ordering of the basis, make a list of irreps in
+    # the decomposition of rho.
+    # The list of summands with isomorphic summands collected: we just
+    # repeat irrep[i] the number of times given by the coefficient of
+    # its character in char_rho
+    isomorphic_collected := List([1..Size(char_rho_basis)],
+                                 i -> Replicate@(irreps[i], char_rho_basis[i]));
+
+    summands := Flat(isomorphic_collected);
+
+    new_rho_f := function(g)
+        # Take the image with each direct summand and just glue them together
+        return BlockDiagonalMatrix@(List(summands, irrep -> Image(irrep, g)));
+    end;
+
+    # Image of new_rho
+    new_img := Group(List(GeneratorsOfGroup(G), g -> new_rho_f(g)));
+
+    return GroupHomomorphismByFunction(G, new_img, new_rho_f);
+end;
