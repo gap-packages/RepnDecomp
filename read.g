@@ -3,4 +3,8 @@
 #
 # Reading the implementation part of the package.
 #
-ReadPackage( "RepnDecomp", "gap/RepnDecomp.gi");
+
+ReadPackage( "RepnDecomp", "lib/utils.gi");
+ReadPackage( "RepnDecomp", "lib/serre.gi");
+ReadPackage( "RepnDecomp", "lib/centralizer.gi");
+ReadPackage( "RepnDecomp", "lib/block_diagonalize.gi");

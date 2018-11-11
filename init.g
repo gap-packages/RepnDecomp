@@ -4,4 +4,7 @@
 # Reading the declaration part of the package.
 #
 
-ReadPackage( "RepnDecomp", "gap/RepnDecomp.gd");
+ReadPackage( "RepnDecomp", "lib/utils.gd" );
+ReadPackage( "RepnDecomp", "lib/serre.gd" );
+ReadPackage( "RepnDecomp", "lib/centralizer.gd" );
+ReadPackage( "RepnDecomp", "lib/block_diagonalize.gd" );
