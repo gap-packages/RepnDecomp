@@ -3,7 +3,7 @@
 # Takes a rho that goes to a matrix group only. Returns a basis change
 # matrix which, when used on a given rho(g) (matrix), block
 # diagonalises rho(g) such that each block corresponds to an irrep.
-BaseChangeMatrix@ := function(rho, decomp)
+BasisChangeMatrix@ := function(rho, decomp)
     local new_bases, new_basis;
 
     # Extract the basis vectors, this is now a list of lists of bases
@@ -31,7 +31,7 @@ InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho, arg...)
         decomp := DecomposeIsomorphicCollected@(rho);
     fi;
 
-    A := BaseChangeMatrix@(rho, decomp.decomp);
+    A := BasisChangeMatrix@(rho, decomp.decomp);
     G := Source(rho);
     gens := GeneratorsOfGroup(G);
     imgs := List(gens, g -> A^-1 * Image(decomp.used_rho, g) * A);
@@ -41,20 +41,22 @@ InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho, arg...)
     return GroupHomomorphismByImages(G, range, gens, imgs);
 end );
 
-# Calculates a matrix A such that X = A Y A^-1
-# TODO: Make this work
+# Calculates a matrix P such that X = P^-1 Y P
 BasisChangeMatrixSimilar@ := function(X, Y)
-    local new_eigenspaces, old_eigenspaces;
-    # TODO: Do the Jordan blocks come in the same order?
-    new_eigenspaces := GeneralizedEigenspaces(Cyclotomics, X);
-    old_eigenspaces := GeneralizedEigenspaces(Cyclotomics, Y);
-    return 1;
+    local A, B;
+
+    # We find the rational canonical form conjugation matrices
+    A := RationalCanonicalFormTransform(X);
+    B := RationalCanonicalFormTransform(Y);
+
+    # Now A^-1 X A = B^-1 Y B, so P = BA^-1
+    return B * A^-1;
 end;
 
 # Calculate a basis change matrix that diagonalizes rho (without using
 # Serre's formulas)
 BasisChangeMatrixAlternate@ := function(rho, args...)
-    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g;
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r;
 
     G := Source(rho);
 
@@ -64,8 +66,10 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
     if Size(args) > 0 then
         irreps := args[1];
     else
-        irreps := IrreducibleRepresentations(G, Cyclotomics);
+        irreps := IrreducibleRepresentationsDixon(G);
     fi;
+
+    chars := Irr(G);
 
     # TODO: Check if the ordering is safe to rely on!
     # Relying on the ordering of the basis, make a list of irreps in
@@ -74,22 +78,43 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
     # repeat irrep[i] the number of times given by the coefficient of
     # its character in char_rho
     isomorphic_collected := List([1..Size(char_rho_basis)],
-                                 i -> Replicate(irreps[i], char_rho_basis[i]));
+                                 i -> Replicate@(rec(rep := irreps[i],
+                                                     dim := chars[i][1]),
+                                                 char_rho_basis[i]));
 
-    summands := Flat(isomorphic_collected);
+    summands := List(Flat(isomorphic_collected), r -> r.rep);
 
     new_rho_f := function(g)
         # Take the image with each direct summand and just glue them together
         return BlockDiagonalMatrix(List(summands, irrep -> Image(irrep, g)));
     end;
 
+    new_rho := GroupHomomorphismByImages(G, Group(List(GeneratorsOfGroup(G), new_rho_f)));
+
     # We don't know the basis that the new_rho(g) are written in, but
     # since the representations are isomorphic, there is a basis
-    # change matrix A such that new_rho(g) = A * rho(g) * A^-1
+    # change matrix A such that new_rho(g) = A^-1 * rho(g) * A
 
     # To calculate A, we use a random element of G
     g := G.1;
 
-    # TODO: Make this work!
-    return BasisChangeMatrixSimilar@(new_rho_f(g), Image(rho, g));
+    basis_change := BasisChangeMatrixSimilar@(new_rho_f(g), Image(rho, g));
+
+    basis := TransposedMat(basis_change);
+
+    # The basis is in the right order, it just needs to be collected
+    # into bases for the irrep spaces
+    full_space_list := [];
+    for irrep_list in isomorphic_collected do
+        current_space_list := [];
+        for r in irrep_list do
+            Add(current_space_list, VectorSpace(Cyclotomics, Take@(basis, r.dim)));
+            basis := Drop@(basis, r.dim);
+        od;
+        Add(full_space_list, current_space_list);
+    od;
+
+    return rec(basis := basis,
+               diagonal_rep := new_rho,
+               decomposition := full_space_list);
 end;
