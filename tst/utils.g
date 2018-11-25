@@ -13,7 +13,7 @@ IsGInvariant := function(rho, space)
 
     for v in Basis(space) do
         for g in GeneratorsOfGroup(G) do
-            if not v * Image(rho, g) in space then
+            if not Image(rho, g) * v in space then
                 return false;
             fi;
         od;
