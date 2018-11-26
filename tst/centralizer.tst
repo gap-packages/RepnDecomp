@@ -1,6 +1,7 @@
 gap> G:=SymmetricGroup(3);;
 gap> R:=RegularActionHomomorphism(G);;
 gap> h:=GroupHomomorphismByImages(G,Image(R,G));;
+gap> h:=ConvertRhoIfNeeded@RepnDecomp(h);;
 gap> RepresentationCentralizer(R);
 [ [ [ 1, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ],
       [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0 ] ],

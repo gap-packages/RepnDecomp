@@ -14,7 +14,31 @@ MatrixImage@ := function(p, V)
                        Zero(V));
 end;
 
-InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho, arg...)
+# Converts rho to a matrix representation if necessary
+ConvertRhoIfNeeded@ := function(rho)
+    local gens, ims, high, new_ims, new_range, new_rho, G;
+    G := Source(rho);
+    # We want rho to be a homomorphism to a matrix group since this
+    # algorithm works on matrices. We convert a permutation group into
+    # an isomorphic matrix group so that this is the case. If we don't
+    # know how to convert to a matrix group, we just fail.
+    new_rho := rho;
+    if not IsMatrixGroup(Range(rho)) then
+        if IsPermGroup(Range(rho)) then
+            gens := GeneratorsOfGroup(G);
+            ims := List(gens, g -> Image(rho, g));
+            high := LargestMovedPoint(ims);
+            new_ims := List(ims, i -> PermutationMat(i, high));
+            new_range := Group(new_ims);
+            new_rho := GroupHomomorphismByImages(G, new_range, gens, new_ims);
+        else
+            Error("rho is not a matrix or permutation group!");
+        fi;
+    fi;
+    return new_rho;
+end;
+
+InstallMethod( CanonicalDecomposition, [ IsFiniteGroupLinearRepresentation ], function(rho)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
 
     # The group we are taking representations of
@@ -32,14 +56,7 @@ InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho, arg...)
     V := F^n;
 
     # The full list of irreps W_i of G over F
-    #
-    # If we are given a list of irreps, we use that instead of
-    # calculating it
-    if Size(arg) > 0 then
-        irreps := arg[1];
-    else
-        irreps := IrreducibleRepresentations(G, F);
-    fi;
+    irreps := IrreducibleRepresentations(G, F);
 
     return List(irreps, function (irrep)
                    local character, degree, projection, canonical_summand;
@@ -57,6 +74,8 @@ InstallGlobalFunction( DecomposeRepresentationCanonical, function(rho, arg...)
                    return canonical_summand;
                end );
 end );
+
+InstallMethod( CanonicalDecomposition, [ IsFiniteGroupPermutationRepresentation ], rho -> CanonicalDecomposition(ConvertRhoIfNeeded@(rho)) );
 
 # Decomposes the representation V_i into a direct sum of some number
 # (maybe zero) of spaces, all isomorphic to W_i. W_i is the space
@@ -108,60 +127,25 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
                end);
 end;
 
-# Converts rho to a matrix representation if necessary
-ConvertRhoIfNeeded@ := function(rho)
-    local gens, ims, high, new_ims, new_range, new_rho, G;
-    G := Source(rho);
-    # We want rho to be a homomorphism to a matrix group since this
-    # algorithm works on matrices. We convert a permutation group into
-    # an isomorphic matrix group so that this is the case. If we don't
-    # know how to convert to a matrix group, we just fail.
-    new_rho := rho;
-    if not IsMatrixGroup(Range(rho)) then
-        if IsPermGroup(Range(rho)) then
-            gens := GeneratorsOfGroup(G);
-            ims := List(gens, g -> Image(rho, g));
-            high := LargestMovedPoint(ims);
-            new_ims := List(ims, i -> PermutationMat(i, high));
-            new_range := Group(new_ims);
-            new_rho := GroupHomomorphismByImages(G, new_range, gens, new_ims);
-        else
-            Error("rho is not a matrix or permutation group!");
-        fi;
-    fi;
-    return new_rho;
-end;
-
 # Decompose rho into irreducible representations with the reps that
 # are isomorphic collected together. This returns a list of lists of
 # vector spaces (L) with each element of L being a list of vector
 # spaces arising from the same irreducible.
-DecomposeIsomorphicCollected@ := function(orig_rho, arg...)
-    local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
+InstallMethod( IrreducibleDecompositionCollected, "for linear representations", [ IsFiniteGroupLinearRepresentation ], function(rho)
+    local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range;
 
-    rho := ConvertRhoIfNeeded@(orig_rho);
     G := Source(rho);
 
     F := Cyclotomics;
     n := Length(Range(rho).1);
     V := F^n;
 
-    # Use the list of irreps if given
-    if Size(arg) > 0 then
-        irreps := arg[1];
-    else
-        irreps := IrreducibleRepresentations(G, F);
-    fi;
+    irreps := IrreducibleRepresentations(G, F);
 
     N := Size(irreps);
 
     # This gives a list of vector spaces, each a canonical summand
-    # Try to use a precomputed decomposition, if given
-    if Size(arg) > 1 then
-        canonical_summands := arg[2];
-    else
-        canonical_summands := DecomposeRepresentationCanonical(rho, irreps);
-    fi;
+    canonical_summands := CanonicalDecomposition(rho);
 
     # This gives a list of lists of vector spaces, each a
     # decomposition of a canonical summand into irreducibles.
@@ -172,29 +156,19 @@ DecomposeIsomorphicCollected@ := function(orig_rho, arg...)
     # an isomorphic rep that goes to a matrix group (not a permutation
     # group)
     return rec(decomp := full_decomposition, used_rho := rho);
-end;
+end );
+
+InstallMethod( IrreducibleDecompositionCollected, "for permutation representations", [ IsFiniteGroupPermutationRepresentation ], rho -> IrreducibleDecompositionCollected(ConvertRhoIfNeeded@(rho)));
 
 # Gives the list of vector spaces in the direct sum decomposition of
 # rho : G -> GL(V) into irreducibles.
-InstallGlobalFunction( DecomposeRepresentationIrreducible, function(orig_rho, arg...)
-    local irreps, canonical_summands, rho;
-    rho := ConvertRhoIfNeeded@(orig_rho);
-
-    # Use the list of irreps if given
-    if Size(arg) > 0 then
-        irreps := arg[1];
-    else
-        irreps := IrreducibleRepresentations(Source(rho), Cyclotomics);
-    fi;
-
-    # Try to use a precomputed decomposition, if given
-    if Size(arg) > 1 then
-        canonical_summands := arg[2];
-    else
-        canonical_summands := DecomposeRepresentationCanonical(rho, irreps);
-    fi;
-
+InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsFiniteGroupLinearRepresentation ], function(rho)
     # We only want to return the vector spaces here
-    return Flat(List(DecomposeIsomorphicCollected@(rho, irreps, canonical_summands).decomp,
+    return Flat(List(IrreducibleDecompositionCollected(rho,
+                                                   IrreducibleRepresentations(Source(rho),
+                                                                              Cyclotomics),
+                                                   CanonicalDecomposition(rho)).decomp,
                      rec_list -> List(rec_list, r -> r.space)));
 end );
+
+InstallMethod( IrreducibleDecomposition, "for permutation representations", [ IsFiniteGroupPermutationRepresentation ], rho -> IrreducibleDecomposition(ConvertRhoIfNeeded@(rho)));

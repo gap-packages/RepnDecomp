@@ -21,16 +21,10 @@ end;
 # Takes a representation going to a matrix group and gives you an
 # isomorphic representation where the images are block-diagonal with
 # each block corresponding to an irreducible representation
-InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho, arg...)
+InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho)
     local decomp, A, G, gens, imgs, range;
 
-    # Use precomputed decomposition, if available
-    if Size(arg) > 0 then
-        decomp := arg[1];
-    else
-        decomp := DecomposeIsomorphicCollected@(rho);
-    fi;
-
+    decomp := IrreducibleDecompositionCollected(rho);
     A := BasisChangeMatrix@(rho, decomp.decomp);
     G := Source(rho);
     gens := GeneratorsOfGroup(G);
@@ -63,11 +57,7 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
     # Write the character of rho in the basis of irreducible characters
     char_rho_basis := DecomposeCharacter@(rho);
 
-    if Size(args) > 0 then
-        irreps := args[1];
-    else
-        irreps := IrreducibleRepresentationsDixon(G);
-    fi;
+    irreps := IrreducibleRepresentationsDixon(G);
 
     chars := Irr(G);
 
