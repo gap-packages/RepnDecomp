@@ -21,8 +21,10 @@ end;
 # Takes a representation going to a matrix group and gives you an
 # isomorphic representation where the images are block-diagonal with
 # each block corresponding to an irreducible representation
-InstallGlobalFunction( BlockDiagonalizeRepresentation, function(rho)
-    local decomp, A, G, gens, imgs, range;
+InstallMethod( BlockDiagonalRepresentation, "for linear reps", [ IsGroupHomomorphism ], function(arg_rho)
+    local decomp, A, G, gens, imgs, range, rho;
+
+    rho := ConvertRhoIfNeeded@(arg_rho);
 
     decomp := IrreducibleDecompositionCollected(rho);
     A := BasisChangeMatrix@(rho, decomp.decomp);

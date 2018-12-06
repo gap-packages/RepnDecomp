@@ -7,4 +7,4 @@
 #!   so the isomorphic irreps' blocks are adjacent. Returns a
 #!   representation isomorphic to rho that uses this basis change
 #!   matrix.
-DeclareGlobalFunction( "BlockDiagonalizeRepresentation" );
+DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
