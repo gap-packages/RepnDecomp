@@ -38,8 +38,12 @@ ConvertRhoIfNeeded@ := function(rho)
     return new_rho;
 end;
 
-InstallMethod( CanonicalDecomposition, [ IsFiniteGroupLinearRepresentation ], function(rho)
+InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(rho)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
+
+    if not IsFiniteGroupLinearRepresentation(rho) then
+        Error("Need linear representation");
+    fi;
 
     # The group we are taking representations of
     G := Source(rho);
@@ -62,20 +66,18 @@ InstallMethod( CanonicalDecomposition, [ IsFiniteGroupLinearRepresentation ], fu
                    local character, degree, projection, canonical_summand;
 
                    # In Serre's text, irrep is called W_i, this character is chi_i
-                   character := GroupHomomorphismByFunction(G, F, g -> Trace(Image(irrep, g)));
-                   degree := Image(character, One(G));
+                   character := g -> Trace(Image(irrep, g));
+                   degree := character(One(G));
 
                    # Calculate the projection map from V to irrep using Theorem 8 (Serre)
                    # Given as a matrix, p_i
-                   projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(Image(character, t)) * Image(rho, t));
+                   projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
 
                    # Calculate V_i, the canonical summand
                    canonical_summand := MatrixImage@(projection, V);
                    return canonical_summand;
                end );
 end );
-
-InstallMethod( CanonicalDecomposition, [ IsFiniteGroupPermutationRepresentation ], rho -> CanonicalDecomposition(ConvertRhoIfNeeded@(rho)) );
 
 # Decomposes the representation V_i into a direct sum of some number
 # (maybe zero) of spaces, all isomorphic to W_i. W_i is the space
@@ -131,7 +133,7 @@ end;
 # are isomorphic collected together. This returns a list of lists of
 # vector spaces (L) with each element of L being a list of vector
 # spaces arising from the same irreducible.
-InstallMethod( IrreducibleDecompositionCollected, "for linear representations", [ IsFiniteGroupLinearRepresentation ], function(rho)
+InstallMethod( IrreducibleDecompositionCollected, "for linear representations", [ IsGroupHomomorphism ], function(rho)
     local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range;
 
     G := Source(rho);
@@ -158,17 +160,10 @@ InstallMethod( IrreducibleDecompositionCollected, "for linear representations", 
     return rec(decomp := full_decomposition, used_rho := rho);
 end );
 
-InstallMethod( IrreducibleDecompositionCollected, "for permutation representations", [ IsFiniteGroupPermutationRepresentation ], rho -> IrreducibleDecompositionCollected(ConvertRhoIfNeeded@(rho)));
-
 # Gives the list of vector spaces in the direct sum decomposition of
 # rho : G -> GL(V) into irreducibles.
-InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsFiniteGroupLinearRepresentation ], function(rho)
+InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsGroupHomomorphism ], function(rho)
     # We only want to return the vector spaces here
-    return Flat(List(IrreducibleDecompositionCollected(rho,
-                                                   IrreducibleRepresentations(Source(rho),
-                                                                              Cyclotomics),
-                                                   CanonicalDecomposition(rho)).decomp,
+    return Flat(List(IrreducibleDecompositionCollected(rho).decomp,
                      rec_list -> List(rec_list, r -> r.space)));
 end );
-
-InstallMethod( IrreducibleDecomposition, "for permutation representations", [ IsFiniteGroupPermutationRepresentation ], rho -> IrreducibleDecomposition(ConvertRhoIfNeeded@(rho)));

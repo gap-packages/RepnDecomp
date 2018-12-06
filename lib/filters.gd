@@ -1,2 +1,2 @@
-DeclareProperty( "IsFiniteGroupLinearRepresentation", IsGroupHomomorphism );
-DeclareProperty( "IsFiniteGroupPermutationRepresentation", IsGroupHomomorphism );
+DeclareAttribute( "IsFiniteGroupLinearRepresentation", IsGroupHomomorphism );
+DeclareAttribute( "IsFiniteGroupPermutationRepresentation", IsGroupHomomorphism );
