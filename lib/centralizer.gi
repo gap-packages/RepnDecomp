@@ -73,7 +73,8 @@ DecomposeCharacter@ := function(rho)
 end;
 
 # Computes the centralizer C of rho, returning generators of C as
-# lists of blocks
+# lists of blocks.
+# NOTE: This is written in the nice basis given by BlockDiagonalBasis
 InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho)
     local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
 

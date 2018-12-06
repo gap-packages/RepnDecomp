@@ -8,3 +8,5 @@
 #!   representation isomorphic to rho that uses this basis change
 #!   matrix.
 DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
+
+DeclareAttribute( "BlockDiagonalBasis", IsGroupHomomorphism );

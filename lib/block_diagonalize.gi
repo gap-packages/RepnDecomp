@@ -3,20 +3,25 @@
 # Takes a rho that goes to a matrix group only. Returns a basis change
 # matrix which, when used on a given rho(g) (matrix), block
 # diagonalises rho(g) such that each block corresponds to an irrep.
-BasisChangeMatrix@ := function(rho, decomp)
-    local new_bases, new_basis;
+BasisChangeMatrix@ := function(rho)
+    # Base change matrix from new basis to standard basis, acts on the left
+    return TransposedMat(BlockDiagonalBasis(rho));
+end;
+
+# Gives the nice basis for rho
+InstallMethod( BlockDiagonalBasis, "for linear reps", [ IsGroupHomomorphism ], function(arg_rho)
+    local new_bases, new_basis, rho;
+
+    rho := ConvertRhoIfNeeded@(arg_rho);
 
     # Extract the basis vectors, this is now a list of lists of bases
     # (each basis is a list of vectors)
-    new_bases := List(decomp,
+    new_bases := List(IrreducibleDecompositionCollected(rho).decomp,
                       rec_list -> List(rec_list, r -> r.basis));
 
-    # List of new basis row vectors
-    new_basis := Concatenation(Concatenation(new_bases));
-
-    # Base change matrix from new basis to standard basis
-    return TransposedMat(new_basis);
-end;
+    # List of new basis as row vectors
+    return Concatenation(Concatenation(new_bases));
+end );
 
 # Takes a representation going to a matrix group and gives you an
 # isomorphic representation where the images are block-diagonal with
@@ -26,11 +31,10 @@ InstallMethod( BlockDiagonalRepresentation, "for linear reps", [ IsGroupHomomorp
 
     rho := ConvertRhoIfNeeded@(arg_rho);
 
-    decomp := IrreducibleDecompositionCollected(rho);
-    A := BasisChangeMatrix@(rho, decomp.decomp);
+    A := BasisChangeMatrix@(rho);
     G := Source(rho);
     gens := GeneratorsOfGroup(G);
-    imgs := List(gens, g -> A^-1 * Image(decomp.used_rho, g) * A);
+    imgs := List(gens, g -> A^-1 * Image(rho, g) * A);
 
     range := Group(imgs);
 
