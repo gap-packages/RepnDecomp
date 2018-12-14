@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!-- This is an automatically generated file. -->
-<#Include SYSTEM "_Chapter_Block_diagonalizing_representations.xml">
-<#Include SYSTEM "_Chapter_Calculating_centralizer_rings.xml">
-<#Include SYSTEM "_Chapter_Useful_predicates.xml">
-<#Include SYSTEM "_Chapter_Computing_decompositions_of_representations.xml">
