@@ -1,0 +1,23 @@
+\GAPDocLabFile{repndecomp}
+\makelabel{repndecomp:Title page}{}{X7D2C85EC87DD46E5}
+\makelabel{repndecomp:Table of Contents}{}{X8537FEB07AF2BEC8}
+\makelabel{repndecomp:Block diagonalizing representations}{1}{X7B6A137E7D92754D}
+\makelabel{repndecomp:Finding the correct basis}{1.1}{X7DEEF8F58622BFDC}
+\makelabel{repndecomp:Calculating centralizer rings}{2}{X78E835B779A7EB23}
+\makelabel{repndecomp:Centralizer (commutant) of a representation}{2.1}{X823F06E685D5D655}
+\makelabel{repndecomp:Useful convenience functions}{2.2}{X7E993D5E86E2047A}
+\makelabel{repndecomp:Useful predicates}{3}{X788057358673E2F3}
+\makelabel{repndecomp:Types of group representations}{3.1}{X7E2261C8864B1709}
+\makelabel{repndecomp:Computing decompositions of representations}{4}{X7F968DF987DE4A6E}
+\makelabel{repndecomp:Algorithms due to Serre}{4.1}{X7C22F13E80A74438}
+\makelabel{repndecomp:Index}{Ind}{X83A0356F839C696F}
+\makelabel{repndecomp:BlockDiagonalBasis for isgrouphomomorphism}{1.1.1}{X796E97C0829CAC27}
+\makelabel{repndecomp:BlockDiagonalRepresentation for isgrouphomomorphism}{1.1.2}{X85D284E386A4257F}
+\makelabel{repndecomp:RepresentationCentralizerBlocks}{2.1.1}{X798AD78F858A73FF}
+\makelabel{repndecomp:RepresentationCentralizer}{2.2.1}{X7DEC18DE7E169D9D}
+\makelabel{repndecomp:RepresentationCentralizerDecomposed}{2.2.2}{X7DB7E8257A2BFEC9}
+\makelabel{repndecomp:IsFiniteGroupLinearRepresentation for isgrouphomomorphism}{3.1.1}{X8631A1417C3C1D88}
+\makelabel{repndecomp:IsFiniteGroupPermutationRepresentation for isgrouphomomorphism}{3.1.2}{X826D5ADF7FA87782}
+\makelabel{repndecomp:CanonicalDecomposition for isgrouphomomorphism}{4.1.1}{X8316BC7684A911AE}
+\makelabel{repndecomp:IrreducibleDecomposition for isgrouphomomorphism}{4.1.2}{X7DBB32527BDB15B3}
+\makelabel{repndecomp:IrreducibleDecompositionCollected for isgrouphomomorphism}{4.1.3}{X7FA264B77B938090}

@@ -1,0 +1,22 @@
+  
+  [1X3 [33X[0;0YUseful predicates[133X[101X
+  
+  
+  [1X3.1 [33X[0;0YTypes of group representations[133X[101X
+  
+  [1X3.1-1 IsFiniteGroupLinearRepresentation[101X
+  
+  [33X[1;0Y[29X[2XIsFiniteGroupLinearRepresentation[102X( [3Xrho[103X ) [32X attribute[133X
+  [6XReturns:[106X  [33X[0;10Ytrue or false[133X
+  
+  [33X[0;0YTells  you  if  [3Xrho[103X  is  a  linear representation of a finite group. This is
+  important since Serre's algorithms only work on these.[133X
+  
+  [1X3.1-2 IsFiniteGroupPermutationRepresentation[101X
+  
+  [33X[1;0Y[29X[2XIsFiniteGroupPermutationRepresentation[102X( [3Xrho[103X ) [32X attribute[133X
+  [6XReturns:[106X  [33X[0;10Ytrue or false[133X
+  
+  [33X[0;0YTells you if [3Xrho[103X is a homomorphism from finite group to a permutation group.
+  Such homomorphisms occur often in applications.[133X
+  

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_Computing_decompositions_of_representations">
+<Heading>Computing decompositions of representations</Heading>
+
+<Section Label="Chapter_Computing_decompositions_of_representations_Section_Algorithms_due_to_Serre">
+<Heading>Algorithms due to Serre</Heading>
+
+These operations compute various decompositions of a representation
+<Math>\rho : G \to GL(V)</Math> where <Math>G</Math> is finite and <Math>V</Math> is a
+finite-dimensional <Math>\mathbb{C}</Math>-vector space.
+The terms used here are taken from Serre's Linear Representations
+of Finite Groups.
+<ManSection>
+  <Attr Arg="rho" Name="CanonicalDecomposition" Label="for IsGroupHomomorphism"/>
+ <Returns>List of vector spaces <Math>V_i</Math>, each <Math>G</Math>-invariant and a direct sum of isomorphic irreducibles. That is, for each <Math>i</Math>, <Math>V_i \cong \oplus_j W_i</Math> (as representations) where <Math>W_i</Math> is an irreducible <Math>G</Math>-invariant vector space.
+</Returns>
+ <Description>
+Computes the canonical decomposition of <Math>V</Math> into
+<Math>\oplus_i\;V_i</Math> using the formulas for projections <Math>V \to V_i</Math> due
+to Serre.
+ </Description>
+</ManSection>
+
+
+<ManSection>
+  <Attr Arg="rho" Name="IrreducibleDecomposition" Label="for IsGroupHomomorphism"/>
+ <Returns>List of vector spaces <Math>W_j</Math> such that <Math>V = \oplus_j W_j</Math> and each <Math>W_j</Math> is an irreducible <Math>G</Math>-invariant vector space.
+</Returns>
+ <Description>
+Computes the decomposition of <Math>V</Math> into irreducible
+subprepresentations.
+ </Description>
+</ManSection>
+
+
+<ManSection>
+  <Attr Arg="rho" Name="IrreducibleDecompositionCollected" Label="for IsGroupHomomorphism"/>
+ <Returns>List of lists <Math>V_i</Math> of vector spaces <Math>V_{ij}</Math> such that <Math>V = \oplus_i \oplus_j V_{ij}</Math> and <Math>V_{ik} \cong V_{il}</Math> for all <Math>i</Math>, <Math>k</Math> and <Math>l</Math> (as representations).
+</Returns>
+ <Description>
+Computes the decomposition of <Math>V</Math> into irreducible
+subrepresentations, grouping together the isomorphic
+subrepresentations.
+ </Description>
+</ManSection>
+
+
+</Section>
+
+
+</Chapter>
+
