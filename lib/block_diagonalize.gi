@@ -65,9 +65,10 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
 
     irreps := IrreducibleRepresentationsDixon(G);
 
-    chars := Irr(G);
+    # We could just use Irr(G) here, but the ordering of Irr and
+    # IrreducibleRepresentations don't necessarily match up
+    chars := IrrWithCorrectOrdering@(G);
 
-    # TODO: Check if the ordering is safe to rely on!
     # Relying on the ordering of the basis, make a list of irreps in
     # the decomposition of rho.
     # The list of summands with isomorphic summands collected: we just

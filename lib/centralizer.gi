@@ -52,9 +52,21 @@ CharacterInnerProduct@ := function(chi1, chi2, G)
                                   i -> Size(classes[i]) * chi1[i] * ComplexConjugate(chi2[i])));
 end;
 
+# Gives the row of the character table corresponding to irrep
+IrrepToCharacter@ := function(irrep)
+    local G;
+    G := Source(irrep);
+    return List(ConjugacyClasses(G),
+                class -> Trace(Image(irrep, Representative(G))));
+end;
+
+# Irr(G), but guaranteed to be ordered the same as
+# IrreducibleRepresentationsDixon
+IrrWithCorrectOrdering@ := G -> List(IrreducibleRepresentationsDixon(G),
+                                     irrep -> IrrepToCharacter@(irrep));
+
 # Writes the character of rho as a vector in the basis given by the
 # irreducible characters
-# TODO: Check if we can rely on the ordering
 DecomposeCharacter@ := function(rho)
     local G, classes, irr_chars, char_rho, char_rho_basis;
 
@@ -62,7 +74,10 @@ DecomposeCharacter@ := function(rho)
 
     # Otherwise, we just compute using characters
     classes := ConjugacyClasses(G);
-    irr_chars := Irr(G);
+
+    # We could use Irr(G) here, but we want to keep all ordering
+    # consistent with IrreducibleRepresentations
+    irr_chars := IrrWithCorrectOrdering@(G);
     char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
 
     # Write char_rho in the irr_chars basis for class functions
@@ -81,7 +96,7 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho)
     rho := ConvertRhoIfNeeded@(orig_rho);
     G := Source(rho);
 
-    irr_chars := Irr(G);
+    irr_chars := IrrWithCorrectOrdering@(G);
     char_rho_basis := DecomposeCharacter@(rho);
 
     # Calculate sizes based on the fact irr_char[1] is the degree
@@ -137,7 +152,7 @@ InstallGlobalFunction( RepresentationCentralizerDecomposed, function(orig_rho)
 
     rho := ConvertRhoIfNeeded@(orig_rho);
     G := Source(rho);
-    irr_chars := Irr(G);
+    irr_chars := IrrWithCorrectOrdering@(G);
     char_rho_basis := DecomposeCharacter@(rho);
     all_sizes := List([1..Size(irr_chars)],
                       i -> rec(dimension := irr_chars[i][1],
