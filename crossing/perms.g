@@ -49,6 +49,101 @@ ShiftLeft := function(list, n)
     return Concatenation(Drop(list, shift), Take(list, shift));
 end;
 
+# swaps l[pos] left one place (cyclically)
+swap_left := function(l, pos)
+    local tmp;
+    if pos = 1 then
+        tmp := l[pos];
+        l[pos] := l[Length(l)];
+        l[Length(l)] := tmp;
+    else
+        tmp := l[pos];
+        l[pos] := l[pos-1];
+        l[pos-1] := tmp;
+    fi;
+end;
+
+# swaps l[pos] right one place (cyclically)
+swap_right := function(l, pos)
+    local tmp;
+    if pos = Length(l) then
+        tmp := l[pos];
+        l[pos] := l[1];
+        l[1] := tmp;
+    else
+        tmp := l[pos];
+        l[pos] := l[pos+1];
+        l[pos+1] := tmp;
+    fi;
+end;
+
+# Number of adjacent swaps needed to sort a permutation of [1..n],
+# where we consider the first and last elements to be adjacent. We
+# don't move the element "fixed".
+SwapsToSortWithFixed := function(l, fixed)
+    local list, n, nswaps, pos_fixed, elem, curpos, correct_offset, current_offset, left_list, left_moves, right_list, right_moves;
+    list := ShallowCopy(l);
+    Print("Sorting: ", list, "\n");
+    n := Maximum(list);
+
+    nswaps := 0;
+
+    # The current position of fixed
+    pos_fixed := function(l) return Position(l, fixed); end;
+
+    # We swap each element of list to the right offset from fixed
+    for elem in [1..n] do
+        curpos := function(l) return Position(l, elem); end;
+
+        # We should be elem-fixed after fixed
+        correct_offset := (elem-fixed) mod Length(l);
+        current_offset := function(l) return (curpos(l) - pos_fixed(l)) mod Length(l); end;
+
+        # There are two ways to go, left or right. You can work out
+        # which way is faster, but you can also just try both and see
+        # which was quicker.
+
+        # First try left.
+        left_list := ShallowCopy(list);
+        left_moves := 0;
+        while current_offset(left_list) <> correct_offset do
+            swap_left(left_list, Position(left_list, elem));
+            left_moves := left_moves + 1;
+        od;
+
+        # Then right.
+        right_list := ShallowCopy(list);
+        right_moves := 0;
+        while current_offset(right_list) <> correct_offset do
+            swap_right(right_list, Position(right_list, elem));
+            right_moves := right_moves + 1;
+        od;
+
+        # Do the shortest sequence.
+        if left_moves < right_moves then
+            Print("Moving ", elem, " left\n");
+            list := left_list;
+            nswaps := nswaps + left_moves;
+        else
+            Print("Moving ", elem, " right\n");
+            list := right_list;
+            nswaps := nswaps + right_moves;
+        fi;
+        Print(list, "\n");
+
+    od;
+
+    Print(nswaps, " swaps\n");
+    return nswaps;
+end;
+
+SwapsToSort := function(l)
+    local n;
+    # Just try everything and get the minimum
+    n := Length(l);
+    return Minimum(List([1..n], i -> SwapsToSortWithFixed(l, i)));
+end;
+
 # Number of adjacent transpositions of elements you need to go from
 # perm1 to perm2
 AdjacentTranspositionsBetween := function(perm1, perm2)
@@ -66,10 +161,8 @@ AdjacentTranspositionsBetween := function(perm1, perm2)
     # move it. Now we need to count swaps needed to sort list2.
     list2 := ShiftLeft(list2, Position(list2, 1)-1);
 
-    return Inversions(list2);
+    return SwapsToSort(list2);
 end;
-
-# TODO: Something here is incorrect. Make it correct!
 
 # Q(p, q) is the number of adjacent transpositions needed to get from
 # p to q^-1. By this I don't mean by conjugation, I mean viewing p and
