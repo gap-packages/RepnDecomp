@@ -83,7 +83,6 @@ end;
 SwapsToSortWithFixed := function(l, fixed)
     local list, n, nswaps, pos_fixed, elem, curpos, correct_offset, current_offset, left_list, left_moves, right_list, right_moves;
     list := ShallowCopy(l);
-    Print("Sorting: ", list, "\n");
     n := Maximum(list);
 
     nswaps := 0;
@@ -119,27 +118,26 @@ SwapsToSortWithFixed := function(l, fixed)
             right_moves := right_moves + 1;
         od;
 
-        # Do the shortest sequence.
+        # Pick whichever was better.
         if left_moves < right_moves then
-            Print("Moving ", elem, " left\n");
             list := left_list;
             nswaps := nswaps + left_moves;
         else
-            Print("Moving ", elem, " right\n");
             list := right_list;
             nswaps := nswaps + right_moves;
         fi;
-        Print(list, "\n");
-
     od;
 
-    Print(nswaps, " swaps\n");
     return nswaps;
 end;
 
 SwapsToSort := function(l)
     local n;
-    # Just try everything and get the minimum
+    # Just try everything and get the minimum. The point is that one
+    # element is already in the right place and we should sort
+    # everything around it, but we don't know which one. We have to
+    # just try everything. This is a very brute-force stupid way to do
+    # this, but it works ok.
     n := Length(l);
     return Minimum(List([1..n], i -> SwapsToSortWithFixed(l, i)));
 end;
