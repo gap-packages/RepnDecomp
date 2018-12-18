@@ -146,7 +146,7 @@ end;
 # what they are.
 #
 # NOTE: This is not a clever way to calculate this, but it works fine.
-Q := function(p, q) return NumberInterchangesBetween(p, q^(-1)); end;
+Q := function(p, q) return AdjacentTranspositionsBetween(p, q^(-1)); end;
 
 # This is the full matrix of Q for S_n. Q is (n-1)! x (n-1)!
 # This probably won't be needed most of the time
@@ -168,7 +168,7 @@ Qmatrix := function(n)
     # Fill out the matrix really naively and stupidly
     for i in [1..Factorial(n-1)] do
         for j in [1..Factorial(n-1)] do
-            big[i][j] := NumberInterchangesBetween(ncycles[i], ncycles[j]^-1);
+            big[i][j] := AdjacentTranspositionsBetween(ncycles[i], ncycles[j]^-1);
         od;
     od;
 
