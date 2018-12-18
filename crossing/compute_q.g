@@ -30,7 +30,7 @@ ShiftLeft := function(list, n)
 end;
 
 NumberInterchangesBetween := function(a, b)
-    local al, bl, n, f, dist;
+    local al, bl, n, f, dist, alpha, beta, gamma;
 
     # Convert them to lists
     al := MyListPerm(a);
@@ -61,32 +61,39 @@ NumberInterchangesBetween := function(a, b)
     # calculates the distance assuming one of the n
     # superimpositions. We consider the ith choice to be b, but
     # shifted left i times.
-    dist := function(i)
-        local alpha, beta, gamma;
 
-        # alpha(i, j) denotes the number in a coinciding with j in b
-        # when b is in position i. This is equal to al[Position(i_bl,
-        # j)], but we already know the elements of al.
-        alpha := j -> ((Position(bl, j)-i) mod n)-1;
+    # alpha(i, j) denotes the number in a coinciding with j in b
+    # when b is in position i.
+    alpha := function(i, j)
+        local posj, pos_shifted;
 
-        # Now j - alpha(i, j) is equal (mod n) to the distance that j
-        # has to move in the positive direction from its position in b
-        # to its final position
+        # The 0-indexed position of j in b
+        posj := Position(bl, j)-1;
 
-        # beta(i, j) denotes the absolute value of the integer of
-        # minimum absolute value that is congruent (mod n) to j -
-        # alpha(i, j), so beta(i ,j) is the shortest distance that j
-        # must move.
-        beta := function(j)
-            local x;
-            x := (j - alpha(j)) mod n;
-            return Minimum([x, n - x]);
-        end;
+        # Now shift left i
+        pos_shifted := (posj - i) mod n;
 
-        gamma := j -> (1/2)*f(beta(j));
-
-        return Sum([0..(n-1)], j -> gamma(j));
+        # The value of a there is known, it's just the position.
+        return pos_shifted;
     end;
+
+    # Now j - alpha(i, j) is equal (mod n) to the distance that j
+    # has to move in the positive direction from its position in b
+    # to its final position
+
+    # beta(i, j) denotes the absolute value of the integer of
+    # minimum absolute value that is congruent (mod n) to j -
+    # alpha(i, j), so beta(i ,j) is the shortest distance that j
+    # must move.
+    beta := function(i, j)
+        local x;
+        x := (j - alpha(i, j)) mod n;
+        return Minimum([x, n - x]);
+    end;
+
+    gamma := function(i, j) return (1/2)*f(beta(i, j)); end;
+
+    dist := i -> Sum([0..(n-1)], j -> gamma(i, j));
 
     # The final result is the smallest distance between a and b over
     # all choices of rotation of b.
