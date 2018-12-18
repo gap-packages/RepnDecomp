@@ -62,15 +62,12 @@ NumberInterchangesBetween := function(a, b)
     # superimpositions. We consider the ith choice to be b, but
     # shifted left i times.
     dist := function(i)
-        local i_bl, alpha, beta, gamma;
-
-        # This is the shifted version of b
-        i_bl := ShiftLeft(bl, i);
+        local alpha, beta, gamma;
 
         # alpha(i, j) denotes the number in a coinciding with j in b
         # when b is in position i. This is equal to al[Position(i_bl,
         # j)], but we already know the elements of al.
-        alpha := j -> Position(i_bl, j)-1;
+        alpha := j -> ((Position(bl, j)-i) mod n)-1;
 
         # Now j - alpha(i, j) is equal (mod n) to the distance that j
         # has to move in the positive direction from its position in b
@@ -93,5 +90,5 @@ NumberInterchangesBetween := function(a, b)
 
     # The final result is the smallest distance between a and b over
     # all choices of rotation of b.
-    return Minimum(List([1..n], i -> dist(i)));
+    return Minimum(List([0..n-1], i -> dist(i)));
 end;
