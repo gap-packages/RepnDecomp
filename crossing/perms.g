@@ -3,6 +3,8 @@
 
 LoadPackage("RepnDecomp");
 
+Read("compute_q.g");
+
 # Number of inversions in the list. Note that a list is cyclically
 # sorted iff it has 0 (sorted) or 1 (cyclically sorted) inversions.
 Inversions := function(list)
@@ -22,32 +24,8 @@ Inversions := function(list)
     return nswaps;
 end;
 
-# Converts a permutation to a list. i.e. if you have (a,b,c), the list
-# is [a,b,c]. I assume we only get perms of the form (1.....), that is
-# cycles with a 1 in them.
-MyListPerm := function(perm)
-    local result, current;
-    result := [];
-    current := 1;
-
-    repeat
-        Add(result, current);
-        current := current^perm;
-    until current = 1; # when we reach 1, we have written down the
-                       # whole cycle
-
-    return result;
-end;
-
 Drop := Drop@RepnDecomp;
 Take := Take@RepnDecomp;
-
-# Cyclically moves elements in a list left by n elements
-ShiftLeft := function(list, n)
-    local shift;
-    shift := n mod (Length(list));
-    return Concatenation(Drop(list, shift), Take(list, shift));
-end;
 
 # swaps l[pos] left one place (cyclically)
 swap_left := function(l, pos)
@@ -168,7 +146,7 @@ end;
 # what they are.
 #
 # NOTE: This is not a clever way to calculate this, but it works fine.
-Q := function(p, q) return AdjacentTranspositionsBetween(p, q^(-1)); end;
+Q := function(p, q) return NumberInterchangesBetween(p, q^(-1)); end;
 
 # This is the full matrix of Q for S_n. Q is (n-1)! x (n-1)!
 # This probably won't be needed most of the time
@@ -190,7 +168,7 @@ Qmatrix := function(n)
     # Fill out the matrix really naively and stupidly
     for i in [1..Factorial(n-1)] do
         for j in [1..Factorial(n-1)] do
-            big[i][j] := AdjacentTranspositionsBetween(ncycles[i], ncycles[j]^-1);
+            big[i][j] := NumberInterchangesBetween(ncycles[i], ncycles[j]^-1);
         od;
     od;
 
@@ -199,3 +177,50 @@ Qmatrix := function(n)
     return rec(matrix := big,
                index := ncycles);
 end;
+
+# Here we fix some number, the end goal is to calculate \alpha_m
+m := 5;
+
+# The dimension of the matrices (number of m-cycles)
+d := Factorial(m-1);
+
+# This is the group Q is invariant under
+G := DirectProduct(SymmetricGroup(m), SymmetricGroup(2));
+
+# a random m cycle
+mcycle := MappingPermListList(ShiftLeft([1..m], 1), [1..m]);
+
+# m-cycles index the rows and cols of Q
+mcycles := List(mcycle^G);
+
+# This is how G acts on mcycles
+action := function(cycle, g)
+    local g1, g2, result;
+
+    # Acts via conjugation
+    g1 := Image(Projection(G, 1), g);
+
+    # Acts by inverting the cycle
+    g2 := Image(Projection(G, 2), g);
+
+    result := cycle;
+
+    # if it's nontrivial, invert
+    if g2 <> One(SymmetricGroup(2)) then
+        result := result^-1;
+    fi;
+
+    result := g1^-1 * result * g1;
+
+    return result;
+end;
+
+action_hom := ActionHomomorphism(G, mcycles, action);
+
+# We want the action to be represented as permutation matrices
+# Conjugating by any of these matrices fixes Q
+action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
+
+# Now we compute the orbits of G on mcycles x mcycles (pi x pi) We do
+# this following the paper. Pick some element of pi x pi, keep acting
+# on it by the generators g_i until
