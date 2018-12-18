@@ -29,6 +29,7 @@ ShiftLeft := function(list, n)
                          Take@RepnDecomp(list, shift));
 end;
 
+# TODO: This algorithm is incorrect for some reason, not sure why
 NumberInterchangesBetween := function(a, b)
     local al, bl, n, f, dist, alpha, beta, gamma;
 
