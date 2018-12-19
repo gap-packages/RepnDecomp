@@ -25,3 +25,23 @@ DeclareAttribute( "BlockDiagonalBasis", IsGroupHomomorphism );
 #! Attr="BlockDiagonalBasis" /> to calculate the basis change matrix
 #! and put $\rho$ into a nice form.
 DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
+
+#! @Arguments rho[, irreps]
+
+#! @Returns A record
+
+#! @Description Calculates some values given by other functions in
+#! this package, but without summing over G (in case G is very
+#! large). Most of the time, G is a symmetric group (or nearly one) so
+#! calculation of conjugacy classes is easy. The return value of this
+#! function is a record with fields:
+
+#! * basis: same as BlockDiagonalBasis
+
+#! * diagonal_rep: same as BlockDiagonalRepresentation
+
+#! * decomposition: same as IrreducibleDecompositionCollected
+
+#! When I say "the same", I mean up to reordering and isomorphism as
+#! representations.
+DeclareGlobalFunction( "BlockDiagonalRepresentationFast" );

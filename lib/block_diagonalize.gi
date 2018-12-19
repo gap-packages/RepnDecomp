@@ -53,10 +53,7 @@ BasisChangeMatrixSimilar@ := function(X, Y)
     return B * A^-1;
 end;
 
-# Calculate a basis change matrix that diagonalizes rho (without using
-# Serre's formulas). Never sums over G and doesn't need a complete
-# list of irreps (only relevant irreps).
-BasisChangeMatrixAlternate@ := function(rho, args...)
+InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r;
 
     G := Source(rho);
@@ -109,6 +106,9 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
 
     basis := TransposedMat(basis_change);
 
+    # We make a copy since we're going to return this one.
+    ret_basis := ShallowCopy(basis);
+
     # The basis is in the right order, it just needs to be collected
     # into bases for the irrep spaces
     full_space_list := [];
@@ -121,12 +121,7 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
         Add(full_space_list, current_space_list);
     od;
 
-    # Things returned:
-    # * basis: same (up to ordering) as BlockDiagonalBasis
-    # * diagonal_rep: a rep isomorphic to rho that uses the basis
-    # * decompostion: same (up to ordering) as
-    # IrreducibleDecompositionCollected
-    return rec(basis := basis,
+    return rec(basis := ret_basis,
                diagonal_rep := new_rho,
                decomposition := full_space_list);
-end;
+end );
