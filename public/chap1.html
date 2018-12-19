@@ -27,6 +27,7 @@
 <div class="ContSSBlock">
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X796E97C0829CAC27">1.1-1 BlockDiagonalBasis</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X85D284E386A4257F">1.1-2 BlockDiagonalRepresentation</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X87AA8AD6818E9DCA">1.1-3 BlockDiagonalRepresentationFast</a></span>
 </div></div>
 </div>
 
@@ -55,6 +56,29 @@
 <p>Returns: Representation of <span class="Math">G</span> isomorphic to <span class="Math">\rho</span> where the images <span class="Math">\rho(g)</span> are block diagonalized.</p>
 
 <p>This is just a convenience operation that uses <code class="func">BlockDiagonalBasis</code> (<span class="RefLink">???</span>) to calculate the basis change matrix and put <span class="Math">\rho</span> into a nice form.</p>
+
+<p><a id="X87AA8AD6818E9DCA" name="X87AA8AD6818E9DCA"></a></p>
+
+<h5>1.1-3 BlockDiagonalRepresentationFast</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalRepresentationFast</code>( <var class="Arg">rho</var>[, <var class="Arg">irreps</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A record</p>
+
+<p>Calculates some values given by other functions in this package, but without summing over G (in case G is very large). Most of the time, G is a symmetric group (or nearly one) so calculation of conjugacy classes is easy. The return value of this function is a record with fields:</p>
+
+
+<ul>
+<li><p>basis: same as BlockDiagonalBasis</p>
+
+</li>
+<li><p>diagonal_rep: same as BlockDiagonalRepresentation</p>
+
+</li>
+<li><p>decomposition: same as IrreducibleDecompositionCollected</p>
+
+</li>
+</ul>
+<p>When I say "the same", I mean up to reordering and isomorphism as representations.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2.html">[Next Chapter]</a>&nbsp;  </div>
