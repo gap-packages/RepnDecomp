@@ -54,7 +54,7 @@ BasisChangeMatrixSimilar@ := function(X, Y)
 end;
 
 InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
-    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F;
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F, ret_basis;
 
     G := Source(rho);
 
