@@ -54,7 +54,7 @@ BasisChangeMatrixSimilar@ := function(X, Y)
 end;
 
 InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
-    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r;
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F;
 
     G := Source(rho);
 
@@ -65,6 +65,12 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
         irreps := args[1];
     else
         irreps := IrreducibleRepresentationsDixon(G);
+    fi;
+
+    F := Cyclotomics;
+    # We can also be given a field to work over
+    if Length(args) > 1 then
+        F := args[2];
     fi;
 
     # We could just use Irr(G) here, but the ordering of Irr and
@@ -115,7 +121,7 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     for irrep_list in isomorphic_collected do
         current_space_list := [];
         for r in irrep_list do
-            Add(current_space_list, VectorSpace(Cyclotomics, Take@(basis, r.dim)));
+            Add(current_space_list, VectorSpace(F, Take@(basis, r.dim)));
             basis := Drop@(basis, r.dim);
         od;
         Add(full_space_list, current_space_list);

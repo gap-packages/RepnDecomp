@@ -26,15 +26,26 @@ DeclareAttribute( "BlockDiagonalBasis", IsGroupHomomorphism );
 #! and put $\rho$ into a nice form.
 DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 
-#! @Arguments rho[, irreps]
+#! @Arguments rho[, irreps, F]
 
 #! @Returns A record
 
 #! @Description Calculates some values given by other functions in
 #! this package, but without summing over G (in case G is very
 #! large). Most of the time, G is a symmetric group (or nearly one) so
-#! calculation of conjugacy classes is easy. The return value of this
-#! function is a record with fields:
+#! calculation of conjugacy classes is easy.
+
+#! <A>irreps</A> is the complete list of irreps involved in the direct
+#! sum decomposition of <A>rho</A>, this can be given in case the
+#! default (running Dixon's algorithm) is too expensive, or e.g. you
+#! don't want representations over Cyclotomics.
+
+#! <A>F</A> is the field your representations are over. The default is
+#! Cyclotomics, but if you know your representation (and irreps) is
+#! over e.g. Rationals or some finite extension, you can avoid
+#! Cyclotomics entirely by saying what your field is.
+
+#! The return value of this function is a record with fields:
 
 #! * basis: same as BlockDiagonalBasis
 
