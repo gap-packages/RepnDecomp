@@ -54,20 +54,30 @@ BasisChangeMatrixSimilar@ := function(X, Y)
 end;
 
 # Calculate a basis change matrix that diagonalizes rho (without using
-# Serre's formulas)
+# Serre's formulas). Never sums over G and doesn't need a complete
+# list of irreps (only relevant irreps).
 BasisChangeMatrixAlternate@ := function(rho, args...)
     local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r;
 
     G := Source(rho);
 
-    # Write the character of rho in the basis of irreducible characters
-    char_rho_basis := DecomposeCharacter@(rho);
-
-    irreps := IrreducibleRepresentationsDixon(G);
+    # If we are given a list of irreps, we use them and assume that it
+    # is complete
+    irreps := [];
+    if Length(args) > 0 then
+        irreps := args[1];
+    else
+        irreps := IrreducibleRepresentationsDixon(G);
+    fi;
 
     # We could just use Irr(G) here, but the ordering of Irr and
-    # IrreducibleRepresentations don't necessarily match up
-    chars := IrrWithCorrectOrdering@(G);
+    # irreps don't necessarily match up. Also it may be that we want
+    # to exclude some irreps for some reason (e.g. avoiding
+    # cyclotomics).
+    chars := IrrWithCorrectOrdering@(G, irreps);
+
+    # Write the character of rho in the basis of irreducible characters
+    char_rho_basis := DecomposeCharacter@(rho, chars);
 
     # Relying on the ordering of the basis, make a list of irreps in
     # the decomposition of rho.
@@ -111,6 +121,11 @@ BasisChangeMatrixAlternate@ := function(rho, args...)
         Add(full_space_list, current_space_list);
     od;
 
+    # Things returned:
+    # * basis: same (up to ordering) as BlockDiagonalBasis
+    # * diagonal_rep: a rep isomorphic to rho that uses the basis
+    # * decompostion: same (up to ordering) as
+    # IrreducibleDecompositionCollected
     return rec(basis := basis,
                diagonal_rep := new_rho,
                decomposition := full_space_list);

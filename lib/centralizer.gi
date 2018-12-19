@@ -61,13 +61,23 @@ IrrepToCharacter@ := function(irrep)
 end;
 
 # Irr(G), but guaranteed to be ordered the same as
-# IrreducibleRepresentationsDixon
-IrrWithCorrectOrdering@ := G -> List(IrreducibleRepresentationsDixon(G),
-                                     irrep -> IrrepToCharacter@(irrep));
+# IrreducibleRepresentationsDixon (or the list of irreps given)
+IrrWithCorrectOrdering@ := function(G, args...)
+    local irreps;
+    irreps := [];
+
+    if Length(args) > 0 then
+        irreps := args[1];
+    else
+        irreps := IrreducibleRepresentationsDixon(G);
+    fi;
+
+    return List(irreps, irrep -> IrrepToCharacter@(irrep));
+end;
 
 # Writes the character of rho as a vector in the basis given by the
-# irreducible characters
-DecomposeCharacter@ := function(rho)
+# irreducible characters (if chars are not given, use Dixon's method)
+DecomposeCharacter@ := function(rho, args...)
     local G, classes, irr_chars, char_rho, char_rho_basis;
 
     G := Source(rho);
@@ -75,9 +85,15 @@ DecomposeCharacter@ := function(rho)
     # Otherwise, we just compute using characters
     classes := ConjugacyClasses(G);
 
-    # We could use Irr(G) here, but we want to keep all ordering
-    # consistent with IrreducibleRepresentations
-    irr_chars := IrrWithCorrectOrdering@(G);
+    # If we are given chars, just use those
+    irr_chars := [];
+    if Length(args) > 0 then
+        irr_chars := args[1];
+    else
+        # We could use Irr(G) here, but we want to keep all ordering
+        # consistent with IrreducibleRepresentations
+        irr_chars := IrrWithCorrectOrdering@(G);
+    fi;
     char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
 
     # Write char_rho in the irr_chars basis for class functions
