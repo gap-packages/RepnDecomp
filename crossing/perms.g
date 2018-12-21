@@ -193,34 +193,34 @@ mcycle := MappingPermListList(ShiftLeft([1..m], 1), [1..m]);
 # m-cycles index the rows and cols of Q
 mcycles := List(mcycle^G);
 
-# This is how G acts on mcycles
+# This is how G acts on mcycles. h_(pi, i)(p) = pi p^i pi^-1
 action := function(cycle, g)
-    local g1, g2, result;
+    local g1, g2, i, real_i;
 
     # Acts via conjugation
-    g1 := Image(Projection(G, 1), g);
+    pi := Image(Projection(G, 1), g);
 
     # Acts by inverting the cycle
-    g2 := Image(Projection(G, 2), g);
+    i := Image(Projection(G, 2), g);
 
-    result := cycle;
+    real_i := 1;
 
     # if it's nontrivial, invert
-    if g2 <> One(SymmetricGroup(2)) then
-        result := result^-1;
+    if i <> One(SymmetricGroup(2)) then
+        real_i := -1;
     fi;
 
-    result := g1^-1 * result * g1;
-
-    return result;
+    return pi * p^real_i * (pi^-1);
 end;
 
 action_hom := ActionHomomorphism(G, mcycles, action);
 
 # We want the action to be represented as permutation matrices
-# Conjugating by any of these matrices fixes Q
+# Conjugating by any of these matrices fixes Q. This is the
+# representation we are block diagonalizing.
 action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 
-# Now we compute the orbits of G on mcycles x mcycles (pi x pi) We do
-# this following the paper. Pick some element of pi x pi, keep acting
-# on it by the generators g_i until
+# The matrix Q is in the centralizer ring of action_hom - it commutes
+# with all of the image matrices. At this point, we need Sage to
+# compute the irreps of S_m, since Sage can give us integer matrices -
+# much nicer than GAP's Cyclotomics matrices.

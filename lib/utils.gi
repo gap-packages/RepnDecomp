@@ -62,3 +62,26 @@ InstallGlobalFunction( BlockDiagonalMatrix, function(blocks)
 
     return result;
 end );
+
+# Takes 2 lists of reps of G and H and gives a full list of reps of
+# GxH you can get from tensor products of them
+InstallGlobalFunction( TensorProductRepLists, function(reps1, reps2)
+    local G, H, GxH, gens, pi1, pi2, result, rep1, rep2, new_rep;
+    G := Source(reps1[1]);
+    H := Source(reps2[1]);
+    GxH := DirectProduct(G, H);
+    gens := GeneratorsOfGroup(GxH);
+    pi1 := Projection(GxH, 1);
+    pi2 := Projection(GxH, 2);
+
+    result := [];
+    for rep1 in reps1 do
+        for rep2 in reps2 do
+            imgs := List(gens, gxh -> KroneckerProduct(Image(rep1, Image(pi1, gxh))
+                                                       Image(rep2, Image(pi2, gxh))));
+            new_rep := GroupHomomorphismByImages(GxH, Group(imgs), gens, imgs);
+            Add(result, new_rep);
+        od;
+    od;
+    return result;
+end );
