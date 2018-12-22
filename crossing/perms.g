@@ -5,25 +5,6 @@ LoadPackage("RepnDecomp");
 
 Read("compute_q.g");
 
-# Number of inversions in the list. Note that a list is cyclically
-# sorted iff it has 0 (sorted) or 1 (cyclically sorted) inversions.
-Inversions := function(list)
-    local n, image, nswaps, i, j;
-
-    n := Length(list);
-    nswaps := 0;
-
-    for i in [1..n] do
-        for j in [i+1..n] do
-            if list[i] > list[j] then
-                nswaps := nswaps + 1;
-            fi;
-        od;
-    od;
-
-    return nswaps;
-end;
-
 Drop := Drop@RepnDecomp;
 Take := Take@RepnDecomp;
 
@@ -195,7 +176,7 @@ mcycles := List(mcycle^G);
 
 # This is how G acts on mcycles. h_(pi, i)(p) = pi p^i pi^-1
 action := function(cycle, g)
-    local g1, g2, i, real_i;
+    local g1, g2, i, real_i, pi;
 
     # Acts via conjugation
     pi := Image(Projection(G, 1), g);
@@ -210,7 +191,7 @@ action := function(cycle, g)
         real_i := -1;
     fi;
 
-    return pi * p^real_i * (pi^-1);
+    return pi * cycle^real_i * (pi^-1);
 end;
 
 action_hom := ActionHomomorphism(G, mcycles, action);
