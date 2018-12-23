@@ -6,15 +6,15 @@ def to_list_list(mat):
 
 # Need to define function to convert from Sage representation to GAP
 # representation, i.e. from a SpechtRepresentation to a GAP
-# homomorphism. This gives a string you can pass to gap()
+# homomorphism. This gives a string you can pass to libgap()
 def to_gap_homo(m, irrep):
     G = SymmetricGroup(m)
     gens = G.gens()
     imgs = [irrep.representation_matrix(Permutation(g)) for g in gens]
-    imgs = [to_list_list(m) for m in imgs]
+    imgs = [to_list_list(mat) for mat in imgs]
     H = "Group({})".format(imgs)
-    return "GroupHomomorphismByImages({}, {}, {}, {})".format(
-        str(gap(G)),
+    return "GroupHomomorphismByImages(SymmetricGroup({}), {}, {}, {})".format(
+        m,
         H,
         str(gens),
         str(imgs))
@@ -28,22 +28,27 @@ def gap_all_irreps(m):
 # Computes the nice basis to use (that block diagonalises the
 # centralizer ring), using my GAP package
 def compute_nice_basis(m):
-    irreps_s_m = gap(gap_all_irreps(m))
+    #import pdb; pdb.set_trace()
+    irreps_s_m = libgap.eval("irreps_s_m := {};".format(gap_all_irreps(m)))
 
     # the irreps of s_2
-    irreps_s_2 = gap("[ GroupHomomorphismByImages( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ 1 ] ] ]), Pcgs([ (1,2) ]), [ [ [ 1 ] ] ] ), GroupHomomorphismByImages( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ -1 ] ] ]), Pcgs([ (1,2) ]), [ [ [ -1 ] ] ] ) ]")
+    irreps_s_2 = libgap.eval("irreps_s_2 := [ GroupHomomorphismByImages( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ 1 ] ] ]), [ (1,2) ], [ [ [ 1 ] ] ] ), GroupHomomorphismByImages( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ -1 ] ] ]), [ (1,2) ], [ [ [ -1 ] ] ] ) ];")
 
     # list of irreps of the whole group
-    irreps_G = gap("TensorProductRepLists({}, {})".format(irreps_s_m.name(), irreps_s_2.name()))
+    irreps_G = libgap.eval("irreps_G := TensorProductRepLists(irreps_s_m, irreps_s_2);")
+
+    # read the file that computes action_hom, the regular
+    # representation of the group action of G on the m cycles
+    libgap.eval('Read("perms.g");')
 
     # The nice basis that block diagonalizes the centralizer with minimal sized blocks
-    nice_basis = gap("BlockDiagonalRepresentationFast(action_hom, {}).basis".format(irreps_G.name()))
-
+    nice_basis = libgap.eval("BlockDiagonalRepresentationFast(action_hom, irreps_G).basis;")
+    import pdb; pdb.set_trace()
     return nice_basis.sage()
 
 def compute_alpha(m):
     basis = compute_nice_basis(m)
-    Q = gap("Qmatrix({})").format(m)
+    Q = libgap("Qmatrix({}).matrix".format(m)).sage()
     basis_change = matrix(basis).transpose()
     Q_block_diag = basis_change^-1 * Q * basis_change
     J = matrix(QQ, len(basis), len(basis), lambda i,j: 1)
@@ -56,3 +61,8 @@ def compute_alpha(m):
 
     optX = prog.solve()
     return (Q_block_diag * optX).trace()
+
+# Loading this file will compute alpha_5. Make sure your gap_cmd is
+# set up properly so the RepnDecomp package is available
+libgap.eval('LoadPackage("RepnDecomp");')
+compute_alpha(5)
