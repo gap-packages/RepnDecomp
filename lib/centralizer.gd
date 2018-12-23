@@ -27,15 +27,3 @@ DeclareGlobalFunction( "RepresentationCentralizerBlocks" );
 #! given in their entirety: not as lists of blocks, but as full
 #! matrices.
 DeclareGlobalFunction( "RepresentationCentralizer" );
-
-#! @Arguments rho
-
-#! @Returns List of generators (as a vector space) for the centralizer
-#! ring of $\rho(G)$, under the map taking each identity matrix block
-#! to a 1 by 1 block.
-
-#! @Description This function is here to demonstrate the reduction in
-#! dimension of the centralizer $C$ by writing it in the basis given
-#! by <Ref Attr="BlockDiagonalBasis" />. The matrices given are as
-#! reduced as possible.
-DeclareGlobalFunction( "RepresentationCentralizerDecomposed" );

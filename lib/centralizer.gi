@@ -106,14 +106,20 @@ end;
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks.
 # NOTE: This is written in the nice basis given by BlockDiagonalBasis
-InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho)
+InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args...)
     local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
 
     rho := ConvertRhoIfNeeded@(orig_rho);
     G := Source(rho);
 
-    irr_chars := IrrWithCorrectOrdering@(G);
-    char_rho_basis := DecomposeCharacter@(rho);
+    irr_chars := [];
+    if Length(args) > 0 then
+        irr_chars := IrrWithCorrectOrdering@(G, irreps);
+    else
+        irr_chars := IrrWithCorrectOrdering@(G);
+    fi;
+
+    char_rho_basis := DecomposeCharacter@(rho, irr_chars);
 
     # Calculate sizes based on the fact irr_char[1] is the degree
     all_sizes := List([1..Size(irr_chars)],
@@ -123,9 +129,9 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho)
     # Now we remove all of the ones with nblocks = 0
     sizes := Filtered(all_sizes, r -> r.nblocks > 0);
 
-    # We sort so we get the same ordering as Serre's formula's decomposition
-    # TODO: Make sure this is actually true!!
-    SortBy(sizes, r -> r.dimension);
+    # Note: we don't sort by the dimension of the blocks or anything
+    # since we want the block order to match with the order of
+    # irr_chars
 
     # There are two "levels" of blocks. First, the blocks
     # corresponding to each irreducible individually. Second, the
@@ -157,29 +163,6 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho)
     std_gens := Concatenation(List([1..Length(possible_blocks)],
                                    i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
 
-    return std_gens;
-end );
-
-# This does the same as the previous, but uses 1x1 identity blocks
-# always. This is the minimal dimension matrix presentation of the
-# centraliser of rho.
-InstallGlobalFunction( RepresentationCentralizerDecomposed, function(orig_rho)
-    local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
-
-    rho := ConvertRhoIfNeeded@(orig_rho);
-    G := Source(rho);
-    irr_chars := IrrWithCorrectOrdering@(G);
-    char_rho_basis := DecomposeCharacter@(rho);
-    all_sizes := List([1..Size(irr_chars)],
-                      i -> rec(dimension := irr_chars[i][1],
-                               nblocks := char_rho_basis[i]));
-    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
-    SortBy(sizes, r -> r.dimension);
-    possible_blocks := List(sizes, size -> GenerateAllBlocks@(1, size.nblocks));
-    zero_blocks := List(sizes, size -> NullMat(size.nblocks,
-                                               size.nblocks));
-    std_gens := Concatenation(List([1..Length(possible_blocks)],
-                                   i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
     return std_gens;
 end );
 
