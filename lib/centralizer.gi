@@ -103,31 +103,10 @@ DecomposeCharacter@ := function(rho, args...)
     return char_rho_basis;
 end;
 
-# Computes the centralizer C of rho, returning generators of C as
-# lists of blocks.
-# NOTE: This is written in the nice basis given by BlockDiagonalBasis
-InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args...)
-    local decomp, irrep_lists, rho, possible_blocks, zero_blocks, make_full_matrices, std_gens, classes, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
-
-    rho := ConvertRhoIfNeeded@(orig_rho);
-    G := Source(rho);
-
-    irr_chars := [];
-    if Length(args) > 0 then
-        irr_chars := IrrWithCorrectOrdering@(G, irreps);
-    else
-        irr_chars := IrrWithCorrectOrdering@(G);
-    fi;
-
-    char_rho_basis := DecomposeCharacter@(rho, irr_chars);
-
-    # Calculate sizes based on the fact irr_char[1] is the degree
-    all_sizes := List([1..Size(irr_chars)],
-                      i -> rec(dimension := irr_chars[i][1],
-                               nblocks := char_rho_basis[i]));
-
-    # Now we remove all of the ones with nblocks = 0
-    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
+# Converts a list of sizes of blocks in a decomposition to a basis for
+# the centralizer ring of the representation
+SizesToBlocks@ := function(sizes)
+    local possible_blocks, zero_blocks, std_gens;
 
     # Note: we don't sort by the dimension of the blocks or anything
     # since we want the block order to match with the order of
@@ -164,6 +143,37 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args.
                                    i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
 
     return std_gens;
+end;
+
+# Computes the centralizer C of rho, returning generators of C as
+# lists of blocks.
+# NOTE: This is written in the nice basis given by BlockDiagonalBasis
+InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args...)
+    local decomp, irrep_lists, rho, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
+
+    rho := ConvertRhoIfNeeded@(orig_rho);
+    G := Source(rho);
+
+    irr_chars := [];
+    if Length(args) > 0 then
+        # take args[1] to be a list of irreps
+        irr_chars := IrrWithCorrectOrdering@(G, args[1]);
+    else
+        irr_chars := IrrWithCorrectOrdering@(G);
+    fi;
+
+    char_rho_basis := DecomposeCharacter@(rho, irr_chars);
+
+    # Calculate sizes based on the fact irr_char[1] is the degree
+    all_sizes := List([1..Size(irr_chars)],
+                      i -> rec(dimension := irr_chars[i][1],
+                               nblocks := char_rho_basis[i]));
+
+    # Now we remove all of the ones with nblocks = 0 (doesn't affect
+    # end result)
+    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
+
+    return SizesToBlocks@(sizes);
 end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices

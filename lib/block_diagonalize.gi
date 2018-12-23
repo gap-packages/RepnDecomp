@@ -54,7 +54,7 @@ BasisChangeMatrixSimilar@ := function(X, Y)
 end;
 
 InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
-    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F, ret_basis;
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F, ret_basis, all_sizes, centralizer_blocks;
 
     G := Source(rho);
 
@@ -127,7 +127,16 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
         Add(full_space_list, current_space_list);
     od;
 
+    # We can also compute the basis for the centralizer ring, since we
+    # know the block sizes and relevant dimensions
+    all_sizes := List([1..Size(chars)], i -> rec(dimension := chars[i][1],
+                                                 nblocks := char_rho_basis[i]));
+
+    # Don't use the blocks that don't appear
+    centralizer_blocks := SizesToBlocks@(Filtered(all_sizes, r -> r.nblocks > 0));
+
     return rec(basis := ret_basis,
                diagonal_rep := new_rho,
-               decomposition := full_space_list);
+               decomposition := full_space_list,
+               centralizer_basis := centralizer_blocks);
 end );
