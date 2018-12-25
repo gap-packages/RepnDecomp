@@ -3,123 +3,10 @@
 
 LoadPackage("RepnDecomp");
 
-Read("compute_q.g");
+Read("compute_q_real.g");
 
 Drop := Drop@RepnDecomp;
 Take := Take@RepnDecomp;
-
-# swaps l[pos] left one place (cyclically)
-swap_left := function(l, pos)
-    local tmp;
-    if pos = 1 then
-        tmp := l[pos];
-        l[pos] := l[Length(l)];
-        l[Length(l)] := tmp;
-    else
-        tmp := l[pos];
-        l[pos] := l[pos-1];
-        l[pos-1] := tmp;
-    fi;
-end;
-
-# swaps l[pos] right one place (cyclically)
-swap_right := function(l, pos)
-    local tmp;
-    if pos = Length(l) then
-        tmp := l[pos];
-        l[pos] := l[1];
-        l[1] := tmp;
-    else
-        tmp := l[pos];
-        l[pos] := l[pos+1];
-        l[pos+1] := tmp;
-    fi;
-end;
-
-# Number of adjacent swaps needed to sort a permutation of [1..n],
-# where we consider the first and last elements to be adjacent. We
-# don't move the element "fixed".
-SwapsToSortWithFixed := function(l, fixed)
-    local list, n, nswaps, pos_fixed, elem, curpos, correct_offset, current_offset, left_list, left_moves, right_list, right_moves;
-    list := ShallowCopy(l);
-    n := Maximum(list);
-
-    nswaps := 0;
-
-    # The current position of fixed
-    pos_fixed := function(l) return Position(l, fixed); end;
-
-    # We swap each element of list to the right offset from fixed
-    for elem in [1..n] do
-        curpos := function(l) return Position(l, elem); end;
-
-        # We should be elem-fixed after fixed
-        correct_offset := (elem-fixed) mod Length(l);
-        current_offset := function(l) return (curpos(l) - pos_fixed(l)) mod Length(l); end;
-
-        # There are two ways to go, left or right. You can work out
-        # which way is faster, but you can also just try both and see
-        # which was quicker.
-
-        # First try left.
-        left_list := ShallowCopy(list);
-        left_moves := 0;
-        while current_offset(left_list) <> correct_offset do
-            swap_left(left_list, Position(left_list, elem));
-            left_moves := left_moves + 1;
-        od;
-
-        # Then right.
-        right_list := ShallowCopy(list);
-        right_moves := 0;
-        while current_offset(right_list) <> correct_offset do
-            swap_right(right_list, Position(right_list, elem));
-            right_moves := right_moves + 1;
-        od;
-
-        # Pick whichever was better.
-        if left_moves < right_moves then
-            list := left_list;
-            nswaps := nswaps + left_moves;
-        else
-            list := right_list;
-            nswaps := nswaps + right_moves;
-        fi;
-    od;
-
-    return nswaps;
-end;
-
-SwapsToSort := function(l)
-    local n;
-    # Just try everything and get the minimum. The point is that one
-    # element is already in the right place and we should sort
-    # everything around it, but we don't know which one. We have to
-    # just try everything. This is a very brute-force stupid way to do
-    # this, but it works ok.
-    n := Length(l);
-    return Minimum(List([1..n], i -> SwapsToSortWithFixed(l, i)));
-end;
-
-# Number of adjacent transpositions of elements you need to go from
-# perm1 to perm2
-AdjacentTranspositionsBetween := function(perm1, perm2)
-    local list1, list2, n;
-
-    list1 := MyListPerm(perm1);
-    list2 := MyListPerm(perm2);
-    n := Length(list1);
-
-    # We rename elements so that list1 "is" [1..n], so we just need to
-    # cyclically sort list2.
-    list2 := List(list2, elem -> Position(list1, elem));
-
-    # We shift list2 so that 1 is at the start and we don't have to
-    # move it. Now we need to count swaps needed to sort list2.
-    list2 := ShiftLeft(list2, Position(list2, 1)-1);
-
-    return SwapsToSort(list2);
-end;
 
 # Q(p, q) is the number of adjacent transpositions needed to get from
 # p to q^-1. By this I don't mean by conjugation, I mean viewing p and
@@ -203,51 +90,58 @@ action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 # compute the irreps of S_m, since Sage can give us integer matrices -
 # much nicer than GAP's Cyclotomics matrices.
 
-# TODO: make the next bit take irreps from Sage instead of using
-# cyclotomics irreps from inside GAP.
+# Uses the irreps of S_m x S_2 to calculate the parameters for the SDP we need to solve
+CalculateSDP := function(irreps)
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices;
 
-# See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
-# now apply to get a smaller semidefinite program.
+    # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
+    # now apply to get a smaller semidefinite program.
 
-# First, we block diagonalize action_hom
-block_diag_info := BlockDiagonalRepresentationFast(action_hom);
-nice_basis := block_diag_info.basis;
+    # First, we block diagonalize action_hom
+    block_diag_info := BlockDiagonalRepresentationFast(action_hom);
+    nice_basis := block_diag_info.basis;
 
-# This is the nice basis for the centralizer, written in the nice
-# basis, called E_i in the paper. I convert to full matrices
-# here. (TODO: use sparse matrices here or something?)
-centralizer_basis := List(block_diag_info.centralizer_basis, blocks -> BlockDiagonalMatrix(blocks));
+    # This is the nice basis for the centralizer, written in the nice
+    # basis, called E_i in the paper. I convert to full matrices
+    # here. (TODO: use sparse matrices here or something?)
+    centralizer_basis := List(block_diag_info.centralizer_basis, blocks -> BlockDiagonalMatrix(blocks));
 
-# We normalize the basis for the centralizer, each matrix is still
-# written in the nice basis. These are the B_i.
-norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(TransposedMat(E)*E))^-1)*E);
+    # We normalize the basis for the centralizer, each matrix is still
+    # written in the nice basis. These are the B_i.
+    norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(TransposedMat(E)*E))^-1)*E);
 
-# d is the dimension of the centralizer ring (sum of squares of
-# multiplicities of each irrep)
-d := Length(norm_cent_basis);
+    # d is the dimension of the centralizer ring (sum of squares of
+    # multiplicities of each irrep)
+    d := Length(norm_cent_basis);
 
-# The centralizer ring itself
-centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
-nice_basis := Basis(centralizer, norm_cent_basis);
+    # The centralizer ring itself
+    centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
+    nice_basis := Basis(centralizer, norm_cent_basis);
 
-# The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
-# The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
-mult_param := NullMat(d, d);
-for i in [1..d] do
-    for j in [1..d] do
-        mult_param[i][j] := Coefficients(nice_basis,
-                                         norm_cent_basis[i]*norm_cent_basis[j]);
-    od;
-od;
-
-# The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i
-param_matrices := List([1..d], k -> NullMat(d, d));
-for k in [1..d] do
+    # The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
+    # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
+    mult_param := NullMat(d, d);
     for i in [1..d] do
         for j in [1..d] do
-            param_matrices[k][i][j] := mult_param[k][j][i];
+            mult_param[i][j] := Coefficients(nice_basis,
+                                             norm_cent_basis[i]*norm_cent_basis[j]);
         od;
     od;
-od;
+
+    # The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i
+    param_matrices := List([1..d], k -> NullMat(d, d));
+    for k in [1..d] do
+        for i in [1..d] do
+            for j in [1..d] do
+                param_matrices[k][i][j] := mult_param[k][j][i];
+            od;
+        od;
+    od;
+
+    return rec(centralizer_basis := norm_cent_basis, # the B_i
+               nice_basis := nice_basis, # basis all matrices are written in
+               mult_param := mult_param, # the lambda_{i,j}^k
+               param_matrices := param_matrics); # the L_k
+end;
 
 # Now use Sage to solve the SDP problem from the paper to get \alpha_m
