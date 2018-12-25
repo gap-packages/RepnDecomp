@@ -160,10 +160,7 @@ Qmatrix := function(n)
 end;
 
 # Here we fix some number, the end goal is to calculate \alpha_m
-m := 5;
-
-# The dimension of the matrices (number of m-cycles)
-d := Factorial(m-1);
+m := 3;
 
 # This is the group Q is invariant under
 G := DirectProduct(SymmetricGroup(m), SymmetricGroup(2));
@@ -205,3 +202,52 @@ action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 # with all of the image matrices. At this point, we need Sage to
 # compute the irreps of S_m, since Sage can give us integer matrices -
 # much nicer than GAP's Cyclotomics matrices.
+
+# TODO: make the next bit take irreps from Sage instead of using
+# cyclotomics irreps from inside GAP.
+
+# See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
+# now apply to get a smaller semidefinite program.
+
+# First, we block diagonalize action_hom
+block_diag_info := BlockDiagonalRepresentationFast(action_hom);
+nice_basis := block_diag_info.basis;
+
+# This is the nice basis for the centralizer, written in the nice
+# basis, called E_i in the paper. I convert to full matrices
+# here. (TODO: use sparse matrices here or something?)
+centralizer_basis := List(block_diag_info.centralizer_basis, blocks -> BlockDiagonalMatrix(blocks));
+
+# We normalize the basis for the centralizer, each matrix is still
+# written in the nice basis. These are the B_i.
+norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(TransposedMat(E)*E))^-1)*E);
+
+# d is the dimension of the centralizer ring (sum of squares of
+# multiplicities of each irrep)
+d := Length(norm_cent_basis);
+
+# The centralizer ring itself
+centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
+nice_basis := Basis(centralizer, norm_cent_basis);
+
+# The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
+# The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
+mult_param := NullMat(d, d);
+for i in [1..d] do
+    for j in [1..d] do
+        mult_param[i][j] := Coefficients(nice_basis,
+                                         norm_cent_basis[i]*norm_cent_basis[j]);
+    od;
+od;
+
+# The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i
+param_matrices := List([1..d], k -> NullMat(d, d));
+for k in [1..d] do
+    for i in [1..d] do
+        for j in [1..d] do
+            param_matrices[k][i][j] := mult_param[k][j][i];
+        od;
+    od;
+od;
+
+# Now use Sage to solve the SDP problem from the paper to get \alpha_m
