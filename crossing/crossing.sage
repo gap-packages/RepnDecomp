@@ -27,7 +27,7 @@ def gap_all_irreps(m):
 
 # Computes the nice basis to use (that block diagonalises the
 # centralizer ring), using my GAP package
-def compute_nice_basis(m):
+def compute_alpha(m):
     #import pdb; pdb.set_trace()
     irreps_s_m = libgap.eval("irreps_s_m := {};".format(gap_all_irreps(m)))
 
@@ -41,28 +41,33 @@ def compute_nice_basis(m):
     # representation of the group action of G on the m cycles
     libgap.eval('Read("perms.g");')
 
-    # The nice basis that block diagonalizes the centralizer with minimal sized blocks
-    nice_basis = libgap.eval("BlockDiagonalRepresentationFast(action_hom, irreps_G).basis;")
-    import pdb; pdb.set_trace()
-    return nice_basis.sage()
+    # Calculates the matrices needed for the (reduced version of the)
+    # semidefinite program
+    libgap.eval("record := CalculateSDP(irreps_G);")
 
-def compute_alpha(m):
-    basis = compute_nice_basis(m)
-    Q = libgap("Qmatrix({}).matrix".format(m)).sage()
-    basis_change = matrix(basis).transpose()
+    B = libgap.eval("record.centralizer_basis;").sage()
+    basis = libgap.eval("record.nice_basis;").sage()
+    Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
+    basis_change = matrix(libgap.eval("record.nice_basis").sage()).transpose()
     Q_block_diag = basis_change^-1 * Q * basis_change
     J = matrix(QQ, len(basis), len(basis), lambda i,j: 1)
+    J_block_diag = basis_change^-1 * J * basis_change
+    L = libgap.eval("record.param_matrices;").sage()
 
+    # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
+    # some explanation of this program
     prog = SemidefiniteProgram()
-    X = p.new_variable()
-    prog.set_objective((Q_block_diag * X).trace())
-    prog.add_constraint(X >= 0)
-    prog.add_constraint((J * X).trace() == 1)
+    x = p.new_variable()
 
-    optX = prog.solve()
-    return (Q_block_diag * optX).trace()
+    d = len(L)
+
+    prog.set_objective(sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
+    prog.add_constraint(sum(x[i] * L[i] for i in range(d)) >= 0)
+    prog.add_constraint(sum((J_block_diag * B[i]).trace()*x[i]) == 1)
+
+    return prog.solve()
 
 # Loading this file will compute alpha_5. Make sure your gap_cmd is
 # set up properly so the RepnDecomp package is available
 libgap.eval('LoadPackage("RepnDecomp");')
-compute_alpha(5)
+compute_alpha(3)

@@ -3,7 +3,7 @@
 
 LoadPackage("RepnDecomp");
 
-Read("compute_q_real.g");
+Read("compute_q.g");
 
 Drop := Drop@RepnDecomp;
 Take := Take@RepnDecomp;
@@ -92,13 +92,13 @@ action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP we need to solve
 CalculateSDP := function(irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices;
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k;
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
 
     # First, we block diagonalize action_hom
-    block_diag_info := BlockDiagonalRepresentationFast(action_hom);
+    block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     nice_basis := block_diag_info.basis;
 
     # This is the nice basis for the centralizer, written in the nice
@@ -141,7 +141,7 @@ CalculateSDP := function(irreps)
     return rec(centralizer_basis := norm_cent_basis, # the B_i
                nice_basis := nice_basis, # basis all matrices are written in
                mult_param := mult_param, # the lambda_{i,j}^k
-               param_matrices := param_matrics); # the L_k
+               param_matrices := param_matrices); # the L_k
 end;
 
 # Now use Sage to solve the SDP problem from the paper to get \alpha_m

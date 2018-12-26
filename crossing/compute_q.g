@@ -1,86 +1,122 @@
-# This is an implementation of an algorithm due to D.R. Woodall to
-# compute the number of adjacent interchanges needed to change a cycle
-# a into another cycle b.
-
-LoadPackage("RepnDecomp");
 Read("utils.g");
 
-# Cyclically moves elements in a list left by n elements
-ShiftLeft := function(list, n)
-    local shift;
-    shift := n mod (Length(list));
-    return Concatenation(Drop@RepnDecomp(list, shift),
-                         Take@RepnDecomp(list, shift));
+# swaps l[pos] left one place (cyclically)
+swap_left := function(l, pos)
+    local tmp;
+    if pos = 1 then
+        tmp := l[pos];
+        l[pos] := l[Length(l)];
+        l[Length(l)] := tmp;
+    else
+        tmp := l[pos];
+        l[pos] := l[pos-1];
+        l[pos-1] := tmp;
+    fi;
 end;
 
-# TODO: This algorithm is incorrect for some reason, not sure why
-NumberInterchangesBetween := function(a, b)
-    local al, bl, n, f, dist, alpha, beta, gamma;
+# swaps l[pos] right one place (cyclically)
+swap_right := function(l, pos)
+    local tmp;
+    if pos = Length(l) then
+        tmp := l[pos];
+        l[pos] := l[1];
+        l[1] := tmp;
+    else
+        tmp := l[pos];
+        l[pos] := l[pos+1];
+        l[pos+1] := tmp;
+    fi;
+end;
 
-    # Convert them to lists
-    al := MyListPerm(a);
-    bl := MyListPerm(b);
+# Number of adjacent swaps needed to sort a permutation of [1..n],
+# where we consider the first and last elements to be adjacent. We
+# don't move the element "fixed".
+SwapsToSortWithFixed := function(l, fixed, args...)
+    local list, n, nswaps, pos_fixed, elem, curpos, correct_offset, current_offset, left_list, left_moves, right_list, right_moves, dbg;
+    list := ShallowCopy(l);
+    n := Maximum(list);
 
-    n := Length(al);
+    nswaps := 0;
 
-    # We rename elements so that al "is" [0..n-1]. This is so we match
-    # up with Woodall's description and avoid off-by-one errors.
-    bl := List(bl, elem -> Position(al, elem)-1);
-    al := [0..(n-1)];
+    dbg := false;
+    if Length(args) > 0 then
+        dbg := true;
+        Print("fixed=", fixed, "\n");
+    fi;
 
+    # The current position of fixed
+    pos_fixed := function(l) return Position(l, fixed); end;
 
-    # This is a useful function defined by Woodall
-    f := function(r)
-        if r = 0 then
-            return 0;
-        elif 0 < r and r < n/2 then
-            return 2*r - 1;
-        elif r = n/2 then
-            return 2*r - 2;
+    # We swap each element of list to the right offset from fixed
+    for elem in [1..n] do
+        curpos := function(l) return Position(l, elem); end;
+
+        # We should be elem-fixed after fixed
+        correct_offset := (elem-fixed) mod Length(l);
+        current_offset := function(l) return (curpos(l) - pos_fixed(l)) mod Length(l); end;
+
+        # There are two ways to go, left or right. You can work out
+        # which way is faster, but you can also just try both and see
+        # which was quicker.
+
+        # First try left.
+        left_list := ShallowCopy(list);
+        left_moves := 0;
+        while current_offset(left_list) <> correct_offset do
+            swap_left(left_list, Position(left_list, elem));
+            left_moves := left_moves + 1;
+        od;
+
+        # Then right.
+        right_list := ShallowCopy(list);
+        right_moves := 0;
+        while current_offset(right_list) <> correct_offset do
+            swap_right(right_list, Position(right_list, elem));
+            right_moves := right_moves + 1;
+        od;
+
+        # Pick whichever was better.
+        if left_moves < right_moves then
+            list := left_list;
+            nswaps := nswaps + left_moves;
+        else
+            list := right_list;
+            nswaps := nswaps + right_moves;
         fi;
-        Error("Bad value for r: ", r);
-    end;
 
-    # We imagine the entries of a spaced evenly around a circle. There
-    # are n different ways to superimpose b on top of a, dist_i
-    # calculates the distance assuming one of the n
-    # superimpositions. We consider the ith choice to be b, but
-    # shifted left i times.
+        if dbg then Print(list, ": ", nswaps, "\n"); fi;
+    od;
 
-    # alpha(i, j) denotes the number in a coinciding with j in b
-    # when b is in position i.
-    alpha := function(i, j)
-        local posj, pos_shifted;
+    return nswaps;
+end;
 
-        # The 0-indexed position of j in b
-        posj := Position(bl, j)-1;
+SwapsToSort := function(l)
+    local n;
+    # Just try everything and get the minimum. The point is that one
+    # element is already in the right place and we should sort
+    # everything around it, but we don't know which one. We have to
+    # just try everything. This is a very brute-force stupid way to do
+    # this, but it works ok.
+    n := Length(l);
+    return Minimum(List([1..n], i -> SwapsToSortWithFixed(l, i)));
+end;
 
-        # Now shift left i
-        pos_shifted := (posj - i) mod n;
+# Number of adjacent transpositions of elements you need to go from
+# perm1 to perm2
+AdjacentTranspositionsBetween := function(perm1, perm2)
+    local list1, list2, n;
 
-        # The value of a there is known, it's just the position.
-        return pos_shifted;
-    end;
+    list1 := MyListPerm(perm1);
+    list2 := MyListPerm(perm2);
+    n := Length(list1);
 
-    # Now j - alpha(i, j) is equal (mod n) to the distance that j
-    # has to move in the positive direction from its position in b
-    # to its final position
+    # We rename elements so that list1 "is" [1..n], so we just need to
+    # cyclically sort list2.
+    list2 := List(list2, elem -> Position(list1, elem));
 
-    # beta(i, j) denotes the absolute value of the integer of
-    # minimum absolute value that is congruent (mod n) to j -
-    # alpha(i, j), so beta(i ,j) is the shortest distance that j
-    # must move.
-    beta := function(i, j)
-        local x;
-        x := (j - alpha(i, j)) mod n;
-        return Minimum([x, n - x]);
-    end;
+    # We shift list2 so that 1 is at the start and we don't have to
+    # move it. Now we need to count swaps needed to sort list2.
+    list2 := ShiftLeft(list2, Position(list2, 1)-1);
 
-    gamma := function(i, j) return (1/2)*f(beta(i, j)); end;
-
-    dist := i -> Sum([0..(n-1)], j -> gamma(i, j));
-
-    # The final result is the smallest distance between a and b over
-    # all choices of rotation of b.
-    return Minimum(List([0..n-1], i -> dist(i)));
+    return SwapsToSort(list2);
 end;
