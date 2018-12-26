@@ -92,7 +92,7 @@ action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP we need to solve
 CalculateSDP := function(irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k;
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis;
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
@@ -116,14 +116,14 @@ CalculateSDP := function(irreps)
 
     # The centralizer ring itself
     centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
-    nice_basis := Basis(centralizer, norm_cent_basis);
+    nice_cent_basis := Basis(centralizer, norm_cent_basis);
 
     # The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
     # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
     mult_param := NullMat(d, d);
     for i in [1..d] do
         for j in [1..d] do
-            mult_param[i][j] := Coefficients(nice_basis,
+            mult_param[i][j] := Coefficients(nice_cent_basis,
                                              norm_cent_basis[i]*norm_cent_basis[j]);
         od;
     od;

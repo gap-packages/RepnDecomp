@@ -28,7 +28,6 @@ def gap_all_irreps(m):
 # Computes the nice basis to use (that block diagonalises the
 # centralizer ring), using my GAP package
 def compute_alpha(m):
-    #import pdb; pdb.set_trace()
     irreps_s_m = libgap.eval("irreps_s_m := {};".format(gap_all_irreps(m)))
 
     # the irreps of s_2
@@ -40,6 +39,10 @@ def compute_alpha(m):
     # read the file that computes action_hom, the regular
     # representation of the group action of G on the m cycles
     libgap.eval('Read("perms.g");')
+
+    # For some reason, you can't use RationalCanonicalFormTransform
+    # from GAP with libgap, you have to read it manually
+    libgap.eval('Read("rcft.g");')
 
     # Calculates the matrices needed for the (reduced version of the)
     # semidefinite program
