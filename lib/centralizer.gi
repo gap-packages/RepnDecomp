@@ -54,13 +54,10 @@ end;
 
 # Gives the row of the character table corresponding to irrep
 IrrepToCharacter@ := function(irrep)
-    local G, ret;
+    local G;
     G := Source(irrep);
-    ret :=  List(ConjugacyClasses(G),
-                 class -> Trace(Image(irrep, Representative(G))));
-    if Length(ret) = 3 then Error("ree"); fi;
-
-    return ret;
+    return List(ConjugacyClasses(G),
+                class -> Trace(Image(irrep, Representative(class))));
 end;
 
 # Irr(G), but guaranteed to be ordered the same as
