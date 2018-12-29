@@ -76,8 +76,9 @@ def compute_alpha(m):
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
 
-    return prog.solve()
+    print(prog.solve())
 
 # Loading this file will compute alpha_5. Make sure your gap_cmd is
 # set up properly so the RepnDecomp package is available
 libgap.eval('LoadPackage("RepnDecomp");')
+compute_alpha(5)
