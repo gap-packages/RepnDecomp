@@ -66,7 +66,12 @@ def compute_alpha(m):
     prog.set_objective(sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
 
     constraint0 = sum(x[i] * L[i] for i in range(d)) >= 0
-    constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
+
+    # This is what this means, but I need the matrices to avoid type errors
+    # constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
+
+    one = matrix([[1]])
+    constraint1 = sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
 
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
@@ -76,4 +81,3 @@ def compute_alpha(m):
 # Loading this file will compute alpha_5. Make sure your gap_cmd is
 # set up properly so the RepnDecomp package is available
 libgap.eval('LoadPackage("RepnDecomp");')
-compute_alpha(3)
