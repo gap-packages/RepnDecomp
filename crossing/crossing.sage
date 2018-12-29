@@ -35,38 +35,41 @@ def compute_alpha(m):
 
     # list of irreps of the whole group
     irreps_G = libgap.eval("irreps_G := TensorProductRepLists(irreps_s_m, irreps_s_2);")
-
     # read the file that computes action_hom, the regular
     # representation of the group action of G on the m cycles
     libgap.eval('Read("perms.g");')
 
-    # For some reason, you can't use RationalCanonicalFormTransform
-    # from GAP with libgap, you have to read it manually
+    # Need this for RationalCanonicalFormTransform, added in GAP
+    # 4.10. Sage uses 4.8.
     libgap.eval('Read("rcft.g");')
 
     # Calculates the matrices needed for the (reduced version of the)
     # semidefinite program
-    libgap.eval("record := CalculateSDP(irreps_G);")
+    libgap.eval("sdp := CalculateSDP(irreps_G);")
 
-    B = libgap.eval("record.centralizer_basis;").sage()
-    basis = libgap.eval("record.nice_basis;").sage()
+    B = [matrix(mat) for mat in libgap.eval("sdp.centralizer_basis;").sage()]
+    basis = libgap.eval("sdp.nice_basis;").sage()
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
-    basis_change = matrix(libgap.eval("record.nice_basis").sage()).transpose()
+    basis_change = matrix(libgap.eval("TransposedMat(sdp.nice_basis)").sage())
     Q_block_diag = basis_change^-1 * Q * basis_change
     J = matrix(QQ, len(basis), len(basis), lambda i,j: 1)
     J_block_diag = basis_change^-1 * J * basis_change
-    L = libgap.eval("record.param_matrices;").sage()
+    L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
 
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
     # some explanation of this program
     prog = SemidefiniteProgram()
-    x = p.new_variable()
+    x = prog.new_variable()
 
     d = len(L)
 
     prog.set_objective(sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
-    prog.add_constraint(sum(x[i] * L[i] for i in range(d)) >= 0)
-    prog.add_constraint(sum((J_block_diag * B[i]).trace()*x[i]) == 1)
+
+    constraint0 = sum(x[i] * L[i] for i in range(d)) >= 0
+    constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
+
+    prog.add_constraint(constraint0)
+    prog.add_constraint(constraint1)
 
     return prog.solve()
 
