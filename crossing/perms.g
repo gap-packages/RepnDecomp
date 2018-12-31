@@ -46,44 +46,47 @@ Qmatrix := function(n)
                index := ncycles);
 end;
 
-# Here we fix some number, the end goal is to calculate \alpha_m
-m := 3;
+ComputeActionHom := function(m)
+    local G, mcycle, mcycles, action, ret;
 
-# This is the group Q is invariant under
-G := DirectProduct(SymmetricGroup(m), SymmetricGroup(2));
+    # This is the group whose action doesn't change Q(p, q)
+    G := DirectProduct(SymmetricGroup(m), SymmetricGroup(2));
 
-# a random m cycle
-mcycle := MappingPermListList(ShiftLeft([1..m], 1), [1..m]);
+    # a random m cycle
+    mcycle := MappingPermListList(ShiftLeft([1..m], 1), [1..m]);
 
-# m-cycles index the rows and cols of Q
-mcycles := List(mcycle^G);
+    # m-cycles index the rows and cols of Q
+    mcycles := List(mcycle^G);
 
-# This is how G acts on mcycles. h_(pi, i)(p) = pi p^i pi^-1
-action := function(cycle, g)
-    local g1, g2, i, real_i, pi;
+    # This is how G acts on mcycles. h_(pi, i)(p) = pi p^i pi^-1
+    action := function(cycle, g)
+        local g1, g2, i, real_i, pi;
 
-    # Acts via conjugation
-    pi := Image(Projection(G, 1), g);
+        # Acts via conjugation
+        pi := Image(Projection(G, 1), g);
 
-    # Acts by inverting the cycle
-    i := Image(Projection(G, 2), g);
+        # Acts by inverting the cycle
+        i := Image(Projection(G, 2), g);
 
-    real_i := 1;
+        real_i := 1;
 
-    # if it's nontrivial, invert
-    if i <> One(SymmetricGroup(2)) then
-        real_i := -1;
-    fi;
+        # if it's nontrivial, invert
+        if i <> One(SymmetricGroup(2)) then
+            real_i := -1;
+        fi;
 
-    return pi * cycle^real_i * (pi^-1);
+        return pi * cycle^real_i * (pi^-1);
+    end;
+
+    ret := ActionHomomorphism(G, mcycles, action);
+
+    # We want the action to be represented as permutation matrices
+    # Conjugating by any of these matrices fixes Q. This is the
+    # representation we are block diagonalizing.
+    ret := ConvertRhoIfNeeded@RepnDecomp(ret);
+
+    return ret;
 end;
-
-action_hom := ActionHomomorphism(G, mcycles, action);
-
-# We want the action to be represented as permutation matrices
-# Conjugating by any of these matrices fixes Q. This is the
-# representation we are block diagonalizing.
-action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 
 # The matrix Q is in the centralizer ring of action_hom - it commutes
 # with all of the image matrices. At this point, we need Sage to
@@ -91,8 +94,10 @@ action_hom := ConvertRhoIfNeeded@RepnDecomp(action_hom);
 # much nicer than GAP's Cyclotomics matrices.
 
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP we need to solve
-CalculateSDP := function(irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis;
+CalculateSDP := function(m, irreps)
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom;
+
+    action_hom := ComputeActionHom(m);
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.

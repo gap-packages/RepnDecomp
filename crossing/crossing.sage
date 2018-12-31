@@ -35,26 +35,21 @@ def compute_alpha(m):
 
     # list of irreps of the whole group
     irreps_G = libgap.eval("irreps_G := TensorProductRepLists(irreps_s_m, irreps_s_2);")
-    # read the file that computes action_hom, the regular
-    # representation of the group action of G on the m cycles
-    libgap.eval('Read("perms.g");')
-
-    # Need this for RationalCanonicalFormTransform, added in GAP
-    # 4.10. Sage uses 4.8.
-    libgap.eval('Read("rcft.g");')
 
     # Calculates the matrices needed for the (reduced version of the)
     # semidefinite program
-    libgap.eval("sdp := CalculateSDP(irreps_G);")
+    libgap.eval("sdp := CalculateSDP({}, irreps_G);".format(m))
 
     B = [matrix(mat) for mat in libgap.eval("sdp.centralizer_basis;").sage()]
     basis = libgap.eval("sdp.nice_basis;").sage()
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
     basis_change = matrix(libgap.eval("TransposedMat(sdp.nice_basis)").sage())
     Q_block_diag = basis_change^-1 * Q * basis_change
-    J = matrix(QQ, len(basis), len(basis), lambda i,j: 1)
+    J = matrix(len(basis), len(basis), lambda i,j: 1)
     J_block_diag = basis_change^-1 * J * basis_change
     L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
+
+    #import pdb; pdb.set_trace()
 
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
     # some explanation of this program
@@ -63,7 +58,7 @@ def compute_alpha(m):
 
     d = len(L)
 
-    prog.set_objective(sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
+    prog.set_objective(prog.sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
 
     constraint0 = sum(x[i] * L[i] for i in range(d)) >= 0
 
@@ -71,7 +66,7 @@ def compute_alpha(m):
     # constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
 
     one = matrix([[1]])
-    constraint1 = sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
+    constraint1 = prog.sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
 
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
@@ -81,4 +76,14 @@ def compute_alpha(m):
 # Loading this file will compute alpha_5. Make sure your gap_cmd is
 # set up properly so the RepnDecomp package is available
 libgap.eval('LoadPackage("RepnDecomp");')
-compute_alpha(5)
+
+# read the file that computes action_hom, the regular
+# representation of the group action of G on the m cycles
+libgap.eval('Read("perms.g");')
+
+# Need this for RationalCanonicalFormTransform, added in GAP
+# 4.10. Sage uses 4.8.
+libgap.eval('Read("rcft.g");')
+
+# computes \alpha_5
+compute_alpha(4)
