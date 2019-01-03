@@ -25,6 +25,10 @@ def gap_all_irreps(m):
     gapped = [to_gap_homo(m, irrep) for irrep in irreps]
     return "[{}]".format(", ".join(gapped))
 
+# Converts a matrix to one over RR
+def real_mat(mat):
+    return matrix(RR, mat.nrows(), mat.ncols(), lambda i, j: mat[i][j].n().real())
+
 # Computes the nice basis to use (that block diagonalises the
 # centralizer ring), using my GAP package
 def compute_alpha(m):
@@ -49,6 +53,15 @@ def compute_alpha(m):
     J_block_diag = basis_change^-1 * J * basis_change
     L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
 
+    # Our matrices are all real, but largely irrational. This is ok
+    # except the irrationals are represented as sums of
+    # cyclotomics. Sage doesn't know they are real. We have to
+    # truncate the imaginary parts.
+    B = [real_mat(mat) for mat in B]
+    Q_block_diag = real_mat(Q_block_diag)
+    J_block_diag = real_mat(J_block_diag)
+    L = [real_mat(mat) for mat in L]
+
     #import pdb; pdb.set_trace()
 
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
@@ -58,7 +71,7 @@ def compute_alpha(m):
 
     d = len(L)
 
-    prog.set_objective(prog.sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
+    prog.set_objective(sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
 
     constraint0 = sum(x[i] * L[i] for i in range(d)) >= 0
 
@@ -66,15 +79,15 @@ def compute_alpha(m):
     # constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
 
     one = matrix([[1]])
-    constraint1 = prog.sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
+    constraint1 = sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
 
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
 
     print(prog.solve())
 
-# Loading this file will compute alpha_5. Make sure your gap_cmd is
-# set up properly so the RepnDecomp package is available
+# Make sure your gap_cmd etc are set up properly so that my package is
+# available
 libgap.eval('LoadPackage("RepnDecomp");')
 
 # read the file that computes action_hom, the regular
@@ -85,5 +98,7 @@ libgap.eval('Read("perms.g");')
 # 4.10. Sage uses 4.8.
 libgap.eval('Read("rcft.g");')
 
-# computes \alpha_5
-compute_alpha(4)
+if __name__ == "__main__":
+    import sys
+    m = int(sys.argv[1])
+    compute_alpha(m)
