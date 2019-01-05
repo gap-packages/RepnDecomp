@@ -1,3 +1,5 @@
+#!/usr/bin/env sage
+
 from sage.combinat.symmetric_group_representations import *
 
 # Prints a sage matrix as a list of lists
