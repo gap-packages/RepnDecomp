@@ -149,4 +149,14 @@ CalculateSDP := function(m, irreps)
                param_matrices := param_matrices); # the L_k
 end;
 
+# Run this to test is our Q is in the centralizer for a given m
+CheckQCentralizer := function(m)
+    local action_hom, Qmat, G;
+    action_hom := ComputeActionHom(m);
+    Qmat := Qmatrix(m).matrix;
+    G := Source(action_hom);
+    return ForAll(GeneratorsOfGroup(G),
+                  g -> Image(action_hom, g)*Qmat = Qmat*Image(action_hom, g));
+end;
+
 # Now use Sage to solve the SDP problem from the paper to get \alpha_m
