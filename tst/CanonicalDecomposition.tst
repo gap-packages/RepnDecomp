@@ -1,7 +1,7 @@
 gap> G := SymmetricGroup(4);;
 gap> gens := GeneratorsOfGroup(G);;
 gap> irreps := IrreducibleRepresentations(G);;
-gap> # note deg irrep1 = 1, deg irrep2 = 2, deg irrep3 = 3
+gap> # note deg irrep1 = 1, deg irrep2 = 1, deg irrep3 = 2, deg irrep4 = 3
 gap> imgs := List(gens, g -> BlockDiagonalMatrix([Image(irreps[2], g), Image(irreps[3], g), Image(irreps[4], g)]));;
 gap> # we make rho = irrep1 oplus irrep2 oplus irrep3
 gap> rho := GroupHomomorphismByImages(G, Group(imgs), gens, imgs);;
