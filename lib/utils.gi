@@ -10,7 +10,11 @@ end;
 
 # Returns a list consisting of n copies of elem
 Replicate@ := function(elem, n)
-    return List([1..n], i -> elem);
+    if IsList(elem) then
+        return List([1..n], i -> ShallowCopy(elem));
+    else
+        return List([1..n], i -> elem);
+    fi;
 end;
 
 # Takes a list of blocks (possibly different sizes) and constructs a
