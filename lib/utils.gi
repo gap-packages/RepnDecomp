@@ -1,37 +1,16 @@
 # Returns list of first n elems from list
 Take@ := function(list, n)
-    local result, count;
-    result := [];
-    count := 0;
-    while count < n do
-        Add(result, list[count+1]);
-        count := count + 1;
-    od;
-    return result;
+    return List([1..n], i -> list[i]);
 end;
 
 # Returns list of all but first n elems from list
 Drop@ := function(list, n)
-    local result, count, elem;
-    result := [];
-    count := 0;
-    for elem in list do
-        if count >= n then
-            Add(result, elem);
-        fi;
-        count := count + 1;
-    od;
-    return result;
+    return List([n+1..Length(list)], i -> list[i]);
 end;
 
 # Returns a list consisting of n copies of elem
 Replicate@ := function(elem, n)
-    local result, i;
-    result := [];
-    for i in [1..n] do
-        Add(result, elem);
-    od;
-    return result;
+    return List([1..n], i -> elem);
 end;
 
 # Takes a list of blocks (possibly different sizes) and constructs a
