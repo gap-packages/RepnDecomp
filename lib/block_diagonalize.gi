@@ -137,6 +137,7 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
 
     return rec(basis := ret_basis,
                diagonal_rep := new_rho,
-               decomposition := full_space_list,
+               decomposition := Filtered(full_space_list,
+                                         l -> Size(l) > 0), # don't use blocks that don't appear
                centralizer_basis := centralizer_blocks);
 end );
