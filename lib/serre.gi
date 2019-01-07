@@ -37,7 +37,6 @@ ConvertRhoIfNeeded@ := function(rho)
         return GroupHomomorphismByImages(G, new_range, gens, new_ims);
     fi;
 
-    Error("not a permutation or linear representation!");
     return fail;
 end;
 
