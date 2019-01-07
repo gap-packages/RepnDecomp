@@ -9,6 +9,11 @@
 # all possible ways. Result will be nblocks^2 long.
 GenerateAllBlocks@ := function(dimension, nblocks)
     local result, coords, coord, i, j, gen;
+
+    if dimension = 0 or nblocks = 0 then
+        return [];
+    fi;
+
     result := [];
 
     # Possible locations of the I block
