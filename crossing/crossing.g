@@ -3,7 +3,7 @@
 
 LoadPackage("RepnDecomp");
 
-Read("compute_q.g");
+Read("utils.g");
 Read("cr.g");
 
 Drop := Drop@RepnDecomp;
