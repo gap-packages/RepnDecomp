@@ -94,7 +94,7 @@ libgap.eval('LoadPackage("RepnDecomp");')
 
 # read the file that computes action_hom, the regular
 # representation of the group action of G on the m cycles
-libgap.eval('Read("perms.g");')
+libgap.eval('Read("crossing.g");')
 
 # Need this for RationalCanonicalFormTransform, added in GAP
 # 4.10. Sage uses 4.8.

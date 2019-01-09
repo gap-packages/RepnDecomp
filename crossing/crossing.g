@@ -4,6 +4,7 @@
 LoadPackage("RepnDecomp");
 
 Read("compute_q.g");
+Read("cr.g");
 
 Drop := Drop@RepnDecomp;
 Take := Take@RepnDecomp;
@@ -12,22 +13,28 @@ Take := Take@RepnDecomp;
 # p to q^-1. By this I don't mean by conjugation, I mean viewing p and
 # q^-1 as cyclic lists and swapping adjacent elements without caring
 # what they are.
-#
-# NOTE: This is not a clever way to calculate this, but it works fine.
-Q := function(p, q) return AdjacentTranspositionsBetween(p, q^(-1)); end;
 
-# This is the full matrix of Q for S_n. Q is (n-1)! x (n-1)!
-# This probably won't be needed most of the time
+# This is the full matrix of Q for S_n. Q is (n-1)! x (n-1)!, very
+# large.  This probably won't be needed most of the time.
 Qmatrix := function(n)
-    local G, ncycle, ncycles, big, i, j;
+    local G, ncycles, big, i, j, gc, g, h, T, Q;
 
-    G := SymmetricGroup(n);
+    # The code here is taken from the function agens in cr.g
+    gc:=grp(n);
+    g:=gc.g;
+    ncycles := gc.c;
+    h:=Subgroup(g,[g.1,g.2]);
+    T:=TwoOrbitNumbers(g,[h]);
+    StructureConstantsTwoOrbitsAlgebra(T);
+    G:=NullGraph(g);
+    AddEdgeOrbit(G,[1,1^g.3],h);
 
-    # This is just some n-cycle
-    ncycle := MappingPermListList(ShiftLeft([1..n], 1), [1..n]);
-
-    # The n-cycles index the rows and cols of Q
-    ncycles := List(ncycle^G);
+    # Takes indices into ncycles and tells you codistance between
+    # ncycles[p] and ncycles[q]
+    Q := function(p, q)
+        # g.4 inverts cycles
+        return Distance(G, p, q^g.4);
+    end;
 
     # This is the full, big matrix of Q (not filled out yet)
     # WARNING: this could be extremely big
@@ -36,12 +43,12 @@ Qmatrix := function(n)
     # Fill out the matrix really naively and stupidly
     for i in [1..Factorial(n-1)] do
         for j in [1..Factorial(n-1)] do
-            big[i][j] := AdjacentTranspositionsBetween(ncycles[i], ncycles[j]^-1);
+            big[i][j] := Q(i, j);
         od;
     od;
 
-    # gives the matrix and the indexing list, so Qmatrix[i][j] =
-    # Q(index[i], index[j]).
+    # gives the matrix and the indexing list, so the matrix_ij is the
+    # distance between index[i] and index[j]^-1
     return rec(matrix := big,
                index := ncycles);
 end;
@@ -93,7 +100,8 @@ end;
 # compute the irreps of S_m, since Sage can give us integer matrices -
 # much nicer than GAP's Cyclotomics matrices.
 
-# Uses the irreps of S_m x S_2 to calculate the parameters for the SDP we need to solve
+# Uses the irreps of S_m x S_2 to calculate the parameters for the SDP
+# we need to solve
 CalculateSDP := function(m, irreps)
     local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom;
 
@@ -117,6 +125,7 @@ CalculateSDP := function(m, irreps)
 
     # d is the dimension of the centralizer ring (sum of squares of
     # multiplicities of each irrep)
+    # TODO: Reduce d more, limit to subspace of symmetric matrices
     d := Length(norm_cent_basis);
 
     # The centralizer ring itself
