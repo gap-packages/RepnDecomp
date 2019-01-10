@@ -169,3 +169,7 @@ InstallGlobalFunction( AreRepsIsomorphic, function(rep1, rep2)
     # iff they are isomorphic
     return DecomposeCharacter@(rep1, irr_chars) = DecomposeCharacter@(rep2, irr_chars);
 end );
+
+InstallGlobalFunction( DegreeOfRepresentation, function(rep)
+    return Trace(Image(rep, One(Source(rep))));
+end );

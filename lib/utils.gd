@@ -4,3 +4,4 @@ DeclareGlobalFunction( "TensorProductRepLists" );
 DeclareGlobalFunction( "ComposeHomFunction" );
 DeclareGlobalFunction( "DirectSumRepList" );
 DeclareGlobalFunction( "AreRepsIsomorphic" );
+DeclareGlobalFunction( "DegreeOfRepresentation" );
