@@ -3,3 +3,4 @@ DeclareGlobalFunction( "Replicate" );
 DeclareGlobalFunction( "TensorProductRepLists" );
 DeclareGlobalFunction( "ComposeHomFunction" );
 DeclareGlobalFunction( "DirectSumRepList" );
+DeclareGlobalFunction( "AreRepsIsomorphic" );

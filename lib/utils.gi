@@ -89,3 +89,83 @@ InstallGlobalFunction( DirectSumRepList, function(reps)
     H := Group(imgs);
     return GroupHomomorphismByImages(G, H, gens, imgs);
 end );
+
+# Takes the inner product of two characters, given as rows of the
+# character table
+CharacterInnerProduct@ := function(chi1, chi2, G)
+    local classes;
+
+    # We avoid summing over the whole group
+    classes := ConjugacyClasses(G);
+
+    return (1/Size(G)) * Sum(List([1..Size(classes)],
+                                  i -> Size(classes[i]) * chi1[i] * ComplexConjugate(chi2[i])));
+end;
+
+# Gives the row of the character table corresponding to irrep
+IrrepToCharacter@ := function(irrep)
+    local G;
+    G := Source(irrep);
+    return List(ConjugacyClasses(G),
+                class -> Trace(Image(irrep, Representative(class))));
+end;
+
+# Irr(G), but guaranteed to be ordered the same as
+# IrreducibleRepresentationsDixon (or the list of irreps given)
+IrrWithCorrectOrdering@ := function(G, args...)
+    local irreps;
+    irreps := [];
+
+    if Length(args) > 0 then
+        irreps := args[1];
+    else
+        irreps := IrreducibleRepresentationsDixon(G);
+    fi;
+
+    return List(irreps, irrep -> IrrepToCharacter@(irrep));
+end;
+
+# Writes the character of rho as a vector in the basis given by the
+# irreducible characters (if chars are not given, use Dixon's method)
+DecomposeCharacter@ := function(rho, args...)
+    local G, classes, irr_chars, char_rho, char_rho_basis;
+
+    G := Source(rho);
+
+    # Otherwise, we just compute using characters
+    classes := ConjugacyClasses(G);
+
+    # If we are given chars, just use those
+    irr_chars := [];
+    if Length(args) > 0 then
+        irr_chars := args[1];
+    else
+        # We could use Irr(G) here, but we want to keep all ordering
+        # consistent with IrreducibleRepresentations
+        irr_chars := IrrWithCorrectOrdering@(G);
+    fi;
+    char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
+
+    # Write char_rho in the irr_chars basis for class functions
+    char_rho_basis := List(irr_chars,
+                           irr_char -> CharacterInnerProduct@(char_rho, irr_char, G));
+
+    return char_rho_basis;
+end;
+
+# Tells you if two representations of the same group are isomorphic by
+# examining characters
+InstallGlobalFunction( AreRepsIsomorphic, function(rep1, rep2)
+    local G, irr_chars;
+
+    if Source(rep1) <> Source(rep2) then
+        return false;
+    fi;
+
+    G := Source(rep1);
+    irr_chars := IrrWithCorrectOrdering@(G);
+
+    # Writes the characters in the irr_chars basis, they are the same
+    # iff they are isomorphic
+    return DecomposeCharacter@(rep1, irr_chars) = DecomposeCharacter@(rep2, irr_chars);
+end );
