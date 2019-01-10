@@ -54,7 +54,7 @@ BasisChangeMatrixSimilar@ := function(X, Y)
 end;
 
 InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
-    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_rho_f, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F, ret_basis, all_sizes, centralizer_blocks;
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F, ret_basis, all_sizes, centralizer_blocks;
 
     G := Source(rho);
 
@@ -94,12 +94,8 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
 
     summands := List(Flat(isomorphic_collected), r -> r.rep);
 
-    new_rho_f := function(g)
-        # Take the image with each direct summand and just glue them together
-        return BlockDiagonalMatrix(List(summands, irrep -> Image(irrep, g)));
-    end;
-
-    new_rho := GroupHomomorphismByImages(G, Group(List(GeneratorsOfGroup(G), new_rho_f)));
+    # This is the block diagonal rep with minimal size blocks
+    new_rho := DirectSumRepList(summands);
 
     # We don't know the basis that the new_rho(g) are written in, but
     # since the representations are isomorphic, there is a basis
@@ -108,7 +104,7 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     # To calculate A, we use a random element of G
     g := G.1;
 
-    basis_change := BasisChangeMatrixSimilar@(new_rho_f(g), Image(rho, g));
+    basis_change := BasisChangeMatrixSimilar@(Image(new_rho, g), Image(rho, g));
 
     basis := TransposedMat(basis_change);
 
