@@ -22,12 +22,3 @@ IsGInvariant := function(rho, space)
     od;
     return true;
 end;
-
-DirectSumRepList := function(reps)
-    local G, gens, imgs, H;
-    G := Source(reps[1]);
-    gens := GeneratorsOfGroup(G);
-    imgs := List(gens, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
-    H := Group(imgs);
-    return GroupHomomorphismByImages(G, H, gens, imgs);
-end;

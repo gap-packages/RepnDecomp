@@ -68,3 +68,24 @@ InstallGlobalFunction( TensorProductRepLists, function(reps1, reps2)
     od;
     return result;
 end );
+
+# Returns a homomorphism g s.t. g(x) = func(hom(x))
+InstallGlobalFunction( ComposeHomFunction, function(hom, func)
+    local G, gens, imgs, H;
+    G := Source(hom);
+    gens := GeneratorsOfGroup(G);
+    imgs := List(gens, gen -> func(Image(hom, gen)));
+    H := Group(imgs);
+    return GroupHomomorphismByImages(G, H, gens, imgs);
+end );
+
+# Returns a block diagonal representation isomorphic to the direct sum
+# of the list of reps
+InstallGlobalFunction( DirectSumRepList, function(reps)
+    local G, gens, imgs, H;
+    G := Source(reps[1]);
+    gens := GeneratorsOfGroup(G);
+    imgs := List(gens, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
+    H := Group(imgs);
+    return GroupHomomorphismByImages(G, H, gens, imgs);
+end );
