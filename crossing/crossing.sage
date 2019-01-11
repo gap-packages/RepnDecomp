@@ -68,7 +68,7 @@ def compute_alpha(m):
 
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
     # some explanation of this program
-    prog = SemidefiniteProgram()
+    prog = SemidefiniteProgram(maximization=False)
     x = prog.new_variable()
 
     d = len(L)
