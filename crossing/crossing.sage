@@ -1,5 +1,3 @@
-#!/usr/bin/env sage
-
 from sage.combinat.symmetric_group_representations import *
 
 # Prints a sage matrix as a list of lists
@@ -99,8 +97,3 @@ libgap.eval('Read("crossing.g");')
 # Need this for RationalCanonicalFormTransform, added in GAP
 # 4.10. Sage uses 4.8.
 libgap.eval('Read("rcft.g");')
-
-if __name__ == "__main__":
-    import sys
-    m = int(sys.argv[1])
-    compute_alpha(m)
