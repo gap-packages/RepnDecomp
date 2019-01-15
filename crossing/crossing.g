@@ -105,12 +105,14 @@ end;
 CalculateSDP := function(m, irreps)
     local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom;
 
+    Print("Computing group action\n");
     action_hom := ComputeActionHom(m);
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
 
     # First, we block diagonalize action_hom
+    Print("Decomposing group action\n");
     block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     nice_basis := block_diag_info.basis;
 
@@ -134,6 +136,7 @@ CalculateSDP := function(m, irreps)
 
     # The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
     # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
+    Print("Calculating lambda_ij^k");
     mult_param := NullMat(d, d);
     for i in [1..d] do
         for j in [1..d] do
