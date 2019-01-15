@@ -38,7 +38,7 @@ InstallMethod( BlockDiagonalRepresentation, "for linear reps", [ IsGroupHomomorp
 
     range := Group(imgs);
 
-    return GroupHomomorphismByImages(G, range, gens, imgs);
+    return GroupHomomorphismByImagesNC(G, range, gens, imgs);
 end );
 
 # Calculates a matrix P such that X = P^-1 Y P

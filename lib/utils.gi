@@ -62,7 +62,7 @@ InstallGlobalFunction( TensorProductRepLists, function(reps1, reps2)
         for rep2 in reps2 do
             imgs := List(gens, gxh -> KroneckerProduct(Image(rep1, Image(pi1, gxh)),
                                                        Image(rep2, Image(pi2, gxh))));
-            new_rep := GroupHomomorphismByImages(GxH, Group(imgs), gens, imgs);
+            new_rep := GroupHomomorphismByImagesNC(GxH, Group(imgs), gens, imgs);
             Add(result, new_rep);
         od;
     od;
@@ -76,7 +76,7 @@ InstallGlobalFunction( ComposeHomFunction, function(hom, func)
     gens := GeneratorsOfGroup(G);
     imgs := List(gens, gen -> func(Image(hom, gen)));
     H := Group(imgs);
-    return GroupHomomorphismByImages(G, H, gens, imgs);
+    return GroupHomomorphismByImagesNC(G, H, gens, imgs);
 end );
 
 # Returns a block diagonal representation isomorphic to the direct sum
@@ -87,7 +87,7 @@ InstallGlobalFunction( DirectSumRepList, function(reps)
     gens := GeneratorsOfGroup(G);
     imgs := List(gens, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
     H := Group(imgs);
-    return GroupHomomorphismByImages(G, H, gens, imgs);
+    return GroupHomomorphismByImagesNC(G, H, gens, imgs);
 end );
 
 # Takes the inner product of two characters, given as rows of the

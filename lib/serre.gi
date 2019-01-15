@@ -34,7 +34,7 @@ ConvertRhoIfNeeded@ := function(rho)
         high := LargestMovedPoint(ims);
         new_ims := List(ims, i -> PermutationMat(i, high));
         new_range := Group(new_ims);
-        return GroupHomomorphismByImages(G, new_range, gens, new_ims);
+        return GroupHomomorphismByImagesNC(G, new_range, gens, new_ims);
     fi;
 
     return fail;

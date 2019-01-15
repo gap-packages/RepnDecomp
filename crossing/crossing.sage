@@ -13,7 +13,7 @@ def to_gap_homo(m, irrep):
     imgs = [irrep.representation_matrix(Permutation(g)) for g in gens]
     imgs = [to_list_list(mat) for mat in imgs]
     H = "Group({})".format(imgs)
-    return "GroupHomomorphismByImages(SymmetricGroup({}), {}, {}, {})".format(
+    return "GroupHomomorphismByImagesNC(SymmetricGroup({}), {}, {}, {})".format(
         m,
         H,
         str(gens),
@@ -37,7 +37,7 @@ def compute_alpha(m, print_irreps=False, status=True):
     irreps_s_m = libgap.eval("irreps_s_m := {};".format(gap_all_irreps(m)))
 
     # the irreps of s_2
-    irreps_s_2 = libgap.eval("irreps_s_2 := [ GroupHomomorphismByImages( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ 1 ] ] ]), [ (1,2) ], [ [ [ 1 ] ] ] ), GroupHomomorphismByImages( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ -1 ] ] ]), [ (1,2) ], [ [ [ -1 ] ] ] ) ];")
+    irreps_s_2 = libgap.eval("irreps_s_2 := [ GroupHomomorphismByImagesNC( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ 1 ] ] ]), [ (1,2) ], [ [ [ 1 ] ] ] ), GroupHomomorphismByImagesNC( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ -1 ] ] ]), [ (1,2) ], [ [ [ -1 ] ] ] ) ];")
 
     # list of irreps of the whole group
     irreps_G = libgap.eval("irreps_G := TensorProductRepLists(irreps_s_m, irreps_s_2);")
