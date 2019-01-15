@@ -93,12 +93,12 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     H := Range(irrep);
 
     # This gives the dimension of the space of which W is the general
-    # linear group (the size of the matrices representing the maps)
+    # linear group (the size of the matrices representing the maps),
+    # is also the degree.
     n := Length(H.1);
 
-    m := Length(Range(rho).1);
     F := Cyclotomics;
-    V := F^m;
+    V := F^n;
 
     # First compute the projections p_ab. We only actually use projections with
     # a=1..n and b=1, so we can just compute those. projections[a] is p_{a1}
