@@ -32,6 +32,7 @@ def real_mat(mat):
 # Computes the nice basis to use (that block diagonalises the
 # centralizer ring), using my GAP package
 def compute_alpha(m):
+    print("Calculating irreps of S_{} x S_2 in Sage".format(m))
     irreps_s_m = libgap.eval("irreps_s_m := {};".format(gap_all_irreps(m)))
 
     # the irreps of s_2
@@ -42,6 +43,7 @@ def compute_alpha(m):
 
     # Calculates the matrices needed for the (reduced version of the)
     # semidefinite program
+    print("Formulating SDP in GAP")
     libgap.eval("sdp := CalculateSDP({}, irreps_G);".format(m))
 
     B = [matrix(mat) for mat in libgap.eval("sdp.centralizer_basis;").sage()]
@@ -66,6 +68,7 @@ def compute_alpha(m):
 
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
     # some explanation of this program
+    print("Setting up SDP in Sage")
     prog = SemidefiniteProgram(maximization=False)
     x = prog.new_variable()
 
@@ -81,10 +84,12 @@ def compute_alpha(m):
     one = matrix([[1]])
     constraint1 = sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
 
+    print("Adding constraints")
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
 
-    print(prog.solve())
+    print("Solving SDP")
+    print("alpha_{} = {}".format(m, prog.solve()))
 
 # Make sure your gap_cmd etc are set up properly so that my package is
 # available
