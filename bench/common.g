@@ -1,11 +1,29 @@
 LoadPackage("RepnDecomp");;
 
-# a fairly large, non solvable group
-G := SymmetricGroup(6);;
+# benchmarks a function to_bench that does something to
+# representations, for a range of sizes of group and degree of
+# representation
+BenchForSmallGroups := function(to_bench, out)
+    local size, num, id, G, irreps, rho, starttime, r, endtime;
+    PrintTo(out);
+    for size in [100, 110 .. 500] do
+        # just testing ~10 groups should always be enough
+        num := Minimum(10, NrSmallGroups(size));
+        for id in [1..num] do
+            G := SmallGroup(size, id);
+            irreps := IrreducibleRepresentations(G);
 
-# we aren't benchmarking irrep list calculation, so precalculate it
-irreps := IrreducibleRepresentations(G);;
+            # the trivial rep
+            rho := GroupHomomorphismByImages(G,
+                                             Group(IdentityMat(1)),
+                                             GeneratorsOfGroup(G),
+                                             List(GeneratorsOfGroup(G), _ -> IdentityMat(1)));
+            starttime := Runtime();
+            r := to_bench(rho, irreps);
+            endtime := Runtime();
 
-# a "large" degree representation to decompose
-#rho := DirectSumRepList([irreps[4], irreps[6], irreps[4], irreps[1], irreps[1]]);;
-rho := irreps[4];
+            # group size, number of irreps/conjugacy classes, time taken
+            AppendTo(out, Size(G), " ", Length(irreps), " ", endtime-starttime, "\n");
+        od;
+    od;
+end;;

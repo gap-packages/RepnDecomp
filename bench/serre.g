@@ -1,6 +1,3 @@
 Read("common.g");
 
-start := Runtime();;
-x:=BlockDiagonalBasis(rho);;
-c:=RepresentationCentralizerBlocks(rho);;
-Print("RUNTIME: ", Runtime()-start, "\n");;
+BenchForSmallGroups(function(r,i) return BlockDiagonalRepresentation(r); end, "serre.txt");
