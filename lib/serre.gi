@@ -40,6 +40,28 @@ ConvertRhoIfNeeded@ := function(rho)
     return fail;
 end;
 
+# Gives the canonical summand corresponding to irrep
+IrrepCanonicalSummand@ := function(rho, irrep)
+    local G, V, character, degree, projection, canonical_summand;
+
+    G := Source(rho);
+
+    # vector space rho(g) acts on, Length(Range(rho).1) is the degree
+    V := Cyclotomics^Length(Range(rho).1);
+
+    # In Serre's text, irrep is called W_i, this character is chi_i
+    character := g -> Trace(Image(irrep, g));
+    degree := character(One(G));
+
+    # Calculate the projection map from V to irrep using Theorem 8 (Serre)
+    # Given as a matrix, p_i
+    projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
+
+    # Calculate V_i, the canonical summand
+    canonical_summand := MatrixImage@(projection, V);
+    return canonical_summand;
+end;
+
 InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(arg_rho)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands, rho;
 
@@ -48,35 +70,10 @@ InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(arg_rho
     # The group we are taking representations of
     G := Source(rho);
 
-    # The field we are working over: it's always the Cyclotomics
-    F := Cyclotomics;
-
-    # The dimension of the V in rho : G -> GL(V). Since we have the
-    # images of rho as matrices, this is just the width or height of
-    # any image of any generator of G.
-    n := Length(Range(rho).1);
-
-    # The vector space that the linear maps act on
-    V := F^n;
-
     # The full list of irreps W_i of G over F
     irreps := IrreducibleRepresentations(G);
 
-    return List(irreps, function (irrep)
-                   local character, degree, projection, canonical_summand;
-
-                   # In Serre's text, irrep is called W_i, this character is chi_i
-                   character := g -> Trace(Image(irrep, g));
-                   degree := character(One(G));
-
-                   # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-                   # Given as a matrix, p_i
-                   projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
-
-                   # Calculate V_i, the canonical summand
-                   canonical_summand := MatrixImage@(projection, V);
-                   return canonical_summand;
-               end );
+    return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
 
 # Decomposes the representation V_i into a direct sum of some number
@@ -148,13 +145,13 @@ InstallMethod( IrreducibleDecompositionCollected, "for linear representations", 
 
     N := Size(irreps);
 
-    # This gives a list of vector spaces, each a canonical summand
-    canonical_summands := CanonicalDecomposition(rho);
-
     # This gives a list of lists of vector spaces, each a
     # decomposition of a canonical summand into irreducibles.
-    full_decomposition := List([1..N],
-                               i -> DecomposeCanonicalSummand@(rho, irreps[i], canonical_summands[i]));
+    full_decomposition := List(irreps,
+                               irrep -> DecomposeCanonicalSummand@(rho,
+                                                                   irrep,
+                                                                   IrrepCanonicalSummand@(rho,
+                                                                                          irrep)));
 
     # Here we return the rho we actually used i.e. after we convert to
     # an isomorphic rep that goes to a matrix group (not a permutation
