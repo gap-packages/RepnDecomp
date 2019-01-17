@@ -60,7 +60,7 @@ InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(arg_rho
     V := F^n;
 
     # The full list of irreps W_i of G over F
-    irreps := IrreducibleRepresentations(G, F);
+    irreps := IrreducibleRepresentations(G);
 
     return List(irreps, function (irrep)
                    local character, degree, projection, canonical_summand;
@@ -144,7 +144,7 @@ InstallMethod( IrreducibleDecompositionCollected, "for linear representations", 
     n := Length(Range(rho).1);
     V := F^n;
 
-    irreps := IrreducibleRepresentations(G, F);
+    irreps := IrreducibleRepresentations(G);
 
     N := Size(irreps);
 
