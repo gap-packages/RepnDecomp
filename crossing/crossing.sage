@@ -1,4 +1,5 @@
 from sage.combinat.symmetric_group_representations import *
+import sys, time
 
 # Prints a sage matrix as a list of lists
 def to_list_list(mat):
@@ -33,8 +34,14 @@ def real_mat(mat):
 # centralizer ring), using my GAP package
 def compute_alpha(m, print_irreps=False, status=True):
     if status:
-        print("Calculating irreps of S_{} x S_2 in Sage".format(m))
+        sys.stdout.write("Calculating irreps of S_{} x S_2 in Sage: ".format(m))
+
+    t0 = time.time()
     irreps_s_m = libgap.eval("irreps_s_m := {};".format(gap_all_irreps(m)))
+    t1 = time.time()
+
+    if status:
+        print(t1-t0)
 
     # the irreps of s_2
     irreps_s_2 = libgap.eval("irreps_s_2 := [ GroupHomomorphismByImagesNC( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ 1 ] ] ]), [ (1,2) ], [ [ [ 1 ] ] ] ), GroupHomomorphismByImagesNC( SymmetricGroup( [ 1 .. 2 ] ), Group([ [ [ -1 ] ] ]), [ (1,2) ], [ [ [ -1 ] ] ] ) ];")
@@ -48,9 +55,20 @@ def compute_alpha(m, print_irreps=False, status=True):
     # Calculates the matrices needed for the (reduced version of the)
     # semidefinite program
     if status:
-        print("Formulating SDP in GAP")
-    libgap.eval("sdp := CalculateSDP({}, irreps_G);".format(m))
+        sys.stdout.write("Block diagonalizing SDP in GAP: ")
 
+    t0 = time.time()
+    libgap.eval("sdp := CalculateSDP({}, irreps_G);".format(m))
+    t1 = time.time()
+
+    if status:
+        print(t1-t0)
+
+
+    if status:
+        sys.stdout.write("Formulating SDP in Sage: ")
+
+    t0 = time.time()
     B = [matrix(mat) for mat in libgap.eval("sdp.centralizer_basis;").sage()]
     basis = libgap.eval("sdp.nice_basis;").sage()
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
@@ -68,6 +86,10 @@ def compute_alpha(m, print_irreps=False, status=True):
     Q_block_diag = real_mat(Q_block_diag)
     J_block_diag = real_mat(J_block_diag)
     L = [real_mat(mat) for mat in L]
+    t1 = time.time()
+
+    if status:
+        print(t1-t0)
 
     #import pdb; pdb.set_trace()
 
@@ -96,8 +118,14 @@ def compute_alpha(m, print_irreps=False, status=True):
     prog.add_constraint(constraint1)
 
     if status:
-        print("Solving SDP")
-    print("alpha_{} = {}".format(m, prog.solve()))
+        sys.stdout.write("Solving SDP: ")
+
+    t0 = time.time()
+    alpha_m = prog.solve()
+    t1 = time.time()
+
+    print(t1-t0)
+    print("alpha_{} = {}".format(m, alpha_m))
 
 # Make sure your gap_cmd etc are set up properly so that my package is
 # available
