@@ -62,6 +62,22 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     return canonical_summand;
 end;
 
+# filters out the irreps that don't appear in the direct sum
+# decomposition of rho
+RelevantIrreps@ := function(rho, irreps)
+    local G, irr_chars, char_rho, relevant_indices;
+
+    G := Source(rho);
+    irr_chars := IrrWithCorrectOrdering@(G, irreps);
+    char_rho := DecomposeCharacter@(rho, irr_chars);
+
+    # indices of irreps that appear in rho
+    relevant_indices := Filtered([1..Length(irreps)],
+                                 i -> char_rho[i] > 0);
+
+    return irreps{relevant_indices};
+end;
+
 InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(arg_rho)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands, rho;
 
@@ -70,8 +86,8 @@ InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(arg_rho
     # The group we are taking representations of
     G := Source(rho);
 
-    # The full list of irreps W_i of G over F
-    irreps := IrreducibleRepresentations(G);
+    # The list of irreps W_i of G over F appearing in rho
+    irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
 
     return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
@@ -141,7 +157,7 @@ InstallMethod( IrreducibleDecompositionCollected, "for linear representations", 
     n := Length(Range(rho).1);
     V := F^n;
 
-    irreps := IrreducibleRepresentations(G);
+    irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
 
     N := Size(irreps);
 
