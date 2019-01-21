@@ -79,6 +79,11 @@ InstallGlobalFunction( ComposeHomFunction, function(hom, func)
     return GroupHomomorphismByImagesNC(G, H, gens, imgs);
 end );
 
+# Returns homomorphism from G to f(G)
+FuncToHom@ := function(G, f)
+    return ComposeHomFunction(IdentityMapping(G), f);
+end;
+
 # Returns a block diagonal representation isomorphic to the direct sum
 # of the list of reps
 InstallGlobalFunction( DirectSumRepList, function(reps)
@@ -173,3 +178,24 @@ end );
 InstallGlobalFunction( DegreeOfRepresentation, function(rep)
     return Trace(Image(rep, One(Source(rep))));
 end );
+
+# Restricts a matrix to a given space. Resulting rep is given in the
+# given basis. This only makes sense if V = span(basis) is
+# G-invariant, otherwise results will be nonsense.
+RestrictRep@ := function(rho, basis)
+    local G, restricted_rho;
+
+    G := Source(rho);
+
+    restricted_rho := function(g)
+        local imgs;
+
+        # where g sends the basis vectors (row vects)
+        imgs := List(basis, v -> Coefficients(basis, Image(rho, g) * v));
+
+        # transpose to get column vectors
+        return TransposedMat(imgs);
+    end;
+
+    return FuncToHom@(G, restricted_rho);
+end;
