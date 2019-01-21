@@ -1,6 +1,9 @@
 # These are the implementations of Serre's formulas from his book
 # Linear Representations of Finite Groups.
 
+# This is used for speed in some special cases
+LoadPackage("cohcfg");
+
 MatrixImage@ := function(p, V)
     local F;
 
@@ -42,20 +45,40 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, V, character, degree, projection, canonical_summand;
+    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution;
 
     G := Source(rho);
 
-    # vector space rho(g) acts on, Length(Range(rho).1) is the degree
-    V := Cyclotomics^Length(Range(rho).1);
+    degree := DegreeOfRepresentation(rho);
+
+    # vector space rho(g) acts on
+    V := Cyclotomics^degree;
 
     # In Serre's text, irrep is called W_i, this character is chi_i
     character := g -> Trace(Image(irrep, g));
-    degree := character(One(G));
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    # Given as a matrix, p_i
-    projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
+    if not IsPermGroup(Range(rho)) then
+        # Given as a matrix, using Serre's formula directly, p_i is:
+        projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
+    else
+        # TODO: check this trick works...
+        H := Range(rho); # is perm group
+        T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
+        cc := ConjugacyClasses(H);
+
+        serre_class_contribution := function(class)
+            local rep;
+            rep := Representative(class);
+
+            # this uses the fact the each orbital can be seen as the
+            # adjacency matrix of a graph with appropriate isomorphism
+            # group to sum the conjugacy class
+            return ComplexConjugate(character(rep)) * ClassSum(H, class);
+        end;
+
+        projection := (degree/Order(G)) * Sum(cc, serre_class_contribution);
+    fi;
 
     # Calculate V_i, the canonical summand
     canonical_summand := MatrixImage@(projection, V);
@@ -78,16 +101,16 @@ RelevantIrreps@ := function(rho, irreps)
     return irreps{relevant_indices};
 end;
 
-InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(arg_rho)
-    local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands, rho;
-
-    rho := ConvertRhoIfNeeded@(arg_rho);
+InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(rho)
+    local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
 
     # The group we are taking representations of
     G := Source(rho);
 
     # The list of irreps W_i of G over F appearing in rho
-    irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
+    # We need to convert here, since this function needs a linear rep
+    irreps := RelevantIrreps@(ConvertRhoIfNeeded@(rho),
+                              IrreducibleRepresentations(G));
 
     return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
