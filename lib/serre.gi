@@ -45,7 +45,7 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution;
+    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps;
 
     G := Source(rho);
 
@@ -66,15 +66,20 @@ IrrepCanonicalSummand@ := function(rho, irrep)
         H := Range(rho); # is perm group
         T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
         cc := ConjugacyClasses(H);
+        two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
 
         serre_class_contribution := function(class)
-            local rep;
+            local rep, v, A;
             rep := Representative(class);
 
             # this uses the fact the each orbital can be seen as the
             # adjacency matrix of a graph with appropriate isomorphism
             # group to sum the conjugacy class
-            return ComplexConjugate(character(rep)) * ClassSum(H, class);
+
+            # coeffs of orbitals making up the class sum
+            v := ClassSum(H, class);
+            A := List([1..Length(v)], i -> v[i]);
+            return ComplexConjugate(character(rep)) * A;
         end;
 
         projection := (degree/Order(G)) * Sum(cc, serre_class_contribution);
