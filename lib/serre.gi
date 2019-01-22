@@ -45,7 +45,7 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps;
+    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals;
 
     G := Source(rho);
 
@@ -58,7 +58,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     character := g -> Trace(Image(irrep, g));
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    if not IsPermGroup(Range(rho)) then
+    if not IsPermGroup(Range(rho)) or not IsInjective(rho) then
         # Given as a matrix, using Serre's formula directly, p_i is:
         projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
     else
@@ -67,6 +67,9 @@ IrrepCanonicalSummand@ := function(rho, irrep)
         T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
         cc := ConjugacyClasses(H);
         two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
+
+        # the orbital matrices themselves
+        orbitals := List(two_orbit_reps, OrbitalMatrix@);
 
         serre_class_contribution := function(class)
             local rep, v, A;
@@ -78,7 +81,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
 
             # coeffs of orbitals making up the class sum
             v := ClassSum(H, class);
-            A := List([1..Length(v)], i -> v[i]);
+            A := Sum([1..Length(v)], i -> v[i] * orbitals[i]);
             return ComplexConjugate(character(rep)) * A;
         end;
 
