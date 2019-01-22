@@ -199,3 +199,32 @@ RestrictRep@ := function(rho, basis)
 
     return FuncToHom@(G, restricted_rho);
 end;
+
+# Calculates orbital matrix for G given representative
+OrbitalMatrix@ := function(G, representative)
+    local n, orbit, orbital, pair;
+
+    # representative is assumed to be a pair [i, j] where i, j <= n
+
+    if not IsPermGroup(G) then
+        Error("G is not a permutation group!");
+    fi;
+
+    n := LargestMovedPoint(G);
+
+
+    # We apply all elements of G to [i,j] and mark all reached
+    # points with a 1 in the n x n zero matrix.
+
+    # The action of G on pairs is just g(i, j) = (gi, gj)
+    # i.e. OnTuples
+    orbit := List(G, g -> OnTuples(representative, g));
+
+    orbital := NullMat(n, n);
+
+    for pair in orbit do
+        orbital[pair[1]][pair[2]] := 1;
+    od;
+
+    return orbital;
+end;
