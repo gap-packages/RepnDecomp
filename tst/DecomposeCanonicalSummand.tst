@@ -1,10 +1,8 @@
 gap> # some random group
 gap> G := DirectProduct(SymmetricGroup(3), SymmetricGroup(3));;
 gap> irreps := IrreducibleRepresentations(G);;
-gap> gens := GeneratorsOfGroup(G);;
-gap> imgs := List(gens, g -> BlockDiagonalMatrix([Image(irreps[2], g), Image(irreps[2], g), Image(irreps[2], g)]));;
 gap> # rho is irreps2 oplus irreps2 oplus irreps2 (rho has degree 3)
-gap> rho := GroupHomomorphismByImages(G, Group(imgs), gens, imgs);;
+gap> rho := DirectSumRepList([irreps[2], irreps[2], irreps[2]]);;
 gap> # so the canonical summand is just the whole space
 gap> summand := Cyclotomics^3;;
 gap> # and each axis is an irreducible G-invariant space
