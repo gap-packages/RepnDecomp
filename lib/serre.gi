@@ -44,10 +44,17 @@ ConvertRhoIfNeeded@ := function(rho)
 end;
 
 # Gives the canonical summand corresponding to irrep
-IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals;
+IrrepCanonicalSummand@ := function(arg_rho, irrep)
+    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, rho, ker, quotient_hom;
 
-    G := Source(rho);
+    # We want to assume rho is injective, i.e. gives a faithful
+    # action. To get this, we quotient by the kernel, then replace
+    # rho.
+    G := Source(arg_rho);
+    ker := KernelOfMultiplicativeGeneralMapping(arg_rho);
+    quotient_hom := NaturalHomomorphismByNormalSubgroupNC(G, ker);
+    rho := GroupHomomorphismByFunction(FactorGroup(G, ker),
+                                       Range(arg_rho), gclass -> Image(arg_rho, PreImagesRepresentative(quotient_hom, gclass)));
 
     degree := DegreeOfRepresentation(rho);
 
@@ -58,7 +65,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     character := g -> Trace(Image(irrep, g));
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    if not IsPermGroup(Range(rho)) or not IsInjective(rho) then
+    if not IsPermGroup(Range(rho)) then
         # Given as a matrix, using Serre's formula directly, p_i is:
         projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
     else
