@@ -122,3 +122,18 @@ end );
 InstallGlobalFunction( RepresentationCentralizer, function(rho)
     return List(RepresentationCentralizerBlocks(rho), BlockDiagonalMatrix);
 end );
+
+# Given an orthonormal basis for the centralizer (w.r.t the product
+# tr(AB^*)), a representative, and a conjugacy class, calculates the
+# sum of the conjugacy class matrices. Result is given as a list of
+# coefficients in the basis.
+ClassSumCentralizer@ := function(rho, class, cent_basis)
+    local conj, prod, coeff;
+
+    conj := A -> List(A, row -> List(row, elem -> ComplexConjugate(elem)));
+    prod := function(A, B) return Trace(A * TransposedMat(conj(B))); end;
+
+    coeff := B -> Size(class) * prod(Image(rho, Representative(class)), B);
+
+    return List(cent_basis, coeff);
+end;
