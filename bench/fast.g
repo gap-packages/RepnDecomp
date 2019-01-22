@@ -1,3 +1,3 @@
 Read("common.g");
 
-BenchForSmallGroups(BlockDiagonalRepresentationFast, "fast.txt");
+BenchRepForSmallGroups(BlockDiagonalRepresentationFast, "fast.txt");

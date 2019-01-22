@@ -24,4 +24,6 @@ def plot(fname):
 if __name__ == "__main__":
     plot("fast.txt")
     plot("serre.txt")
+    plot("canonical_serre.txt")
+    plot("canonical_fast.txt")
     plt.show()
