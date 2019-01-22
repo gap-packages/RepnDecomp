@@ -215,3 +215,37 @@ InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsGroup
     return Flat(List(IrreducibleDecompositionCollected(rho).decomp,
                      rec_list -> List(rec_list, r -> r.space)));
 end );
+
+# Uses BlockDiagonalRepresentationFast to decompose a canonical
+# summand. Ideally canonical summands are small compared to the whole
+# rep, so this will be faster than Serre's formula
+DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
+    local basis, restricted_rho, block_diag_info, space_list, big_space;
+
+    basis := Basis(V_i);
+    restricted_rho := RestrictRep@(rho, basis);
+
+    # we know in advance that restricted_rho only consists of direct
+    # sums of irrep
+    block_diag_info := BlockDiagonalRepresentationFast(restricted_rho, [irrep]);
+
+    # This is a list of spaces, with vectors written as coefficients
+    # of the basis for V_i. We know this list only has 1 element,
+    # there is only one irrep.
+    space_list := block_diag_info.decomposition[1];
+
+    # Convert back to big space vectors
+    big_space := function(space)
+        local orig, new;
+        orig := Basis(space);
+        new := List(orig, v -> Sum([1..Length(v)], i -> v[i] * basis[i]));
+        return VectorSpace(Cyclotomics, new, Zero(V_i));
+    end;
+
+    space_list := List(space_list, big_space);
+
+    # same format as DecomposeCanonicalSummand
+    return List(space_list,
+                space -> rec(space := space,
+                             basis := List(Basis(space))));
+end;
