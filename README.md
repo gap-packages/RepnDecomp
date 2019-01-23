@@ -21,6 +21,31 @@ reductions in the dimension of these problems; potentially known
 results, e.g. on upper bounds on sizes of nonlinear codes, could be
 improved with the help of the program.
 
+## Testing
+
+To run the tests, make sure you have all needed packages installed
+(the only one not included with GAP is
+[cohcfg](https://bitbucket.org/dimpase/cohcfg)), and run:
+
+    $ gap tst/testall.g
+
+This will run all tests and (hopefully) pass.
+
+## Benchmarking
+
+Change to the `bench/` directory and run:
+
+    $ ./run_benchmark.sh
+
+This will benchmarks on some interesting function and output results
+in files ending in `.txt`. To view the results in scatter plot form,
+run:
+
+    $ ./plot.py
+
+which will use matplotlib to open a lot of windows with scatter plots
+of the data.
+
 ## Documentation
 
 There's a GAPDoc documentation book hosted
