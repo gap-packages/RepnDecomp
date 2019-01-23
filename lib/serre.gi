@@ -127,6 +127,13 @@ InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(rho)
     irreps := RelevantIrreps@(ConvertRhoIfNeeded@(rho),
                               IrreducibleRepresentations(G));
 
+    # if there's only 1 irrep, the canonical summand is just the whole
+    # space!
+    if Length(irreps) = 1 then
+        return [Cyclotomics^DegreeOfRepresentation(rho)];
+    fi;
+
+    # otherwise do the calculation per irrep
     return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
 
