@@ -53,7 +53,8 @@ Qmatrix := function(n)
                index := ncycles);
 end;
 
-ComputeActionHom := function(m)
+# gives the action of G as permutations of the list of m cycles
+ActionPermRep := function(m)
     local G, mcycle, mcycles, action, ret;
 
     # This is the group whose action doesn't change Q(p, q)
@@ -85,14 +86,15 @@ ComputeActionHom := function(m)
         return pi * cycle^real_i * (pi^-1);
     end;
 
-    ret := ActionHomomorphism(G, mcycles, action);
+    return ActionHomomorphism(G, mcycles, action);
+end;
 
+# gives the regular representation of the group action
+ActionRegularRep := function(m)
     # We want the action to be represented as permutation matrices
     # Conjugating by any of these matrices fixes Q. This is the
     # representation we are block diagonalizing.
-    ret := ConvertRhoIfNeeded@RepnDecomp(ret);
-
-    return ret;
+    return ConvertRhoIfNeeded@RepnDecomp(ActionPermRep(m));
 end;
 
 # The matrix Q is in the centralizer ring of action_hom - it commutes
@@ -106,7 +108,7 @@ CalculateSDP := function(m, irreps)
     local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom;
 
     Print("Computing group action\n");
-    action_hom := ComputeActionHom(m);
+    action_hom := ActionRegularRep(m);
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
@@ -163,7 +165,7 @@ end;
 
 CheckMatInCentralizer := function(m, mat)
     local action_hom, G;
-    action_hom := ComputeActionHom(m);
+    action_hom := ActionRegularRep(m);
     G := Source(action_hom);
     return ForAll(GeneratorsOfGroup(G),
                   g -> Image(action_hom, g)*mat = mat*Image(action_hom, g));
