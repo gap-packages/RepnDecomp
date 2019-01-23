@@ -47,14 +47,14 @@ end;
 IrrepCanonicalSummand@ := function(arg_rho, irrep)
     local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, rho, ker, quotient_hom;
 
-    # We want to assume rho is injective, i.e. gives a faithful
-    # action. To get this, we quotient by the kernel, then replace
-    # rho.
     G := Source(arg_rho);
-    ker := KernelOfMultiplicativeGeneralMapping(arg_rho);
-    quotient_hom := NaturalHomomorphismByNormalSubgroupNC(G, ker);
-    rho := GroupHomomorphismByFunction(FactorGroup(G, ker),
-                                       Range(arg_rho), gclass -> Image(arg_rho, PreImagesRepresentative(quotient_hom, gclass)));
+    #ker := KernelOfMultiplicativeGeneralMapping(arg_rho);
+    #quotient_hom := NaturalHomomorphismByNormalSubgroupNC(G, ker);
+    #rho := GroupHomomorphismByFunction(FactorGroup(G, ker),
+    #                                   Range(arg_rho), gclass -> Image(arg_rho, PreImagesRepresentative(quotient_hom, gclass)));
+
+    # TODO: get rid of this?
+    rho := arg_rho;
 
     degree := DegreeOfRepresentation(rho);
 
@@ -225,7 +225,7 @@ end );
 
 # Uses BlockDiagonalRepresentationFast to decompose a canonical
 # summand. Ideally canonical summands are small compared to the whole
-# rep, so this will be faster than Serre's formula
+# rep, so could be faster than Serre's formula
 DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
     local basis, restricted_rho, block_diag_info, space_list, big_space;
 
