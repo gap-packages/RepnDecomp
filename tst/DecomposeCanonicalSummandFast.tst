@@ -12,3 +12,13 @@ gap> DecomposeCanonicalSummandFast@RepnDecomp(rho, irreps[2], summand); # should
         1 generators> ),
   rec( basis := [ [ 0, 0, 1 ] ], space := <vector space over Cyclotomics, with
         1 generators> ) ]
+gap> # something more complicated
+gap> rho := DirectSumRepList([irreps[1], irreps[2], irreps[2], irreps[3]]);;
+gap> DecomposeCanonicalSummandFast@RepnDecomp(rho, irreps[2], VectorSpace(Cyclotomics, [[0,1,0,0],[0,0,1,0]]));
+[ rec( basis := [ [ 0, 1, 0, 0 ] ], space := <vector space over Cyclotomics, with
+        1 generators> ),
+  rec( basis := [ [ 0, 0, 1, 0 ] ], space := <vector space over Cyclotomics, with
+        1 generators> ) ]
+gap> DecomposeCanonicalSummandFast@RepnDecomp(rho, irreps[3], VectorSpace(Cyclotomics, [[0,0,0,1]]));
+[ rec( basis := [ [ 0, 0, 0, 1 ] ], space := <vector space over Cyclotomics, with
+        1 generators> ) ]
