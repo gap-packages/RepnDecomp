@@ -51,3 +51,31 @@ BenchCanonicalSummandForSmallGroups := function(to_bench, out)
         od;
     od;
 end;;
+
+# varies degree, keeps group size constant
+BenchDegreeForSmallGroups := function(N, to_bench, out)
+    local id, G, irreps, rho, starttime, r, endtime, trivial, degree;
+    PrintTo(out);
+
+    for id in [1..NrSmallGroups(N)] do
+        G := SmallGroup(N, id);
+        irreps := IrreducibleRepresentations(G);
+
+        # the trivial rep
+        trivial := GroupHomomorphismByImages(G,
+                                             Group(IdentityMat(1)),
+                                             GeneratorsOfGroup(G),
+                                             List(GeneratorsOfGroup(G), _ -> IdentityMat(1)));
+
+        # for each degree 1..10, bench
+        for degree in [1..10] do
+            rho := DirectSumRepList(Replicate@RepnDecomp(trivial, degree));
+            starttime := Runtime();
+            r := to_bench(rho, irreps);
+            endtime := Runtime();
+
+            # degree and time taken
+            AppendTo(out, degree, " ", endtime-starttime, "\n");
+        od;
+    od;
+end;;
