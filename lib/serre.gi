@@ -62,21 +62,22 @@ IrrepCanonicalSummand@ := function(arg_rho, irrep)
     V := Cyclotomics^degree;
 
     # In Serre's text, irrep is called W_i, this character is chi_i
-    character := g -> Trace(Image(irrep, g));
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
     if not IsPermGroup(Range(rho)) then
         # Given as a matrix, using Serre's formula directly, p_i is:
+        character := g -> Trace(Image(irrep, g));
         projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
     else
-        # TODO: check this trick works...
+        # TODO: check this trick works in general
+        character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
         H := Range(rho); # is perm group
         T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
         cc := ConjugacyClasses(H);
         two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
 
         # the orbital matrices themselves
-        orbitals := List(two_orbit_reps, OrbitalMatrix@);
+        orbitals := List(two_orbit_reps, rep -> OrbitalMatrix@(H, rep));
 
         serre_class_contribution := function(class)
             local rep, v, A;
@@ -87,7 +88,7 @@ IrrepCanonicalSummand@ := function(arg_rho, irrep)
             # group to sum the conjugacy class
 
             # coeffs of orbitals making up the class sum
-            v := ClassSum(H, class);
+            v := ClassSum(T, class);
             A := Sum([1..Length(v)], i -> v[i] * orbitals[i]);
             return ComplexConjugate(character(rep)) * A;
         end;

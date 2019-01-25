@@ -176,7 +176,11 @@ InstallGlobalFunction( AreRepsIsomorphic, function(rep1, rep2)
 end );
 
 InstallGlobalFunction( DegreeOfRepresentation, function(rep)
-    return Trace(Image(rep, One(Source(rep))));
+    if IsPermGroup(Range(rep)) then
+        return LargestMovedPoint(Range(rep));
+    else
+        return Trace(Image(rep, One(Source(rep))));
+    fi;
 end );
 
 # Restricts a matrix to a given space. Resulting rep is given in the
