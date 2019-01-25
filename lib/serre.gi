@@ -223,11 +223,12 @@ end );
 # Gives the list of vector spaces in the direct sum decomposition of
 # rho : G -> GL(V) into irreducibles.
 InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsGroupHomomorphism ], function(arg_rho)
-    local rho;
+    local rho, zero;
     rho := ConvertRhoIfNeeded@(arg_rho);
+    zero := Replicate@(0, DegreeOfRepresentation(rho));
     # We only want to return the vector spaces here
     return Flat(List(IrreducibleDecompositionCollected(rho).decomp,
-                     rec_list -> List(rec_list, r -> r.space)));
+                     rec_list -> List(rec_list, r -> VectorSpace(Cyclotomics, r.basis, zero))));
 end );
 
 # Uses BlockDiagonalRepresentationFast to decompose a canonical
@@ -260,6 +261,21 @@ DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
 
     # same format as DecomposeCanonicalSummand
     return List(space_list,
-                space -> rec(space := space,
+                space -> rec(#space := space, # the space can be recovered from the basis
                              basis := List(Basis(space))));
+end;
+
+# Uses Serre's formula to get canonical decomposition, then RCF method
+# to get irreducibles from that
+IrreducibleDecompositionCollectedHybrid@ := function(rho)
+    local irreps, G, full_decomposition;
+    G := Source(rho);
+    irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
+    full_decomposition := List(irreps,
+                               irrep -> DecomposeCanonicalSummandFast@(rho,
+                                                                       irrep,
+                                                                       IrrepCanonicalSummand@(rho,
+                                                                                              irrep)));
+
+    return rec(decomp := full_decomposition, used_rho := rho);
 end;
