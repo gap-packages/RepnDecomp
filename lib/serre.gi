@@ -195,16 +195,8 @@ InstallMethod( IrreducibleDecompositionCollected, "for linear representations", 
     local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
 
     rho := ConvertRhoIfNeeded@(arg_rho);
-
     G := Source(rho);
-
-    F := Cyclotomics;
-    n := Length(Range(rho).1);
-    V := F^n;
-
     irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
-
-    N := Size(irreps);
 
     # This gives a list of lists of vector spaces, each a
     # decomposition of a canonical summand into irreducibles.

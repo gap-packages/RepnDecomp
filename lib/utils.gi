@@ -212,7 +212,6 @@ OrbitalMatrix@ := function(G, representative)
 
     n := LargestMovedPoint(G);
 
-
     # We apply all elements of G to [i,j] and mark all reached
     # points with a 1 in the n x n zero matrix.
 
