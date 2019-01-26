@@ -221,7 +221,7 @@ OrbitalMatrix@ := function(G, representative)
 
     # The action of G on pairs is just g(i, j) = (gi, gj)
     # i.e. OnTuples
-    orbit := List(G, g -> OnTuples(representative, g));
+    orbit := Orbit(G, representative, OnTuples);
 
     orbital := NullMat(n, n);
 
