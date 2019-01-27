@@ -44,32 +44,40 @@ ConvertRhoIfNeeded@ := function(rho)
 end;
 
 # Gives the canonical summand corresponding to irrep
-IrrepCanonicalSummand@ := function(arg_rho, irrep)
-    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, rho, ker, quotient_hom;
+IrrepCanonicalSummand@ := function(rho, irrep, args...)
+    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis;
 
-    G := Source(arg_rho);
+    G := Source(rho);
     #ker := KernelOfMultiplicativeGeneralMapping(arg_rho);
     #quotient_hom := NaturalHomomorphismByNormalSubgroupNC(G, ker);
     #rho := GroupHomomorphismByFunction(FactorGroup(G, ker),
     #                                   Range(arg_rho), gclass -> Image(arg_rho, PreImagesRepresentative(quotient_hom, gclass)));
-
-    # TODO: get rid of this?
-    rho := arg_rho;
 
     degree := DegreeOfRepresentation(rho);
 
     # vector space rho(g) acts on
     V := Cyclotomics^degree;
 
-    # In Serre's text, irrep is called W_i, this character is chi_i
+    # if we are given an orthonormal basis for the centralizer of rho,
+    # then we can use it to speed up class sum computation
+    if Length(args) > 0 then
+        cent_basis := args[1];
+    else
+        cent_basis := fail;
+    fi;
+
+    # In Serre's text, irrep is called W_i, the character is chi_i
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    if not IsPermGroup(Range(rho)) then
-        # Given as a matrix, using Serre's formula directly, p_i is:
+    if cent_basis <> fail then
+        # First, if we are given a basis for the centralizer
         character := g -> Trace(Image(irrep, g));
-        projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
-    else
-        # TODO: check this trick works in general
+        cc := ConjugacyClasses(G);
+        projection := (degree/Order(G)) * Sum(cc,
+          cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizer(rho, cl, cent_basis));
+    elif IsPermGroup(Range(rho)) then
+        # Then if we are given a perm group, but not a basis for the
+        # centralizer, can calculate a basis for C from from scratch
         character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
         H := Range(rho); # is perm group
         T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
@@ -94,6 +102,12 @@ IrrepCanonicalSummand@ := function(arg_rho, irrep)
         end;
 
         projection := (degree/Order(G)) * Sum(cc, serre_class_contribution);
+    else
+        # Lastly, given no special info at all we just have to sum over G
+
+        # Given as a matrix, using Serre's formula directly, p_i is:
+        character := g -> Trace(Image(irrep, g));
+        projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
     fi;
 
     # Calculate V_i, the canonical summand
