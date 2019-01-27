@@ -34,6 +34,7 @@
 </span>
 <div class="ContSSBlock">
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X7DEC18DE7E169D9D">2.2-1 RepresentationCentralizer</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2_mj.html#X87E5BAEB82DC00C3">2.2-2 ClassSumCentralizer</a></span>
 </div></div>
 </div>
 
@@ -64,6 +65,15 @@
 <p>Returns: List of standard generators (as a vector space) for the centralizer ring of <span class="SimpleMath">\(\rho(G)\)</span>.</p>
 
 <p>This gives the same result as <code class="func">RepresentationCentralizerBlocks</code> (<a href="chap2_mj.html#X798AD78F858A73FF"><span class="RefLink">2.1-1</span></a>), but with the matrices given in their entirety: not as lists of blocks, but as full matrices.</p>
+
+<p><a id="X87E5BAEB82DC00C3" name="X87E5BAEB82DC00C3"></a></p>
+
+<h5>2.2-2 ClassSumCentralizer</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ClassSumCentralizer</code>( <var class="Arg">rho</var>, <var class="Arg">class</var>, <var class="Arg">cent_basis</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: <span class="SimpleMath">\(\sum_{s \in t^G} \rho(s)\)</span>, where <span class="SimpleMath">\(t\)</span> is a representative of the conjugacy class <var class="Arg">class</var> of <span class="SimpleMath">\(G\)</span>.</p>
+
+<p>Uses the given orthonormal (very important and is not checked by this function) basis (with respect to the inner product <span class="SimpleMath">\(\langle A, B \rangle = \mbox{Trace}(AB^*)\)</span>) for the centralizer ring of <var class="Arg">rho</var> to calculate the sum of the conjugacy class <var class="Arg">class</var> quickly, i.e. without summing over the class.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Next Chapter]</a>&nbsp;  </div>
