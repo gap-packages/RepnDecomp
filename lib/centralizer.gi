@@ -140,8 +140,8 @@ end;
 
 # Returns the actual class sum, i.e. after summing the cent_basis with
 # the coefficients
-ClassSumCentralizer@ := function(rho, class, cent_basis)
+InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
     local coeffs;
     coeffs := ClassSumCentralizerCoeffs@(rho, class, cent_basis);
     return Sum([1..Length(coeffs)], i -> coeffs[i] * cent_basis[i]);
-end;
+end );

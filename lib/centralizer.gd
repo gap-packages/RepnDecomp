@@ -27,3 +27,15 @@ DeclareGlobalFunction( "RepresentationCentralizerBlocks" );
 #! given in their entirety: not as lists of blocks, but as full
 #! matrices.
 DeclareGlobalFunction( "RepresentationCentralizer" );
+
+#! @Arguments rho, class, cent_basis
+
+#! @Returns $\sum_{s \in t^G} \rho(s)$, where $t$ is a representative
+#! of the conjugacy class <A>class</A> of $G$.
+
+#! @Description Uses the given orthonormal (very important and is not
+#! checked by this function) basis (with respect to the inner product
+#! $\langle A, B \rangle = \mbox{Trace}(AB^*)$) for the centralizer
+#! ring of <A>rho</A> to calculate the sum of the conjugacy class
+#! <A>class</A> quickly, i.e. without summing over the class.
+DeclareGlobalFunction( "ClassSumCentralizer" );
