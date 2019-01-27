@@ -127,13 +127,21 @@ end );
 # tr(AB^*)), a representative, and a conjugacy class, calculates the
 # sum of the conjugacy class matrices. Result is given as a list of
 # coefficients in the basis.
-ClassSumCentralizer@ := function(rho, class, cent_basis)
-    local conj, prod, coeff;
+ClassSumCentralizerCoeffs@ := function(rho, class, cent_basis)
+    local prod, coeff, conj;
 
-    conj := A -> List(A, row -> List(row, elem -> ComplexConjugate(elem)));
-    prod := function(A, B) return Trace(A * TransposedMat(conj(B))); end;
+    conj := A -> List(A, row -> List(row, ComplexConjugate));
+    prod := function(A, B) return Trace(A * conj(TransposedMat(B))); end;
 
     coeff := B -> Size(class) * prod(Image(rho, Representative(class)), B);
 
     return List(cent_basis, coeff);
+end;
+
+# Returns the actual class sum, i.e. after summing the cent_basis with
+# the coefficients
+ClassSumCentralizer@ := function(rho, class, cent_basis)
+    local coeffs;
+    coeffs := ClassSumCentralizerCoeffs@(rho, class, cent_basis);
+    return Sum([1..Length(coeffs)], i -> coeffs[i] * cent_basis[i]);
 end;
