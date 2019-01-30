@@ -19,3 +19,9 @@
 #! parallel. Uses <A>irreps</A> as the list of relevant irreps, if
 #! given.
 DeclareGlobalFunction( "IrreducibleDecompositionCollectedParallel" );
+
+#! @Arguments rho, num_jobs[, irreps]
+
+#! @Returns The same result as <Ref
+#! Func="BlockDiagonalRepresentationFast" />.
+DeclareGlobalFunction( "BlockDiagonalRepresentationParallel" );
