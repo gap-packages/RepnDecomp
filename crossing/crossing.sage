@@ -30,6 +30,35 @@ def gap_all_irreps(m):
 def real_mat(mat):
     return matrix(RR, mat.nrows(), mat.ncols(), lambda i, j: mat[i][j].n().real())
 
+# This computes alpha_m using the full matrices with NO
+# reductions. The dimensions are huge, but there is as little of my
+# code involved as possible, so the answer is more likely to be
+# correct
+def compute_alpha_slow(m):
+    Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
+    print(Q)
+    print("")
+    J = matrix(Q.ncols(), Q.ncols(), lambda i,j: 1)
+    print(J)
+
+    # need to install this from GitHub https://github.com/mghasemi/pycsdp
+    from SDP import SemidefiniteProgram
+
+    # I have cvxopt here for now, need to try CSDP
+    prog = SemidefiniteProgram(primal=False, solver="cvxopt")
+
+    # the SDP solver always assumes we want to maximise tr(QX) but we
+    # really want to minimise it, so we negate
+    prog.set_objective(-1*Q)
+
+    # tr(JX) = 1
+    prog.add_constraint(J, 1)
+
+    soln = prog.solve()
+
+    print("alpha_{} = {}".format(m, soln["DObj"]))
+
+
 # Computes the nice basis to use (that block diagonalises the
 # centralizer ring), using my GAP package
 def compute_alpha(m, print_irreps=False, status=True):
