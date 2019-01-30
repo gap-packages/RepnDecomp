@@ -117,6 +117,10 @@ def compute_alpha(m, print_irreps=False, status=True):
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
 
+    # need all x_i >= 0
+    for i in range(d):
+        prog.add_constraint(x[i]*one >= 0)
+
     if status:
         sys.stdout.write("Solving SDP: ")
 
