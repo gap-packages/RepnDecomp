@@ -36,10 +36,8 @@ def real_mat(mat):
 # correct
 def compute_alpha_slow(m):
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
-    print(Q)
-    print("")
-    J = matrix(Q.ncols(), Q.ncols(), lambda i,j: 1)
-    print(J)
+    n = Q.ncols()
+    J = matrix(n, n, lambda i,j: 1)
 
     # need to install this from GitHub https://github.com/mghasemi/pycsdp
     from SDP import SemidefiniteProgram
@@ -47,12 +45,38 @@ def compute_alpha_slow(m):
     # I have cvxopt here for now, need to try CSDP
     prog = SemidefiniteProgram(primal=False, solver="cvxopt")
 
+    # X is already symmetric. We want all X_ij >= 0, so for each
+    # choice of two indices (i, j) (there are n choose 2 choices), we
+    # impose X_ij + X_ji >= 0 by adding a 1x1 block to X and imposing
+    # X_kk = X_ij + X_ji where k is the index of the new block.
+    #
+    # We do this by imposing tr(AX) = 0 where 1 = A_ij = A_ji = -A_kk
+    # and all other entries zero.
+    pairs = Combinations(range(n), 2).list()
+
+    # the new dimension of the matrices
+    new_n = n + len(pairs)
+
+    for k in range(len(pairs)):
+        # X_kk is where the new block will be
+        [i, j] = pairs[k]
+        A = matrix(new_n)
+        A[i, j] = 1
+        A[j, i] = 1
+        A[k, k] = -1
+        prog.add_constraint(A, 0)
+
+    # we pad Q and J with n choose 2 1x1 zero blocks
+    pad_Q = matrix(new_n, new_n, lambda i, j: Q[i][j] if i<n and j<n else 0)
+    pad_J = matrix(new_n, new_n, lambda i, j: J[i][j] if i<n and j<n else 0)
+
     # the SDP solver always assumes we want to maximise tr(QX) but we
     # really want to minimise it, so we negate
-    prog.set_objective(-1*Q)
+    prog.set_objective(-1*pad_Q)
 
     # tr(JX) = 1
-    prog.add_constraint(J, 1)
+    prog.add_constraint(pad_J, 1)
+
 
     soln = prog.solve()
 
