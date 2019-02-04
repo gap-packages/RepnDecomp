@@ -115,17 +115,19 @@ CalculateSDP := function(m, irreps)
 
     # First, we block diagonalize action_hom
     Print("Decomposing group action\n");
+
+    # need to fix this, the basis is wrong??
     block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     nice_basis := block_diag_info.basis;
 
     # This is the nice basis for the centralizer, written in the nice
     # basis, called E_i in the paper. I convert to full matrices
     # here. (TODO: use sparse matrices here or something?)
-    centralizer_basis := List(block_diag_info.centralizer_basis, blocks -> BlockDiagonalMatrix(blocks));
+    centralizer_basis := List(block_diag_info.centralizer_basis, BlockDiagonalMatrix);
 
     # We normalize the basis for the centralizer, each matrix is still
     # written in the nice basis. These are the B_i.
-    norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(TransposedMat(E)*E))^-1)*E);
+    norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(E*TransposedMat(E)))^-1)*E);
 
     # d is the dimension of the centralizer ring (sum of squares of
     # multiplicities of each irrep)
@@ -134,7 +136,7 @@ CalculateSDP := function(m, irreps)
 
     # The centralizer ring itself
     centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
-    nice_cent_basis := Basis(centralizer, norm_cent_basis);
+    norm_cent_basis := Basis(centralizer, norm_cent_basis);
 
     # The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
     # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
@@ -142,7 +144,7 @@ CalculateSDP := function(m, irreps)
     mult_param := NullMat(d, d);
     for i in [1..d] do
         for j in [1..d] do
-            mult_param[i][j] := Coefficients(nice_cent_basis,
+            mult_param[i][j] := Coefficients(norm_cent_basis,
                                              norm_cent_basis[i]*norm_cent_basis[j]);
         od;
     od;
