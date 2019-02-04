@@ -80,7 +80,7 @@ def compute_alpha_slow(m):
 
     soln = prog.solve()
 
-    print("alpha_{} = {}".format(m, soln["DObj"]))
+    print("alpha_{} = {}".format(m, -1*soln["DObj"]))
 
 
 # Computes the nice basis to use (that block diagonalises the
@@ -117,12 +117,11 @@ def compute_alpha(m, print_irreps=False, status=True):
     if status:
         print(t1-t0)
 
-
     if status:
         sys.stdout.write("Formulating SDP in Sage: ")
 
     t0 = time.time()
-    B = [matrix(mat) for mat in libgap.eval("sdp.centralizer_basis;").sage()]
+    B = [matrix(mat) for mat in libgap.eval("List(sdp.centralizer_basis);").sage()]
     basis = libgap.eval("sdp.nice_basis;").sage()
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
     basis_change = matrix(libgap.eval("TransposedMat(sdp.nice_basis)").sage())
@@ -144,8 +143,6 @@ def compute_alpha(m, print_irreps=False, status=True):
     if status:
         print(t1-t0)
 
-    #import pdb; pdb.set_trace()
-
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
     # some explanation of this program
     if status:
@@ -163,10 +160,11 @@ def compute_alpha(m, print_irreps=False, status=True):
     # constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
 
     one = matrix([[1]])
-    constraint1 = sum((J_block_diag * B[i]).trace()*x[i]*one for i in range(d)) == one
+    constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d))*one == one
 
     if status:
         print("Adding constraints")
+
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
 
