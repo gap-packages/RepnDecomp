@@ -36,17 +36,6 @@ DeclareGlobalFunction( "TensorProductRepLists" );
 #! @Returns Direct sum of the list of representations <A>list</A>
 DeclareGlobalFunction( "DirectSumRepList" );
 
-#! @Arguments rho, tau
-
-#! @Returns true if <A>rho</A> and <A>tau</A> are isomorphic as
-#! representations, false otherwise.
-
-#! @Description Note that two representations are isomorphic iff they
-#! give similar matrices, also iff they have the same irreducible
-#! decomposition. We use characters to determine the latter: the first
-#! is too expensive to check for large matrices.
-DeclareGlobalFunction( "AreRepsIsomorphic" );
-
 #! @Arguments rho
 
 #! @Returns Degree of the representation <A>rho</A>. That is,

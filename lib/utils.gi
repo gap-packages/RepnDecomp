@@ -158,23 +158,6 @@ DecomposeCharacter@ := function(rho, args...)
     return char_rho_basis;
 end;
 
-# Tells you if two representations of the same group are isomorphic by
-# examining characters
-InstallGlobalFunction( AreRepsIsomorphic, function(rep1, rep2)
-    local G, irr_chars;
-
-    if Source(rep1) <> Source(rep2) then
-        return false;
-    fi;
-
-    G := Source(rep1);
-    irr_chars := IrrWithCorrectOrdering@(G);
-
-    # Writes the characters in the irr_chars basis, they are the same
-    # iff they are isomorphic
-    return DecomposeCharacter@(rep1, irr_chars) = DecomposeCharacter@(rep2, irr_chars);
-end );
-
 InstallGlobalFunction( DegreeOfRepresentation, function(rep)
     if IsPermGroup(Range(rep)) then
         return LargestMovedPoint(Range(rep));
