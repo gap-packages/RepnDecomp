@@ -99,12 +99,13 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
 
     # We don't know the basis that the new_rho(g) are written in, but
     # since the representations are isomorphic, there is a basis
-    # change matrix A such that new_rho(g) = A^-1 * rho(g) * A
+    # change matrix A such that new_rho(g) = A^-1 * rho(g) * A for all g.
+    #
+    # This is an intertwining operator for rho and new_rho, or
+    # representation isomorphism.
 
-    # To calculate A, we use a random element of G
-    g := G.1;
-
-    basis_change := BasisChangeMatrixSimilar@(Image(new_rho, g), Image(rho, g));
+    # Note: this is where the heavy lifting of the function is
+    basis_change := LinearRepresentationIsomorphismSlow(new_rho, rho);
 
     basis := TransposedMat(basis_change);
 
