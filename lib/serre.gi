@@ -1,9 +1,6 @@
 # These are the implementations of Serre's formulas from his book
 # Linear Representations of Finite Groups.
 
-# This is used for speed in some special cases
-LoadPackage("cohcfg");
-
 MatrixImage@ := function(p, V)
     local F;
 

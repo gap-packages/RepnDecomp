@@ -21,7 +21,84 @@ MatrixBasis@ := function(n)
     return List(coords, make_mat);
 end;
 
-InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau)
+# Calculates the isomorphism using the cool fact about the product
+# (see below)
+InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args...)
+    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj;
+
+    # if set, these bases for the centralisers will be used to avoid
+    # summing over G
+    rho_cent_basis := fail;
+    tau_cent_basis := fail;
+
+    if Length(args) >= 2 then
+        rho_cent_basis := args[1];
+        tau_cent_basis := args[2];
+    fi;
+
+    if not AreRepsIsomorphic(rho, tau) then
+        return fail;
+    fi;
+
+    G := Source(rho);
+    n := DegreeOfRepresentation(rho);
+
+    # We want to find a matrix A s.t. tau(g)*A = A*rho(g) for all g in
+    # G. We do this by finding fixed points of the linear maps A ->
+    # tau(g)*A*rho(g^-1). This is done by considering the
+    # representation alpha: g -> (A -> tau(g)*A*rho(g^-1)) and finding a
+    # vector in the canonical summand corresponding to the trivial
+    # irrep. i.e. a vector which is fixed by all g, which is exactly
+    # what we want.
+
+    # The trick we use to avoid summing over G is to notice that alpha
+    # is actually \tau \otimes \rho^*, i.e. g -> tau(g) \otimes
+    # \rho(g^-1)^T.
+
+    # Standard basis for M_n(C)
+    matrix_basis := MatrixBasis@(n);
+
+    # the representation alpha : G -> GL(V) (V is the space of matrices)
+    alpha := FuncToHom@(G, g -> KroneckerProduct(Image(tau, g), TransposedMat(Image(rho, g^-1))));
+
+    # the projection of V onto V_triv, the trivial canonical summand,
+    # is just given by the sum over whole group of alpha(g)
+    #
+    # we can get a projection into the same space by doing the sum
+    # over g in G, h in G of tau(g) \otimes rho^*(h), and we can
+    # calculate these group sums using the centraliser bases
+
+    # if there was no basis, just sum over the whole group
+    if rho_cent_basis = fail or tau_cent_basis = fail then
+        triv_proj := Sum(G, g -> Image(alpha, g));
+    else
+        # we can just do (sum_{g in G} tau(g)) \otimes (sum_{g in G} rho^*(g))
+        # which still gives a projection
+
+        # The group sum for rho^* is the same as for rho, but
+        # transposed (the relabelling g -> g^-1 is just a bijection and ^T is linear)
+        triv_proj := KroneckerProduct(GroupSumWithCentralizer@(tau, tau_cent_basis),
+                                      TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
+
+    fi;
+
+    A := NullMat(n, n);
+
+    # Keep picking matrices until we get an invertible one. This would
+    # happen with probability 1 if we really picked uniformly random
+    # vectors over a ball in C^n^2.
+    repeat
+        # we pick a "random vector" and project it to get a fixed one
+        A_vec := triv_proj * Flat(RandomInvertibleMat(n));
+        A := WrapMatrix@(A_vec, n);
+    until RankMat(A) = n;
+
+    return A;
+end );
+
+# Calculate the iso without using the cool fact about the conjugation
+# action being given by \tau \otimes \rho^*
+LinearRepresentationIsomorphismNoProduct@ := function(rho, tau)
     local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, alpha_f;
 
     if not AreRepsIsomorphic(rho, tau) then
@@ -83,7 +160,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau)
     until RankMat(A) = n;
 
     return A;
-end );
+end;
 
 
 # checks if it is the case that for all g in G, tau(g)*A = A*rho(g)
