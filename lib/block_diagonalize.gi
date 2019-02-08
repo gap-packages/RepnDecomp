@@ -54,23 +54,25 @@ BasisChangeMatrixSimilar@ := function(X, Y)
 end;
 
 InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
-    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, F, ret_basis, all_sizes, centralizer_blocks;
+    local G, char_rho_basis, irreps, isomorphic_collected, summands, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, ret_basis, all_sizes, centralizer_blocks, rho_cent_basis, new_rho_cent_basis;
 
     G := Source(rho);
 
     # If we are given a list of irreps, we use them and assume that it
     # is complete
     irreps := [];
-    if Length(args) > 0 then
+    if Length(args) >= 1 then
         irreps := args[1];
     else
         irreps := IrreducibleRepresentationsDixon(G);
     fi;
 
-    F := Cyclotomics;
-    # We can also be given a field to work over
-    if Length(args) > 1 then
-        F := args[2];
+    # we might also be given a basis for the centraliser of rho, which
+    # we can use to speed up some calculations
+    if Length(args) >= 2 then
+        rho_cent_basis := args[2];
+    else
+        rho_cent_basis := fail;
     fi;
 
     # We could just use Irr(G) here, but the ordering of Irr and
@@ -94,6 +96,16 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
 
     summands := List(Flat(isomorphic_collected), r -> r.rep);
 
+    # We can also compute the basis for the centralizer ring, since we
+    # know the block sizes and relevant dimensions
+    all_sizes := List([1..Size(chars)], i -> rec(dimension := chars[i][1],
+                                                 nblocks := char_rho_basis[i]));
+
+    # Don't use the blocks that don't appear
+    centralizer_blocks := SizesToBlocks@(Filtered(all_sizes, r -> r.nblocks > 0));
+
+    new_rho_cent_basis := List(centralizer_blocks, BlockDiagonalMatrix);
+
     # This is the block diagonal rep with minimal size blocks
     new_rho := DirectSumRepList(summands);
 
@@ -105,7 +117,14 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     # representation isomorphism.
 
     # Note: this is where the heavy lifting of the function is
-    basis_change := LinearRepresentationIsomorphismSlow(new_rho, rho);
+
+    # If we were given a basis for centraliser of rho, do it fast
+    if rho_cent_basis <> fail then
+        basis_change := LinearRepresentationIsomorphism(new_rho, rho);
+    else
+        basis_change := LinearRepresentationIsomorphism(new_rho, rho,
+                                                        new_rho_cent_basis, rho_cent_basis);
+    fi;
 
     basis := TransposedMat(basis_change);
 
@@ -118,19 +137,12 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     for irrep_list in isomorphic_collected do
         current_space_list := [];
         for r in irrep_list do
-            Add(current_space_list, VectorSpace(F, Take@(basis, r.dim)));
+            Add(current_space_list, VectorSpace(Cyclotomics, Take@(basis, r.dim)));
             basis := Drop@(basis, r.dim);
         od;
         Add(full_space_list, current_space_list);
     od;
 
-    # We can also compute the basis for the centralizer ring, since we
-    # know the block sizes and relevant dimensions
-    all_sizes := List([1..Size(chars)], i -> rec(dimension := chars[i][1],
-                                                 nblocks := char_rho_basis[i]));
-
-    # Don't use the blocks that don't appear
-    centralizer_blocks := SizesToBlocks@(Filtered(all_sizes, r -> r.nblocks > 0));
 
     return rec(basis := ret_basis,
                diagonal_rep := new_rho,
