@@ -4,6 +4,12 @@
 # Reading the declaration part of the package.
 #
 
+# stuff from cohcfg package
+ReadPackage( "RepnDecomp", "lib/cohcfg/misc.g");
+ReadPackage( "RepnDecomp", "lib/cohcfg/classmatr.g");
+ReadPackage( "RepnDecomp", "lib/cohcfg/SubgroupCC.g");
+ReadPackage( "RepnDecomp", "lib/cohcfg/classsum.g");
+
 ReadPackage( "RepnDecomp", "lib/utils.gd" );
 ReadPackage( "RepnDecomp", "lib/serre.gd" );
 ReadPackage( "RepnDecomp", "lib/centralizer.gd" );
