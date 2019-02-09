@@ -26,7 +26,7 @@ DeclareAttribute( "BlockDiagonalBasis", IsGroupHomomorphism );
 #! and put $\rho$ into a nice form.
 DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 
-#! @Arguments rho[, irreps, F]
+#! @Arguments rho[, irreps]
 
 #! @Returns A record
 
@@ -40,11 +40,6 @@ DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 #! default (running Dixon's algorithm) is too expensive, or e.g. you
 #! don't want representations over Cyclotomics.
 
-#! <A>F</A> is the field your representations are over. The default is
-#! Cyclotomics, but if you know your representation (and irreps) is
-#! over e.g. Rationals or some finite extension, you can avoid
-#! Cyclotomics entirely by saying what your field is.
-
 #! The return value of this function is a record with fields:
 
 #! * basis: same as BlockDiagonalBasis
@@ -52,6 +47,8 @@ DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 #! * diagonal_rep: same as BlockDiagonalRepresentation
 
 #! * decomposition: same as IrreducibleDecompositionCollected
+
+#! * centralizer_basis: same as RepresentationCentralizerBlocks
 
 #! When I say "the same", I mean up to reordering and isomorphism as
 #! representations.
