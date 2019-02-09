@@ -42,3 +42,9 @@ DeclareGlobalFunction( "DirectSumRepList" );
 #! $\mbox{Tr}(\rho(e_G))$, where $e_G$ is the identity of the group
 #! $G$ that <A>rho</A> has as domain.
 DeclareGlobalFunction( "DegreeOfRepresentation" );
+
+#! @Arguments rho
+
+#! @Returns Linear representation $\rho$ isomorphic to the permutation
+#! representation <A>rho</A>.
+DeclareGlobalFunction( "PermToLinearRep" );

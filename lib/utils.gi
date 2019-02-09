@@ -214,3 +214,15 @@ OrbitalMatrix@ := function(G, representative)
 
     return orbital;
 end;
+
+InstallGlobalFunction( PermToLinearRep, function(rho)
+    local n;
+
+    if not IsPermGroup(Range(rho)) then
+        return fail;
+    fi;
+
+    n := DegreeOfRepresentation(rho);
+
+    return ComposeHomFunction(rho, perm -> PermutationMat(perm, n));
+end );

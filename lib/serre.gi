@@ -16,8 +16,6 @@ end;
 
 # Converts rho to a matrix representation if necessary
 ConvertRhoIfNeeded@ := function(rho)
-    local gens, ims, high, new_ims, new_range, new_rho, G;
-
     # We want rho to be a homomorphism to a matrix group since this
     # algorithm works on matrices. We convert a permutation group into
     # an isomorphic matrix group so that this is the case. If we don't
@@ -28,13 +26,7 @@ ConvertRhoIfNeeded@ := function(rho)
     fi;
 
     if IsFiniteGroupPermutationRepresentation(rho) then
-        G := Source(rho);
-        gens := GeneratorsOfGroup(G);
-        ims := List(gens, g -> Image(rho, g));
-        high := LargestMovedPoint(ims);
-        new_ims := List(ims, i -> PermutationMat(i, high));
-        new_range := Group(new_ims);
-        return GroupHomomorphismByImagesNC(G, new_range, gens, new_ims);
+        return PermToLinearRep(rho);
     fi;
 
     return fail;
