@@ -11,3 +11,4 @@ ReadPackage( "RepnDecomp", "lib/serre_parallel.gi");
 ReadPackage( "RepnDecomp", "lib/block_diagonalize.gi");
 ReadPackage( "RepnDecomp", "lib/filters.gi");
 ReadPackage( "RepnDecomp", "lib/isomorphism.gi" );
+ReadPackage( "RepnDecomp", "lib/tests.gi" );
