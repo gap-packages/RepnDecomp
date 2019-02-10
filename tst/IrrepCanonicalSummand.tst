@@ -22,5 +22,5 @@ gap> rho := GroupHomomorphismByImages(G, Image(h, G));;
 gap> linear_rho := ConvertRhoIfNeeded@RepnDecomp(rho);;
 gap> # check block sizes are right and spaces are really G-invariant
 gap> coeffs := DecomposeCharacter@RepnDecomp(linear_rho, IrrWithCorrectOrdering@RepnDecomp(G, irreps));;
-gap> ForAll([1..Length(irreps)], function(i) local V; V := IrrepCanonicalSummand@RepnDecomp(rho, irreps[i]); return Dimension(V) = coeffs[i]*DegreeOfRepresentation(irreps[i]) and IsGInvariant(linear_rho, V); end );
+gap> ForAll([1..Length(irreps)], function(i) local V; V := IrrepCanonicalSummand@RepnDecomp(rho, irreps[i]); return Dimension(V) = coeffs[i]*DegreeOfRepresentation(irreps[i]) and IsGInvariant@RepnDecomp(linear_rho, V); end );
 true

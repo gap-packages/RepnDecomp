@@ -1,4 +1,3 @@
-gap> Read("tst/utils.g");;
 gap> G := SmallGroup(32, 5);;
 gap> irreps := IrreducibleRepresentations(G);;
 gap> rho := DirectSumRepList([irreps[10], irreps[19], irreps[20], irreps[20]]);;
