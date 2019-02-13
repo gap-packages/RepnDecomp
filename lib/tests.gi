@@ -140,6 +140,26 @@ TestCanonicalDecomposition@ := function(rep, decomp, args...)
     fi;
 end;
 
+# test full BlockDiagonalRepresentation{Fast, Parallel} info
+TestBlockDiagonalRepresentation@ := function(rep, info)
+    local conds, A;
+
+    A := TransposedMat(info.basis);
+
+    conds := [];
+
+    Add(conds, TestIrreducibleDecomposition@(rep, info.decomposition));
+
+    Add(conds, TestCentralizerBasis@(rep, List(info.centralizer_basis, blocks -> A * BlockDiagonalMatrix(blocks) * A^-1)));
+
+    if ForAll(conds, x->x) then
+        return true;
+    else
+        Error("test failed!");
+        return false;
+    fi;
+end;
+
 # takes a function f : random representation -> boolean and tests it
 # on n random representations
 TestMany@ := function(f, n)
