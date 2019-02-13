@@ -3,8 +3,11 @@
 
 # Generate a random representation of a random group
 RandomRepresentation@ := function()
+    local size, id, G, irreps, irrep1, irrep2, rho, n, A, centralizer_basis, isomorphism_type;
+
     # smallgrp has groups of order at most 2000 except 1024
-    size := Random(Concatenation([1..1023], [1025..2000]));
+    #size := Random(Concatenation([1..1023], [1025..2000]));
+    size := Random([1..100]); # don't want tests to take forever
     id := Random([1..NrSmallGroups(size)]);
     G := SmallGroup(size, id);
     irreps := IrreducibleRepresentations(G);
@@ -23,27 +26,36 @@ RandomRepresentation@ := function()
     # We know some things about rho without needing to compute them
     # the long way. We return them for use in testing.
 
-    # centralizer basis
-    centralizer_basis := [rec(dimension := DegreeOfRepresentation(irrep1),
-                              nblocks := 2),
-                          rec(dimension := DegreeOfRepresentation(irrep2),
-                              nblocks := 1)];
+    # if the irreps ended up the same, we have to correct the info
+    if irrep1 = irrep2 then
+        centralizer_basis := [rec(dimension := DegreeOfRepresentation(irrep1),
+                                  nblocks := 3)];
+        isomorphism_type := [rec(rep := irrep1, m := 3)];
+    else
+        centralizer_basis := [rec(dimension := DegreeOfRepresentation(irrep1),
+                                  nblocks := 2),
+                              rec(dimension := DegreeOfRepresentation(irrep2),
+                                  nblocks := 1)];
+
+        isomorphism_type := [rec(rep := irrep1, m := 2),
+                             rec(rep := irrep2, m := 1)];
+    fi;
+
+
     centralizer_basis := List(SizesToBlocks@(centralizer_basis), BlockDiagonalMatrix);
 
     # put them in the scrambled basis
     centralizer_basis := List(centralizer_basis, M -> A^-1 * M * A);
 
-    isomorphism_type := [rec(rep := irrep1, m := 2),
-                         rec(rep := irrep2, m := 1)];
-
     return rec(rep := rho,
                isomorphism_type := isomorphism_type,
                centralizer_basis := centralizer_basis,
-               G := G);
+               candidate_nice_basis := TransposedMat(A), # note this is not the unique right answer...
+               G := [size, id]);
 end;
 
 # checks if the given centralizer basis is correct
-TestCentralizerBasis@ := function(rep, cent_basis)
+TestCentralizerBasis@ := function(rep, cent_basis, args...)
     local correct_basis, C1, C2;
 
     correct_basis := rep.centralizer_basis;
@@ -55,18 +67,18 @@ TestCentralizerBasis@ := function(rep, cent_basis)
 end;
 
 # checks if decomp is a decomposition into G-invariant subspaces
-TestInvariantDecomposition@ := function(rep, decomp)
+TestInvariantDecomposition@ := function(rep, decomp, args...)
     local rho, G;
 
     rho := rep.rep;
     G := Source(rho);
 
-    return ForAll(decomp, V -> IsGInvariant(G, rho, V));
+    return ForAll(decomp, V -> IsGInvariant@(rho, V));
 end;
 
 # checks some necessary conditions for decomp to be the full
 # irreducible (collected) decomposition of rho
-TestIrreducibleDecomposition@ := function(rep, decomp)
+TestIrreducibleDecomposition@ := function(rep, decomp, args...)
     local rho, G, conds;
 
     rho := rep.rep;
@@ -94,12 +106,17 @@ TestIrreducibleDecomposition@ := function(rep, decomp)
 
     # TODO: add some more necessary conditions
 
-    return ForAll(conds, x->x);
+    if ForAll(conds, x->x) then
+        return true;
+    else
+        Error("test failed!");
+        return false;
+    fi;
 end;
 
 # same as irreducible decomp, these are only necessary conditions
 # for correctness
-TestCanonicalDecomposition@ := function(rep, decomp)
+TestCanonicalDecomposition@ := function(rep, decomp, args...)
     local conds;
 
     conds := [];
@@ -115,5 +132,31 @@ TestCanonicalDecomposition@ := function(rep, decomp)
                SortedList(List(rep.isomorphism_type,
                                t -> DegreeOfRepresentation(t.rep)*t.m)));
 
-    return ForAll(conds, x->x);
+    if ForAll(conds, x->x) then
+        return true;
+    else
+        Error("test failed!");
+        return false;
+    fi;
+end;
+
+# takes a function f : random representation -> boolean and tests it
+# on n random representations
+TestMany@ := function(f, n)
+    local tested, rep;
+
+    tested := 0;
+
+    repeat
+        rep := RandomRepresentation@();
+
+        if not f(rep) then
+            Print("FAILED: ", rep, "\n");
+            return false;
+        fi;
+
+        tested := tested + 1;
+    until tested = n;
+
+    return true;
 end;
