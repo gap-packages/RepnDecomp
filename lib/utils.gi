@@ -250,3 +250,29 @@ end;
 ConjugateTranspose@ := function(mat)
     return TransposedMat(List(mat, row -> List(row, ComplexConjugate)));
 end;
+
+# v is a list of matrices that are the basis of a space
+OrthonormalBasis@ := function(v)
+    local prod, proj, N, u, e, k;
+
+    prod := function(A, B)
+        return Trace(A*ConjugateTranspose@(B));
+    end;
+
+    proj := function(u, v)
+        return (prod(u, v) / prod(u, u)) * u;
+    end;
+
+    N := Length(v);
+
+    # these lists will be replaced so e[k] is the kth orthonormal basis vector
+    u := [1..N];
+    e := [1..N];
+
+    for k in [1..N] do
+        u[k] := v[k] - Sum([1..k-1], j -> proj(u[j], v[k]));
+        e[k] := Sqrt(prod(u[k], u[k])) * u[k];
+    od;
+
+    return e;
+end;
