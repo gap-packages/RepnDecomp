@@ -246,3 +246,7 @@ IsGInvariant@ := function(rho, space)
     od;
     return true;
 end;
+
+ConjugateTranspose@ := function(mat)
+    return TransposedMat(List(mat, row -> List(row, ComplexConjugate)));
+end;

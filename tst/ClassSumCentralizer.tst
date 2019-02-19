@@ -1,10 +1,14 @@
-gap> G := SymmetricGroup(4);;
-gap> irreps := IrreducibleRepresentations(G);;
-gap> rho := DirectSumRepList([irreps[1], irreps[2], irreps[3]]);;
-gap> diag_info := BlockDiagonalRepresentationFast(rho);;
-gap> rho := diag_info.diagonal_rep;;
-gap> cc := ConjugacyClasses(G);;
-gap> cent_basis := List(diag_info.centralizer_basis, BlockDiagonalMatrix);; # given in block form, need to convert
-gap> cent_basis := List(cent_basis, m -> 1/Sqrt(Trace(m * m)) * m);; # need to normalize (already ortho)
-gap> ForAll(cc, cl -> Sum(cl, s -> Image(rho, s)) = ClassSumCentralizer(rho, cl, cent_basis));
+gap> tester := function(rep)
+> local G, cent_basis, cc, A, diag_rep;
+> G := Source(rep.rep);
+> cc := ConjugacyClasses(G);
+> # need to change to nice basis since we only have an ortho basis for C there
+> A := TransposedMat(rep.candidate_nice_basis);
+> # need to normalize (already ortho)
+> cent_basis := List(rep.centralizer_basis, x -> A * x * A^-1);
+> cent_basis := List(cent_basis, m -> 1/Sqrt(Trace(m * ConjugateTranspose@RepnDecomp(m))) * m);
+> diag_rep := ComposeHomFunction(rep.rep, x -> A * x * A^-1);
+> return ForAll(cc, cl -> Sum(cl, s -> Image(diag_rep, s)) = ClassSumCentralizer(diag_rep, cl, cent_basis));
+> end;;
+gap> TestMany@RepnDecomp(tester, 5);
 true
