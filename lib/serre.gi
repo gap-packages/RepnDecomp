@@ -32,6 +32,18 @@ ConvertRhoIfNeeded@ := function(rho)
     return fail;
 end;
 
+# assumes rho is faithful permutation representation, calculates centralizer
+RepresentationCentralizerPermRep@ := function(rho)
+    local H, T, two_orbit_reps;
+    H := Range(rho); # is perm group
+    T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
+    two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
+
+    # the orbital matrices themselves, this gives a basis for the
+    # centraliser
+    return List(two_orbit_reps, rep -> OrbitalMatrix@(H, rep));
+end;
+
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep, args...)
     local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis;

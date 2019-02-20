@@ -155,15 +155,3 @@ GroupSumWithCentralizer@ := function(rho, cent_basis)
     classes := ConjugacyClasses(G);
     return Sum(classes, class -> ClassSumCentralizer(rho, class, cent_basis));
 end;
-
-# assumes rho is faithful permutation representation, calculates
-RepresentationCentralizerPermRep@ := function(rho)
-    local H, T, two_orbit_reps;
-    H := Range(rho); # is perm group
-    T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
-    two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
-
-    # the orbital matrices themselves, this gives a basis for the
-    # centraliser
-    return List(two_orbit_reps, rep -> OrbitalMatrix@(H, rep));
-end;
