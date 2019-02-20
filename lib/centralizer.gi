@@ -133,7 +133,9 @@ ClassSumCentralizerCoeffs@ := function(rho, class, cent_basis)
     conj := A -> List(A, row -> List(row, ComplexConjugate));
     prod := function(A, B) return Trace(A * conj(TransposedMat(B))); end;
 
-    coeff := B -> Size(class) * prod(Image(rho, Representative(class)), B);
+    # TODO: why doesn't this work?
+    #coeff := B -> Size(class) * prod(Image(rho, Representative(class)), B);
+    coeff := B -> Sum(class, g -> prod(Image(rho, g), B));
 
     return List(cent_basis, coeff);
 end;
