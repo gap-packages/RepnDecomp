@@ -41,10 +41,10 @@
 
 <h5>4.1-1 LinearRepresentationIsomorphism</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinearRepresentationIsomorphism</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinearRepresentationIsomorphism</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var>[, <var class="Arg">rho_cent_basis</var>, <var class="Arg">tau_cent_basis</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A matrix <span class="Math">A</span> or fail</p>
 
-<p>Let <span class="Math">\rho : G \to GL(V)</span> and <span class="Math">\tau : G \to GL(W)</span>. If there exists a linear map <span class="Math">A : V \to W</span> such that for all <span class="Math">g \in G</span>, <span class="Math">\tau(g)A = A\rho(g)</span>, this function returns one such <span class="Math">A</span>. <span class="Math">A</span> is the isomorphism between the representations. If the representations are not isomorphic, then fail is returned. The method used involves solving linear systems (size depending on the degree of the reps), and depends on the size of <span class="Math">G</span> as little as possible.</p>
+<p>Let <span class="Math">\rho : G \to GL(V)</span> and <span class="Math">\tau : G \to GL(W)</span>. If there exists a linear map <span class="Math">A : V \to W</span> such that for all <span class="Math">g \in G</span>, <span class="Math">\tau(g)A = A\rho(g)</span>, this function returns one such <span class="Math">A</span>. <span class="Math">A</span> is the isomorphism between the representations. If the representations are not isomorphic, then fail is returned. If no bases for the centralizers are given, we have no option but to sum over <span class="Math">G</span> to perform this calculation. If bases for the centralizers are given, we can use them to calculate class/group sums and thus avoid summing over <span class="Math">G</span>.</p>
 
 <p><a id="X841DE7D08491325F" name="X841DE7D08491325F"></a></p>
 
@@ -53,7 +53,7 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinearRepresentationIsomorphismSlow</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A matrix <span class="Math">A</span> or fail</p>
 
-<p>The same as <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap4.html#X7F0D3CFB7800149A"><span class="RefLink">4.1-1</span></a>), but this function uses a simpler method which involves summing over <span class="Math">G</span>. This is slow for large <span class="Math">G</span>, but might be fast in the special case of a very large group and very small degree representation.</p>
+<p>The same as <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap4.html#X7F0D3CFB7800149A"><span class="RefLink">4.1-1</span></a>), but this function uses a simpler method which always involves summing over <span class="Math">G</span>. This is slow for large <span class="Math">G</span>, but might be fast in the special case of a very large group and very small degree representation.</p>
 
 <p><a id="X86EB9DD586958473" name="X86EB9DD586958473"></a></p>
 

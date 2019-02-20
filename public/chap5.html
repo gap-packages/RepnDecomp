@@ -25,7 +25,7 @@
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap5.html#X7C22F13E80A74438">5.1 <span class="Heading">Algorithms due to Serre</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X8316BC7684A911AE">5.1-1 CanonicalDecomposition</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7E95B0367992BEC4">5.1-1 CanonicalDecomposition</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7DBB32527BDB15B3">5.1-2 IrreducibleDecomposition</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap5.html#X7FA264B77B938090">5.1-3 IrreducibleDecompositionCollected</a></span>
 </div></div>
@@ -39,14 +39,14 @@
 
 <p>These operations compute various decompositions of a representation <span class="Math">\rho : G \to GL(V)</span> where <span class="Math">G</span> is finite and <span class="Math">V</span> is a finite-dimensional <span class="Math">\mathbb{C}</span>-vector space. The terms used here are taken from Serre's Linear Representations of Finite Groups.</p>
 
-<p><a id="X8316BC7684A911AE" name="X8316BC7684A911AE"></a></p>
+<p><a id="X7E95B0367992BEC4" name="X7E95B0367992BEC4"></a></p>
 
 <h5>5.1-1 CanonicalDecomposition</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; CanonicalDecomposition</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; CanonicalDecomposition</code>( <var class="Arg">rho</var>[, <var class="Arg">cent_basis</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: List of vector spaces <span class="Math">V_i</span>, each <span class="Math">G</span>-invariant and a direct sum of isomorphic irreducibles. That is, for each <span class="Math">i</span>, <span class="Math">V_i \cong \oplus_j W_i</span> (as representations) where <span class="Math">W_i</span> is an irreducible <span class="Math">G</span>-invariant vector space.</p>
 
-<p>Computes the canonical decomposition of <span class="Math">V</span> into <span class="Math">\oplus_i\;V_i</span> using the formulas for projections <span class="Math">V \to V_i</span> due to Serre.</p>
+<p>Computes the canonical decomposition of <span class="Math">V</span> into <span class="Math">\oplus_i\;V_i</span> using the formulas for projections <span class="Math">V \to V_i</span> due to Serre. If you have an orthonormal (very important!) basis for the centralizer ring of <var class="Arg">rho</var>, you can pass it in as <var class="Arg">cent_basis</var> and it will be used to speed up calculations.</p>
 
 <p><a id="X7DBB32527BDB15B3" name="X7DBB32527BDB15B3"></a></p>
 

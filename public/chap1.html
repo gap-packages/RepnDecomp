@@ -61,10 +61,10 @@
 
 <h5>1.1-3 BlockDiagonalRepresentationFast</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalRepresentationFast</code>( <var class="Arg">rho</var>[, <var class="Arg">irreps</var>, <var class="Arg">F</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalRepresentationFast</code>( <var class="Arg">rho</var>[, <var class="Arg">irreps</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A record</p>
 
-<p>Calculates some values given by other functions in this package, but without summing over G (in case G is very large). Most of the time, G is a symmetric group (or nearly one) so calculation of conjugacy classes is easy. <var class="Arg">irreps</var> is the complete list of irreps involved in the direct sum decomposition of <var class="Arg">rho</var>, this can be given in case the default (running Dixon's algorithm) is too expensive, or e.g. you don't want representations over Cyclotomics. <var class="Arg">F</var> is the field your representations are over. The default is Cyclotomics, but if you know your representation (and irreps) is over e.g. Rationals or some finite extension, you can avoid Cyclotomics entirely by saying what your field is. The return value of this function is a record with fields:</p>
+<p>Calculates some values given by other functions in this package, but without summing over G (in case G is very large). Most of the time, G is a symmetric group (or nearly one) so calculation of conjugacy classes is easy. <var class="Arg">irreps</var> is the complete list of irreps involved in the direct sum decomposition of <var class="Arg">rho</var>, this can be given in case the default (running Dixon's algorithm) is too expensive, or e.g. you don't want representations over Cyclotomics. The return value of this function is a record with fields:</p>
 
 
 <ul>
@@ -75,6 +75,9 @@
 
 </li>
 <li><p>decomposition: same as IrreducibleDecompositionCollected</p>
+
+</li>
+<li><p>centralizer_basis: same as RepresentationCentralizerBlocks</p>
 
 </li>
 </ul>
