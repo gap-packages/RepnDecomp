@@ -76,28 +76,25 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
         cc := ConjugacyClasses(G);
         projection := (degree/Order(G)) * Sum(cc,
           cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizer(rho, cl, cent_basis));
-    elif IsPermGroup(Range(rho)) then
+    elif IsPermGroup(Range(rho)) and IsInjective(rho) then
         # Then if we are given a perm group, but not a basis for the
         # centralizer, can calculate a basis for C from from scratch
         character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
         H := Range(rho); # is perm group
         T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
         cc := ConjugacyClasses(H);
-        two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
 
-        # the orbital matrices themselves
-        orbitals := List(two_orbit_reps, rep -> OrbitalMatrix@(H, rep));
+        # the orbital matrices give a basis for the centralizer
+        orbitals := RepresentationCentralizerPermRep@(rho);
 
         serre_class_contribution := function(class)
             local rep, v, A;
             rep := Representative(class);
 
-            # this uses the fact the each orbital can be seen as the
-            # adjacency matrix of a graph with appropriate isomorphism
-            # group to sum the conjugacy class
-
             # coeffs of orbitals making up the class sum
             v := ClassSum(T, class);
+
+            # the class sum itself
             A := Sum([1..Length(v)], i -> v[i] * orbitals[i]);
             return ComplexConjugate(character(rep)) * A;
         end;
@@ -132,7 +129,7 @@ RelevantIrreps@ := function(rho, irreps)
     return irreps{relevant_indices};
 end;
 
-InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(rho)
+InstallGlobalFunction( CanonicalDecomposition, function(rho, args...)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
 
     # The group we are taking representations of
@@ -150,7 +147,13 @@ InstallMethod( CanonicalDecomposition, [ IsGroupHomomorphism ], function(rho)
     fi;
 
     # otherwise do the calculation per irrep
-    return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
+
+    # if given a basis for centralizer, use it!
+    if Length(args) > 0 then
+        return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep, args[1]));
+    else
+        return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
+    fi;
 end );
 
 # Decomposes the representation V_i into a direct sum of some number

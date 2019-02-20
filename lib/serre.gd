@@ -19,7 +19,7 @@
 #! @Description Computes the canonical decomposition of $V$ into
 #! $\oplus_i\;V_i$ using the formulas for projections $V \to V_i$ due
 #! to Serre.
-DeclareAttribute( "CanonicalDecomposition", IsGroupHomomorphism );
+DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 
 #! @Arguments rho
 
