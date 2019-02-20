@@ -51,7 +51,34 @@ RandomRepresentation@ := function()
                isomorphism_type := isomorphism_type,
                centralizer_basis := centralizer_basis,
                candidate_nice_basis := TransposedMat(A), # note this is not the unique right answer...
-               G := [size, id]);
+               G := id);
+end;
+
+# we return a random (injective!) permutation representation
+RandomPermRepresentation@ := function()
+    local id, G, degree, H, all_homs, rho;
+
+    id := RandomGroup@();
+    G := SmallGroup(id[1], id[2]);
+
+    # This is what we want to do - get all homs then pick out an
+    # injective one. But this takes too long.
+
+    # keep degree small otherwise listing homs will take forever
+    #degree := 10;
+    #H := SymmetricGroup(degree);
+
+    #all_homs := AllHomomorphismClasses(G, H);
+    #rho := FuncToHom@(G, g -> ());
+    #repeat
+    #    rho := Random(all_homs);
+    #until IsInjective(rho);
+
+    # So we just get the easiest one GAP uses (might be too easy...)
+    rho := IsomorphismPermGroup(G);
+
+    return rec(rep := rho,
+               G := id);
 end;
 
 # checks if the given centralizer basis is correct
@@ -179,4 +206,25 @@ TestMany@ := function(f, n)
     until tested = n;
 
     return true;
+end;
+
+# Same as TestMany, but with permutation representations
+TestManyPerm@ := function(f, n)
+    local tested, rep;
+
+    tested := 0;
+
+    repeat
+        rep := RandomPermRepresentation@();
+
+        if not f(rep) then
+            Print("FAILED: ", rep, "\n");
+            return false;
+        fi;
+
+        tested := tested + 1;
+    until tested = n;
+
+    return true;
+
 end;
