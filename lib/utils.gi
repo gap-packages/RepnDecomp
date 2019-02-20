@@ -271,7 +271,7 @@ OrthonormalBasis@ := function(v)
 
     for k in [1..N] do
         u[k] := v[k] - Sum([1..k-1], j -> proj(u[j], v[k]));
-        e[k] := Sqrt(prod(u[k], u[k])) * u[k];
+        e[k] := (1/Sqrt(prod(u[k], u[k]))) * u[k];
     od;
 
     return e;
