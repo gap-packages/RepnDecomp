@@ -9,7 +9,7 @@
 #! The terms used here are taken from Serre's Linear Representations
 #! of Finite Groups.
 
-#! @Arguments rho
+#! @Arguments rho[, cent_basis]
 
 #! @Returns List of vector spaces $V_i$, each $G$-invariant and a
 #! direct sum of isomorphic irreducibles. That is, for each $i$, $V_i
@@ -19,6 +19,10 @@
 #! @Description Computes the canonical decomposition of $V$ into
 #! $\oplus_i\;V_i$ using the formulas for projections $V \to V_i$ due
 #! to Serre.
+
+#! If you have an orthonormal (very important!) basis for the
+#! centralizer ring of <A>rho</A>, you can pass it in as
+#! <A>cent_basis</A> and it will be used to speed up calculations.
 DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 
 #! @Arguments rho
