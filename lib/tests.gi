@@ -172,6 +172,26 @@ TestCanonicalDecomposition@ := function(rep, decomp, args...)
     fi;
 end;
 
+# Tests if two canonical decompositions are "the same"
+TestCanonicalDecompsEqual@ := function(decomp1, decomp2)
+    local conds;
+
+    conds := [];
+
+    # Need to have same number of summands
+    Add(conds, Length(decomp1) = Length(decomp2));
+
+    # Decomps should be the same up to reordering and dimension
+    Add(conds, SortedList(List(decomp1, Dimension)) = SortedList(List(decomp2, Dimension)));
+
+    if ForAll(conds, x->x) then
+        return true;
+    else
+        Error("test failed!");
+        return false;
+    fi;
+end;
+
 # test full BlockDiagonalRepresentation{Fast, Parallel} info
 TestBlockDiagonalRepresentation@ := function(rep, info)
     local conds, A;
