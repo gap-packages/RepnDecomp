@@ -1,15 +1,20 @@
 # Correctness checks, so we can see if our decompositions, centralizer
 # bases, etc are correct
 
-# Generate a random representation of a random group
-RandomRepresentation@ := function()
-    local size, id, G, irreps, irrep1, irrep2, rho, n, A, centralizer_basis, isomorphism_type;
-
-    # smallgrp has groups of order at most 2000 except 1024
-    #size := Random(Concatenation([1..1023], [1025..2000]));
+RandomGroup@ := function()
+    local size, id;
     size := Random([1..100]); # don't want tests to take forever
     id := Random([1..NrSmallGroups(size)]);
-    G := SmallGroup(size, id);
+    return [size, id];
+end;
+
+# Generate a random representation of a random group
+RandomRepresentation@ := function()
+    local id, G, irreps, irrep1, irrep2, rho, n, A, centralizer_basis, isomorphism_type;
+
+    id := RandomGroup@();
+
+    G := SmallGroup(id[1], id[2]);
     irreps := IrreducibleRepresentations(G);
 
     # we pick 2 of the same irrep and 1 other for some variety
