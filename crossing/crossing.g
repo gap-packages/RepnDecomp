@@ -116,7 +116,6 @@ CalculateSDP := function(m, irreps)
     # First, we block diagonalize action_hom
     Print("Decomposing group action\n");
 
-    # need to fix this, the basis is wrong??
     block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     nice_basis := block_diag_info.basis;
 
