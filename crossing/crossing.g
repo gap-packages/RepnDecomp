@@ -113,15 +113,16 @@ CalculateSDP := function(m, irreps)
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
 
-    # First, we block diagonalize action_hom
     Print("Decomposing group action\n");
 
+    # First, we block diagonalize action_hom
     block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     nice_basis := block_diag_info.basis;
 
-    # This is the nice basis for the centralizer, written in the nice
+    # This is the basis for the centralizer, written in the nice
     # basis, called E_i in the paper. I convert to full matrices
-    # here. (TODO: use sparse matrices here or something?)
+    # here. (TODO: use sparse matrices here or something?). These
+    # matrices must be orthogonal.
     centralizer_basis := List(block_diag_info.centralizer_basis, BlockDiagonalMatrix);
 
     # We normalize the basis for the centralizer, each matrix is still
