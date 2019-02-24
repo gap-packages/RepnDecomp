@@ -26,7 +26,7 @@ DeclareAttribute( "BlockDiagonalBasis", IsGroupHomomorphism );
 #! and put $\rho$ into a nice form.
 DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 
-#! @Arguments rho[, irreps]
+#! @Arguments rho[, irreps, rho_cent_basis]
 
 #! @Returns A record
 
@@ -39,6 +39,10 @@ DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 #! sum decomposition of <A>rho</A>, this can be given in case the
 #! default (running Dixon's algorithm) is too expensive, or e.g. you
 #! don't want representations over Cyclotomics.
+
+#! If you have an orthonormal basis for the centraliser of <A>rho</A>,
+#! you can pass it in as <A>rho_cent_basis</A> and it will be used to
+#! speed up calculations.
 
 #! The return value of this function is a record with fields:
 
@@ -53,3 +57,14 @@ DeclareAttribute( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 #! When I say "the same", I mean up to reordering and isomorphism as
 #! representations.
 DeclareGlobalFunction( "BlockDiagonalRepresentationFast" );
+
+#! @Arguments rho[, irreps, rho_cent_basis]
+
+#! @Returns A record in the same format as <Ref
+#! Func="BlockDiagonalRepresentationFast" />.
+
+#! @Description Does the same thing as <Ref
+#! Func="BlockDiagonalRepresentationFast" />, but first splits the
+#! representation into canonical summands. This might reduce the size
+#! of the matrices we need to work over, so could much faster.
+DeclareGlobalFunction( "BlockDiagonalRepresentationFastCanonical" );

@@ -53,7 +53,7 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     G := Source(rho);
 
     # If we are given a list of irreps, we use them and assume that it
-    # is complete
+    # is complete (or, as complete as we need)
     irreps := [];
     if Length(args) >= 1 then
         irreps := args[1];

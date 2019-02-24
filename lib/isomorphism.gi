@@ -59,6 +59,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     matrix_basis := MatrixBasis@(n);
 
     # the representation alpha : G -> GL(V) (V is the space of matrices)
+    # TODO: investigate if we can avoid huge matrices in some way
     alpha := FuncToHom@(G, g -> KroneckerProduct(Image(tau, g), TransposedMat(Image(rho, g^-1))));
 
     # the projection of V onto V_triv, the trivial canonical summand,

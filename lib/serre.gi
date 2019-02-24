@@ -76,7 +76,11 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
         cc := ConjugacyClasses(G);
         projection := (degree/Order(G)) * Sum(cc,
           cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizer(rho, cl, cent_basis));
-    elif IsPermGroup(Range(rho)) and IsInjective(rho) then
+    # I want to check if rho is injective - otherwise this doesn't
+    # work, but checking that checks each element of G has a different
+    # image - slow.
+    #elif IsPermGroup(Range(rho)) and IsInjective(rho) then
+    elif IsPermGroup(Range(rho)) then
         # Then if we are given a perm group, but not a basis for the
         # centralizer, can calculate a basis for C from from scratch
         character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
@@ -277,16 +281,27 @@ DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
 end;
 
 # Uses Serre's formula to get canonical decomposition, then RCF method
-# to get irreducibles from that
-IrreducibleDecompositionCollectedHybrid@ := function(rho)
-    local irreps, G, full_decomposition;
+# to get irreducibles from that. Uses orthonormal basis for C_rho if
+# given.
+IrreducibleDecompositionCollectedHybrid@ := function(rho, args...)
+    local irreps, G, full_decomposition, cent_basis;
     G := Source(rho);
-    irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
+    cent_basis := fail;
+    if Length(args) >= 1 then
+        irreps := args[1];
+    else
+        irreps := IrreducibleRepresentations(G);
+    fi;
+    if Length(args) >= 2 then
+        cent_basis := args[2];
+    fi;
+    irreps := RelevantIrreps@(rho, irreps);
     full_decomposition := List(irreps,
                                irrep -> DecomposeCanonicalSummandFast@(rho,
                                                                        irrep,
                                                                        IrrepCanonicalSummand@(rho,
-                                                                                              irrep)));
+                                                                                              irrep,
+                                                                                              cent_basis)));
 
     return rec(decomp := full_decomposition, used_rho := rho);
 end;
