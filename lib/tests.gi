@@ -3,7 +3,6 @@
 
 RandomGroup@ := function()
     local size, id;
-    Reset(GlobalMersenneTwister, NanosecondsSinceEpoch());;
     size := Random([1..100]); # don't want tests to take forever
     id := Random([1..NrSmallGroups(size)]);
     return [size, id];
@@ -15,7 +14,6 @@ RandomRepresentation@ := function()
 
     id := RandomGroup@();
 
-    Reset(GlobalMersenneTwister, NanosecondsSinceEpoch());;
 
     G := SmallGroup(id[1], id[2]);
     irreps := IrreducibleRepresentations(G);
@@ -60,6 +58,7 @@ RandomRepresentation@ := function()
                isomorphism_type := isomorphism_type,
                centralizer_basis := centralizer_basis,
                candidate_nice_basis := TransposedMat(A), # note this is not the unique right answer...
+               irreps := irreps, # so we can cheat if we want to for e.g. benchmarks
                G := id);
 end;
 
@@ -224,6 +223,7 @@ TestMany@ := function(f, n)
     tested := 0;
 
     repeat
+        Reset(GlobalMersenneTwister, NanosecondsSinceEpoch());;
         rep := RandomRepresentation@();
 
         if not f(rep) then
@@ -244,6 +244,7 @@ TestManyPerm@ := function(f, n)
     tested := 0;
 
     repeat
+        Reset(GlobalMersenneTwister, NanosecondsSinceEpoch());;
         rep := RandomPermRepresentation@();
 
         if not f(rep) then
@@ -256,4 +257,41 @@ TestManyPerm@ := function(f, n)
 
     return true;
 
+end;
+
+# benchmarks a function f : random representation -> anything for n
+# random representations, printing output in the format:
+#
+# group size | group id | nr conjugacy classes | degree | time taken
+#
+# output is printed to the file with name out
+BenchMany@ := function(f, out, n)
+    local rep, size, id, num_classes, degree, t0, t1, time_taken, tested;
+
+    tested := 0;
+
+    # clear file
+    PrintTo(out);
+
+    # We deliberately avoid resetting the GlobalMersenneTwister since
+    # we want the same reps to come up when you bench. This doesn't
+    # really matter, but it's nicer.
+    repeat
+        rep := RandomRepresentation@();
+        size := rep.G[1];
+        id := rep.G[2];
+        num_classes := Length(ConjugacyClasses(Source(rep.rep)));
+        degree := DegreeOfRepresentation(rep.rep);
+
+        # do the bench
+        t0 := Runtime();
+        f(rep);
+        t1 := Runtime();
+        time_taken := t1 - t0;
+
+        AppendTo(out, size, " ", id, " ", num_classes, " ", degree, " ", time_taken, "\n");
+
+        tested := tested + 1;
+        Print("done ", tested, "\n");
+    until tested = n;
 end;
