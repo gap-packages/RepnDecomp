@@ -144,3 +144,39 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
                                          l -> Size(l) > 0), # don't use blocks that don't appear
                centralizer_basis := centralizer_blocks);
 end );
+
+# The same as BlockDiagonalRepresentationFast but we first split into
+# canonical summands which could be faster (as always, it's only
+# actually faster if you have a basis for the centraliser)
+InstallGlobalFunction( BlockDiagonalRepresentationFastCanonical, function(rho, args...)
+    local G, cent_basis, decomp, spaces_collected, block_sizes, new_basis, block_diag_basis, base_change_mat, diag_rho, irreps, new_bases;
+    G := Source(rho);
+    cent_basis := fail;
+    if Length(args) >= 1 then
+        irreps := args[1];
+    else
+        irreps := IrreducibleRepresentations(G);
+    fi;
+    if Length(args) >= 2 then
+        cent_basis := args[2];
+    fi;
+
+    decomp := IrreducibleDecompositionCollectedHybrid@(rho, irreps, cent_basis).decomp;
+    spaces_collected := List(decomp, rec_list -> List(rec_list, r -> VectorSpace(Cyclotomics, r.basis)));
+    block_sizes := List(spaces_collected, l -> rec(dimension := Dimension(l[1]),
+                                                   nblocks := Length(l)));
+
+    new_bases := List(decomp, rec_list -> List(rec_list, r -> r.basis));
+
+    # List of new basis as row vectors
+    block_diag_basis := Concatenation(Concatenation(new_bases));
+
+    base_change_mat := TransposedMat(block_diag_basis);
+
+    diag_rho := ComposeHomFunction(rho, A -> base_change_mat^-1 * A * base_change_mat);
+
+    return rec(basis := block_diag_basis,
+               diagonal_rep := diag_rho,
+               decomposition := spaces_collected,
+               centralizer_basis := SizesToBlocks@(block_sizes));
+end );
