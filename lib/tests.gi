@@ -3,6 +3,7 @@
 
 RandomGroup@ := function()
     local size, id;
+    Reset(GlobalMersenneTwister, NanosecondsSinceEpoch());;
     size := Random([1..100]); # don't want tests to take forever
     id := Random([1..NrSmallGroups(size)]);
     return [size, id];
@@ -10,9 +11,11 @@ end;
 
 # Generate a random representation of a random group
 RandomRepresentation@ := function()
-    local id, G, irreps, irrep1, irrep2, rho, n, A, centralizer_basis, isomorphism_type;
+    local id, G, irreps, irrep1, irrep2, rho, n, A, centralizer_basis, isomorphism_type, diag_rho;
 
     id := RandomGroup@();
+
+    Reset(GlobalMersenneTwister, NanosecondsSinceEpoch());;
 
     G := SmallGroup(id[1], id[2]);
     irreps := IrreducibleRepresentations(G);
@@ -21,12 +24,12 @@ RandomRepresentation@ := function()
     irrep1 := Random(irreps);
     irrep2 := Random(irreps);
 
-    rho := DirectSumRepList([irrep1, irrep1, irrep2]);
-    n := DegreeOfRepresentation(rho);
+    diag_rho := DirectSumRepList([irrep1, irrep1, irrep2]);
+    n := DegreeOfRepresentation(diag_rho);
 
     # scramble the basis to avoid it being too easy
     A := RandomInvertibleMat(n);
-    rho := ComposeHomFunction(rho, x -> A^-1 * x * A);
+    rho := ComposeHomFunction(diag_rho, x -> A^-1 * x * A);
 
     # We know some things about rho without needing to compute them
     # the long way. We return them for use in testing.
@@ -53,6 +56,7 @@ RandomRepresentation@ := function()
     centralizer_basis := List(centralizer_basis, M -> A^-1 * M * A);
 
     return rec(rep := rho,
+               diag_rep := diag_rho,
                isomorphism_type := isomorphism_type,
                centralizer_basis := centralizer_basis,
                candidate_nice_basis := TransposedMat(A), # note this is not the unique right answer...
