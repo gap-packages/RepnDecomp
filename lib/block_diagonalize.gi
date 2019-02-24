@@ -30,15 +30,9 @@ InstallMethod( BlockDiagonalRepresentation, "for linear reps", [ IsGroupHomomorp
     local decomp, A, G, gens, imgs, range, rho;
 
     rho := ConvertRhoIfNeeded@(arg_rho);
-
     A := BasisChangeMatrix@(rho);
-    G := Source(rho);
-    gens := GeneratorsOfGroup(G);
-    imgs := List(gens, g -> A^-1 * Image(rho, g) * A);
 
-    range := Group(imgs);
-
-    return GroupHomomorphismByImagesNC(G, range, gens, imgs);
+    return ComposeHomFunction(rho, x -> A^-1 * x * A);
 end );
 
 # Calculates a matrix P such that X = P^-1 Y P
