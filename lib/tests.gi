@@ -1,28 +1,58 @@
 # Correctness checks, so we can see if our decompositions, centralizer
 # bases, etc are correct
 
-RandomGroup@ := function()
+RandomGroup@ := function(args...)
     local size, id;
-    size := Random([1..100]); # don't want tests to take forever
+    if Length(args) >= 1 then
+        size := Random([args[1].lo..args[1].hi]);
+    else
+        size := Random([2..100]); # don't want tests to take forever
+    fi;
     id := Random([1..NrSmallGroups(size)]);
     return [size, id];
 end;
 
 # Generate a random representation of a random group
-RandomRepresentation@ := function()
-    local id, G, irreps, irrep1, irrep2, rho, n, A, centralizer_basis, isomorphism_type, diag_rho;
+RandomRepresentation@ := function(args...)
+    local x, id, G, irreps, chosen_irreps, rho, n, A, centralizer_basis, isomorphism_type, diag_rho, opt;
 
-    id := RandomGroup@();
+    if Length(args) >= 1 then
+        opt := args[1];
+    else
+        opt := rec(lo := 2,
+                   hi := 100,
+                   num_irreps := 2,
+                   min_multiplicity := 1,
+                   max_multiplicity := 2,
+                   restrict_small_degree := false,
+                   small_degree := 10);
+    fi;
 
+    id := RandomGroup@(opt);
 
     G := SmallGroup(id[1], id[2]);
+
     irreps := IrreducibleRepresentations(G);
 
-    # we pick 2 of the same irrep and 1 other for some variety
-    irrep1 := Random(irreps);
-    irrep2 := Random(irreps);
+    # in some cases we might want to restrict to only small degree
+    if opt.restrict_small_degree then
+        irreps := Filtered(irreps, irrep -> DegreeOfRepresentation(irrep) <= opt.small_degree);
+    fi;
 
-    diag_rho := DirectSumRepList([irrep1, irrep1, irrep2]);
+    chosen_irreps := [];
+
+    for x in [1..opt.num_irreps] do
+        Add(chosen_irreps, Random(irreps));
+    od;
+
+    # eliminate duplicates to avoid counting issues
+    chosen_irreps := Set(chosen_irreps);
+
+    # add some random multiplicity
+
+    chosen_irreps := List(chosen_irreps, irrep -> Replicate@(irrep, Random([opt.min_multiplicity..opt.max_multiplicity])));
+
+    diag_rho := DirectSumRepList(Flat(chosen_irreps));
     n := DegreeOfRepresentation(diag_rho);
 
     # scramble the basis to avoid it being too easy
@@ -32,21 +62,9 @@ RandomRepresentation@ := function()
     # We know some things about rho without needing to compute them
     # the long way. We return them for use in testing.
 
-    # if the irreps ended up the same, we have to correct the info
-    if irrep1 = irrep2 then
-        centralizer_basis := [rec(dimension := DegreeOfRepresentation(irrep1),
-                                  nblocks := 3)];
-        isomorphism_type := [rec(rep := irrep1, m := 3)];
-    else
-        centralizer_basis := [rec(dimension := DegreeOfRepresentation(irrep1),
-                                  nblocks := 2),
-                              rec(dimension := DegreeOfRepresentation(irrep2),
-                                  nblocks := 1)];
-
-        isomorphism_type := [rec(rep := irrep1, m := 2),
-                             rec(rep := irrep2, m := 1)];
-    fi;
-
+    isomorphism_type := List(chosen_irreps, irrep_list -> rec(rep := irrep_list[1], m := Length(irrep_list)));
+    centralizer_basis := List(chosen_irreps, irrep_list -> rec(dimension := DegreeOfRepresentation(irrep_list[1]),
+                                                               nblocks := Length(irrep_list)));
 
     centralizer_basis := List(SizesToBlocks@(centralizer_basis), BlockDiagonalMatrix);
 
@@ -266,18 +284,28 @@ end;
 #
 # output is printed to the file with name out
 BenchMany@ := function(f, out, n)
-    local rep, size, id, num_classes, degree, t0, t1, time_taken, tested;
+    local rep, size, id, num_classes, degree, t0, t1, time_taken, tested, opt;
 
     tested := 0;
 
     # clear file
     PrintTo(out);
 
+    # this set of options to the random representation generator is
+    # designed to avoid trivial cases
+    opt := rec(lo := 1500,
+               hi := 2000,
+               num_irreps := 1,
+               min_multiplicity := 1,
+               max_multiplicity := 1,
+               restrict_small_degree := true,
+               small_degree := 10);
+
     # We deliberately avoid resetting the GlobalMersenneTwister since
     # we want the same reps to come up when you bench. This doesn't
     # really matter, but it's nicer.
     repeat
-        rep := RandomRepresentation@();
+        rep := RandomRepresentation@(opt);
         size := rep.G[1];
         id := rep.G[2];
         num_classes := Length(ConjugacyClasses(Source(rep.rep)));

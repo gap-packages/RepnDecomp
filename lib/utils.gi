@@ -89,10 +89,7 @@ end;
 InstallGlobalFunction( DirectSumRepList, function(reps)
     local G, gens, imgs, H;
     G := Source(reps[1]);
-    gens := GeneratorsOfGroup(G);
-    imgs := List(gens, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
-    H := Group(imgs);
-    return GroupHomomorphismByImagesNC(G, H, gens, imgs);
+    return FuncToHom@(G, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
 end );
 
 # Takes the inner product of two characters, given as rows of the
