@@ -181,8 +181,8 @@ def compute_alpha(m, print_irreps=False, status=True):
     # fudge factor.
     epsilon = 0
 
-    constraint1 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one >= one+epsilon
-    constraint2 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one <= one-epsilon
+    constraint1 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one >= one-epsilon
+    constraint2 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one <= one+epsilon
 
     if status:
         print("Adding constraints")
