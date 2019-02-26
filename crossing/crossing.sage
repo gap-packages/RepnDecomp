@@ -130,6 +130,9 @@ def compute_alpha(m, print_irreps=False, status=True):
     J_block_diag = basis_change^-1 * J * basis_change
     L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
 
+    # pairs[i] = i^* in GAP, need to adjust indices for Sage
+    pairs = [y-1 for y in libgap.eval("sdp.pairs").sage()]
+
     # Our matrices are all real, but largely irrational. This is ok
     # except the irrationals are represented as sums of
     # cyclotomics. Sage doesn't know they are real. We have to
@@ -156,21 +159,32 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     constraint0 = sum(x[i] * L[i] for i in range(d)) >= 0
 
-    # This is what this means, but I need the matrices to avoid type errors
-    # constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d)) == 1
-
     one = matrix([[1]])
-    constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d))*one == one
+
+    # due to errors from using floats, if the constraint is too tight,
+    # we might actually make the program infeasible unless we add a
+    # fudge factor.
+    epsilon = 0
+
+    constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d))*one >= one-epsilon
+    constraint2 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d))*one <= one+epsilon
 
     if status:
         print("Adding constraints")
 
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
+    prog.add_constraint(constraint2)
 
     # need all x_i >= 0
     for i in range(d):
         prog.add_constraint(x[i]*one >= 0)
+
+    #import pdb; pdb.set_trace()
+
+    # also we require x_i = x_i^*, so we restrict to the space of symmetric matrices
+    for i in range(d):
+        prog.add_constraint((x[i]-x[pairs[i]])*one == 0)
 
     if status:
         sys.stdout.write("Solving SDP: ")

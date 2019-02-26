@@ -129,6 +129,18 @@ CalculateSDP := function(m, irreps)
     # matrices must be orthogonal.
     centralizer_basis := List(block_diag_info.centralizer_basis, BlockDiagonalMatrix);
 
+    # for each E_i, there is some E_{i^*} = E_i^T. This is also the
+    # case for our matrices. We record these pairs below. Possibly i =
+    # i^* when e.g. multiplicity of that block is odd.
+    pairs := List([1..Length(centralizer_basis)], x -> fail);
+    for i in [1..Length(pairs)] do
+        for j in [1..Length(pairs)] do
+            if centralizer_basis[i] = TransposedMat(centralizer_basis[j]) then
+                pairs[i] := j;
+            fi;
+        od;
+    od;
+
     # We normalize the basis for the centralizer, each matrix is still
     # written in the nice basis. These are the B_i.
     norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(E*TransposedMat(E)))^-1)*E);
@@ -166,7 +178,9 @@ CalculateSDP := function(m, irreps)
     return rec(centralizer_basis := norm_cent_basis, # the B_i
                nice_basis := nice_basis, # basis all matrices are written in
                mult_param := mult_param, # the lambda_{i,j}^k
-               param_matrices := param_matrices); # the L_k
+               param_matrices := param_matrices, # the L_k
+               pairs := pairs, # pairs[i] = i^*
+              );
 end;
 
 CheckMatInCentralizer := function(m, mat)
