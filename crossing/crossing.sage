@@ -121,16 +121,26 @@ def compute_alpha(m, print_irreps=False, status=True):
         sys.stdout.write("Formulating SDP in Sage: ")
 
     t0 = time.time()
+
+    # B is an orthonormal basis for the centralizer
     B = [matrix(mat) for mat in libgap.eval("List(sdp.centralizer_basis);").sage()]
+
+    # basis the B are written in, the action_hom is written in the
+    # standard basis
     basis = libgap.eval("sdp.nice_basis;").sage()
-    Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
     basis_change = matrix(libgap.eval("TransposedMat(sdp.nice_basis)").sage())
+
+    # the cost matrix Q_xy is the number of adjacent transpositions needed to get from x to y^-1
+    Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
     Q_block_diag = basis_change^-1 * Q * basis_change
     J = matrix(len(basis), len(basis), lambda i,j: 1)
     J_block_diag = basis_change^-1 * J * basis_change
+
+    # (L_k)_ij = lambda^i_{kj}
     L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
 
-    # pairs[i] = i^* in GAP, need to adjust indices for Sage
+    # pairs[i] = i^* in GAP, need to adjust indices for Sage (GAP is
+    # 1-based)
     pair_map = [y-1 for y in libgap.eval("sdp.pairs").sage()]
 
     # Our matrices are all real, but largely irrational. This is ok
@@ -162,6 +172,10 @@ def compute_alpha(m, print_irreps=False, status=True):
             seen.add(i)
             seen.add(pair_map[i])
             pairs.append((i, pair_map[i]))
+
+    if status:
+        print("d_centralizer = {}".format(len(B)))
+        print("d_reduced = {}".format(len(pairs)))
 
     # The dimension of the subspace of the centralizer consisting of
     # symmetric matrices
