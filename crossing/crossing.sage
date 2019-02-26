@@ -131,7 +131,7 @@ def compute_alpha(m, print_irreps=False, status=True):
     L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
 
     # pairs[i] = i^* in GAP, need to adjust indices for Sage
-    pairs = [y-1 for y in libgap.eval("sdp.pairs").sage()]
+    pair_map = [y-1 for y in libgap.eval("sdp.pairs").sage()]
 
     # Our matrices are all real, but largely irrational. This is ok
     # except the irrationals are represented as sums of
@@ -153,11 +153,26 @@ def compute_alpha(m, print_irreps=False, status=True):
     prog = SemidefiniteProgram(maximization=False)
     x = prog.new_variable()
 
-    d = len(L)
+    # The number of variables we need is equal to the number of {i,
+    # i^*} pairs.
+    pairs = []
+    seen = set()
+    for i in range(len(pair_map)):
+        if i not in seen:
+            seen.add(i)
+            seen.add(pair_map[i])
+            pairs.append((i, pair_map[i]))
 
-    prog.set_objective(sum((Q_block_diag * B[i]).trace()*x[i] for i in range(d)))
+    # The dimension of the subspace of the centralizer consisting of
+    # symmetric matrices
+    d = len(pairs)
 
-    constraint0 = sum(x[i] * L[i] for i in range(d)) >= 0
+    # the x[j] variable we use for a pair (i, i*) is the minimum since
+    # the pairs cover [1..d] where d is the full dimension of the
+    # centralizer
+    prog.set_objective(sum((Q_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs))))
+
+    constraint0 = sum(x[i] * (L[i] + L[pair_map[i]]) for i in range(len(pairs))) >= 0
 
     one = matrix([[1]])
 
@@ -166,8 +181,8 @@ def compute_alpha(m, print_irreps=False, status=True):
     # fudge factor.
     epsilon = 0
 
-    constraint1 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d))*one >= one-epsilon
-    constraint2 = sum((J_block_diag * B[i]).trace()*x[i] for i in range(d))*one <= one+epsilon
+    constraint1 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one >= one+epsilon
+    constraint2 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one <= one-epsilon
 
     if status:
         print("Adding constraints")
@@ -177,14 +192,10 @@ def compute_alpha(m, print_irreps=False, status=True):
     prog.add_constraint(constraint2)
 
     # need all x_i >= 0
-    for i in range(d):
+    for i in range(len(pairs)):
         prog.add_constraint(x[i]*one >= 0)
 
     #import pdb; pdb.set_trace()
-
-    # also we require x_i = x_i^*, so we restrict to the space of symmetric matrices
-    for i in range(d):
-        prog.add_constraint((x[i]-x[pairs[i]])*one == 0)
 
     if status:
         sys.stdout.write("Solving SDP: ")
