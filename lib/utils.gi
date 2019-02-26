@@ -248,13 +248,15 @@ ConjugateTranspose@ := function(mat)
     return TransposedMat(List(mat, row -> List(row, ComplexConjugate)));
 end;
 
+# This is the matrix inner product used throughout the package
+InnerProduct@ := function(A, B)
+    return Trace(A*ConjugateTranspose@(B));
+end;
 # v is a list of matrices that are the basis of a space
 OrthonormalBasis@ := function(v)
     local prod, proj, N, u, e, k;
 
-    prod := function(A, B)
-        return Trace(A*ConjugateTranspose@(B));
-    end;
+    prod := InnerProduct@;
 
     proj := function(u, v)
         return (prod(u, v) / prod(u, u)) * u;
