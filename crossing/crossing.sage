@@ -170,32 +170,31 @@ def compute_alpha(m, print_irreps=False, status=True):
     # the x[j] variable we use for a pair (i, i*) is the minimum since
     # the pairs cover [1..d] where d is the full dimension of the
     # centralizer
-    prog.set_objective(sum((Q_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs))))
+    prog.set_objective(sum((Q_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d)))
 
-    constraint0 = sum(x[i] * (L[i] + L[pair_map[i]]) for i in range(len(pairs))) >= 0
+    # sum_i x_i L_i >= 0. This is true iff sum_i x_i B_i >= 0 due to a
+    # *-isomorphism B_i -> L_i
+    constraint0 = sum(x[i] * (L[i] + L[pair_map[i]]) for i in range(d)) >= 0
 
     one = matrix([[1]])
 
-    # due to errors from using floats, if the constraint is too tight,
-    # we might actually make the program infeasible unless we add a
-    # fudge factor.
-    epsilon = 0
-
-    constraint1 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one >= one-epsilon
-    constraint2 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(len(pairs)))*one <= one+epsilon
+    constraint1 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d))*one == one
 
     if status:
         print("Adding constraints")
 
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
-    prog.add_constraint(constraint2)
 
-    # need all x_i >= 0
-    for i in range(len(pairs)):
-        prog.add_constraint(x[i]*one >= 0)
+    # need all x_i >= 0, this specifies X >= 0 where X_ii = x_i,
+    # otherwise 0
+    C = [matrix() for i in range(d)]
+    for i in range(d):
+        diag = [0]*d
+        diag[i] = 1
+        C[i] = diagonal_matrix(diag)
 
-    #import pdb; pdb.set_trace()
+    prog.add_constraint(sum(C[i]*x[i] for i in range(d)) >= 0)
 
     if status:
         sys.stdout.write("Solving SDP: ")
