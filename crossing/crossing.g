@@ -105,17 +105,21 @@ end;
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP
 # we need to solve
 CalculateSDP := function(m, irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom;
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom, cent_basis, action_perm;
 
     Print("Computing group action\n");
-    action_hom := ActionRegularRep(m);
+    action_perm := ActionPermRep(m);
+
+    cent_basis := RepresentationCentralizerPermRep@RepnDecomp(action_perm);
+
+    action_hom := PermToLinearRep(action_perm);
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
 
     Print("Decomposing group action\n");
 
-    # First, we block diagonalize action_hom
+    # First, we block diagonalize action_hom (TODO: give cent_basis here)
     block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     nice_basis := block_diag_info.basis;
 
