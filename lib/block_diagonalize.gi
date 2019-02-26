@@ -112,13 +112,8 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
 
     # Note: this is where the heavy lifting of the function is
 
-    # If we were given a basis for centraliser of rho, do it fast
-    if rho_cent_basis <> fail then
-        basis_change := LinearRepresentationIsomorphism(new_rho, rho);
-    else
-        basis_change := LinearRepresentationIsomorphism(new_rho, rho,
-                                                        new_rho_cent_basis, rho_cent_basis);
-    fi;
+    basis_change := LinearRepresentationIsomorphism(new_rho, rho,
+                                                    new_rho_cent_basis, rho_cent_basis);
 
     basis := TransposedMat(basis_change);
 
