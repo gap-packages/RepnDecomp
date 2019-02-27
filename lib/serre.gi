@@ -34,8 +34,9 @@ end;
 
 # assumes rho is faithful permutation representation, calculates centralizer
 RepresentationCentralizerPermRep@ := function(rho)
-    local H, T, two_orbit_reps;
-    H := Range(rho); # is perm group
+    local G, H, T, two_orbit_reps;
+    G := Source(rho);
+    H := Group(List(GeneratorsOfGroup(G), g -> Image(rho, g))); # is perm group
     T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
     two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
 
