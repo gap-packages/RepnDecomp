@@ -127,13 +127,13 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     # basis the B are written in, the action_hom is written in the
     # standard basis
-    basis = libgap.eval("sdp.nice_basis;").sage()
-    basis_change = matrix(libgap.eval("TransposedMat(sdp.nice_basis)").sage())
+    basis = matrix(libgap.eval("sdp.nice_basis;").sage())
+    basis_change = basis.transpose()
 
     # the cost matrix Q_xy is the number of adjacent transpositions needed to get from x to y^-1
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
     Q_block_diag = basis_change^-1 * Q * basis_change
-    J = matrix(len(basis), len(basis), lambda i,j: 1)
+    J = matrix(basis.nrows(), basis.nrows(), lambda i,j: 1)
     J_block_diag = basis_change^-1 * J * basis_change
 
     # (L_k)_ij = lambda^i_{kj}
@@ -173,7 +173,10 @@ def compute_alpha(m, print_irreps=False, status=True):
             seen.add(pair_map[i])
             pairs.append((i, pair_map[i]))
 
+    # verify the pairs
     if status:
+        print("Seen all: {}".format(all(x in seen for x in range(len(B)))))
+        print("Pairs are correct: {}".format(all(B[x] == B[y].transpose() for (x, y) in pairs)))
         print("d_centralizer = {}".format(len(B)))
         print("d_reduced = {}".format(len(pairs)))
 
@@ -182,7 +185,7 @@ def compute_alpha(m, print_irreps=False, status=True):
     d = len(pairs)
 
     # the x[j] variable we use for a pair (i, i*) is the minimum since
-    # the pairs cover [1..d] where d is the full dimension of the
+    # the pairs cover [1..d'] where d' is the full dimension of the
     # centralizer
     prog.set_objective(sum((Q_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d)))
 
@@ -201,7 +204,7 @@ def compute_alpha(m, print_irreps=False, status=True):
     prog.add_constraint(constraint1)
 
     # need all x_i >= 0, this specifies X >= 0 where X_ii = x_i,
-    # otherwise 0
+    # otherwise 0, which is the same thing
     C = [matrix() for i in range(d)]
     for i in range(d):
         diag = [0]*d

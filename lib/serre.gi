@@ -276,13 +276,12 @@ DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
 
     # same format as DecomposeCanonicalSummand
     return List(space_list,
-                space -> rec(#space := space, # the space can be recovered from the basis
-                             basis := List(Basis(space))));
+                space -> rec(basis := List(Basis(space))));
 end;
 
-# Uses Serre's formula to get canonical decomposition, then RCF method
-# to get irreducibles from that. Uses orthonormal basis for C_rho if
-# given.
+# Uses Serre's formula to get canonical decomposition, then "fast"
+# method to get irreducibles from that. Uses orthonormal basis for
+# C_rho if given.
 IrreducibleDecompositionCollectedHybrid@ := function(rho, args...)
     local irreps, G, full_decomposition, cent_basis;
     G := Source(rho);
