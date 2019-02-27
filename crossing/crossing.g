@@ -155,6 +155,7 @@ CalculateSDP := function(m, irreps)
     centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
     norm_cent_basis := Basis(centralizer, norm_cent_basis);
 
+    # TODO: SPEED THIS UP BY A LOT!
     # The multiplication params are defined by B_i B_j = \sum_k \lambda_{i,j}^k B_k
     # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
     Print("Calculating lambda_ij^k");
