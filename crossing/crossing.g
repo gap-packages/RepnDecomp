@@ -105,7 +105,7 @@ end;
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP
 # we need to solve
 CalculateSDP := function(m, irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom, cent_basis, action_perm;
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom, cent_basis, action_perm, pairs;
 
     Print("Computing group action\n");
     action_perm := ActionPermRep(m);
@@ -120,18 +120,20 @@ CalculateSDP := function(m, irreps)
     Print("Decomposing group action\n");
 
     # First, we block diagonalize action_hom (TODO: give cent_basis here)
-    block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
-    nice_basis := block_diag_info.basis;
+    #block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
+    #nice_basis := block_diag_info.basis;
+    nice_basis := IdentityMat(DegreeOfRepresentation(action_hom));
 
     # This is the basis for the centralizer, written in the nice
     # basis, called E_i in the paper. I convert to full matrices
     # here. (TODO: use sparse matrices here or something?). These
     # matrices must be orthogonal.
-    centralizer_basis := List(block_diag_info.centralizer_basis, BlockDiagonalMatrix);
+    #centralizer_basis := List(block_diag_info.centralizer_basis, BlockDiagonalMatrix);
+    centralizer_basis := RepresentationCentralizerPermRep@RepnDecomp(action_perm);
 
     # for each E_i, there is some E_{i^*} = E_i^T. This is also the
     # case for our matrices. We record these pairs below. Possibly i =
-    # i^* when e.g. multiplicity of that block is odd.
+    # i^* when you have a block on the diagonal
     pairs := List([1..Length(centralizer_basis)], x -> fail);
     for i in [1..Length(pairs)] do
         for j in [1..Length(pairs)] do
@@ -147,7 +149,6 @@ CalculateSDP := function(m, irreps)
 
     # d is the dimension of the centralizer ring (sum of squares of
     # multiplicities of each irrep)
-    # TODO: Reduce d more, limit to subspace of symmetric matrices
     d := Length(norm_cent_basis);
 
     # The centralizer ring itself
