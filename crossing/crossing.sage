@@ -118,9 +118,8 @@ def compute_alpha(m, print_irreps=False, status=True):
         print(t1-t0)
 
     if status:
-        sys.stdout.write("Formulating SDP in Sage: ")
+        sys.stdout.write("Formulating SDP in Sage\n")
 
-    t0 = time.time()
 
     # B is an orthonormal basis for the centralizer
     B = [matrix(mat) for mat in libgap.eval("List(sdp.centralizer_basis);").sage()]
@@ -130,11 +129,30 @@ def compute_alpha(m, print_irreps=False, status=True):
     basis = matrix(libgap.eval("sdp.nice_basis;").sage())
     basis_change = basis.transpose()
 
+    # TODO: work out where we need to change basis to make this fast
     # the cost matrix Q_xy is the number of adjacent transpositions needed to get from x to y^-1
+    if status:
+        sys.stdout.write("Calculating Q: ")
+
+    t0 = time.time()
     Q = matrix(libgap.eval("Qmatrix({}).matrix".format(m)).sage())
-    Q_block_diag = basis_change^-1 * Q * basis_change
+    t1 = time.time()
+
+    if status:
+        print(t1-t0)
+
+
+    if status:
+        sys.stdout.write("Calculating block diagonal matrices: ")
+
+    t0 = time.time()
+    Q_block_diag = Q #basis_change^-1 * Q * basis_change
     J = matrix(basis.nrows(), basis.nrows(), lambda i,j: 1)
-    J_block_diag = basis_change^-1 * J * basis_change
+    J_block_diag = J #basis_change^-1 * J * basis_change
+    t1 = time.time()
+
+    if status:
+        print(t1-t0)
 
     # (L_k)_ij = lambda^i_{kj}
     L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
@@ -147,6 +165,11 @@ def compute_alpha(m, print_irreps=False, status=True):
     # except the irrationals are represented as sums of
     # cyclotomics. Sage doesn't know they are real. We have to
     # truncate the imaginary parts.
+
+    if status:
+        sys.stdout.write("Truncating imaginary parts: ")
+
+    t0 = time.time()
     B = [real_mat(mat) for mat in B]
     Q_block_diag = real_mat(Q_block_diag)
     J_block_diag = real_mat(J_block_diag)
