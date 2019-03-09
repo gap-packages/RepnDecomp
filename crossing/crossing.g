@@ -121,21 +121,18 @@ CalculateSDP := function(m, irreps)
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
 
-    # First, we block diagonalize action_hom (TODO: give cent_basis here)
-    #block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
-    #nice_basis := block_diag_info.basis;
+    # First, we block diagonalize action_hom
     Print("Decomposing group action: ");
     nice_basis := BlockDiagonalBasis(action_hom);
+
+    #block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
+    #nice_basis := block_diag_info.basis;
+
+    #nice_basis := IdentityMat(DegreeOfRepresentation(action_perm));
     Print("done\n");
 
     nice_change := TransposedMat(nice_basis);
     nice_change_inv := nice_change^-1;
-
-    # This is the basis for the centralizer, written in the nice
-    # basis, called E_i in the paper. I convert to full matrices
-    # here. (TODO: use sparse matrices here or something?). These
-    # matrices must be orthogonal.
-    #centralizer_basis := List(block_diag_info.centralizer_basis, BlockDiagonalMatrix);
 
     # for each E_i, there is some E_{i^*} = E_i^T. This is also the
     # case for our matrices. We record these pairs below. Possibly i =
@@ -153,6 +150,7 @@ CalculateSDP := function(m, irreps)
     Print("done\n");
 
     Print("Normalizing bases: ");
+
     # We normalize the basis for the centralizer, each matrix is still
     # written in the standard basis. These are the B_i.
     norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(E*TransposedMat(E)))^-1)*E);
