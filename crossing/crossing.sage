@@ -120,8 +120,10 @@ def compute_alpha(m, print_irreps=False, status=True):
     if status:
         sys.stdout.write("Formulating SDP in Sage\n")
 
+    # E_i are the orbital matrices, these are orthogonal
+    E = [matrix(mat) for mat in libgap.eval("List(sdp.centralizer_basis);").sage()]
 
-    # B is an orthonormal basis for the centralizer, this is already block diagonalised
+    # B_i are the block diagonalised, normalised E_i
     B = [matrix(mat) for mat in libgap.eval("List(sdp.nice_cent_basis);").sage()]
 
     # basis the B are written in, the action_hom is written in the
@@ -198,7 +200,7 @@ def compute_alpha(m, print_irreps=False, status=True):
     # verify the pairs
     if status:
         print("All indices have been paired: {}".format(all(x in seen for x in range(len(B)))))
-        print("Pairs are correct: {}".format(all(B[x] == B[y].transpose() for (x, y) in pairs)))
+        print("Pairs are correct: {}".format(all(E[x] == E[y].transpose() for (x, y) in pairs)))
         print("d_centralizer = {}".format(len(B)))
         print("d_reduced = {}".format(len(pairs)))
 
