@@ -28,7 +28,7 @@ def gap_all_irreps(m):
 
 # Converts a matrix to one over RR
 def real_mat(mat):
-    return matrix(RR, mat.nrows(), mat.ncols(), lambda i, j: mat[i][j].n().real())
+    return mat.apply_map(lambda x: x.n().real(), RR)
 
 # This computes alpha_m using the full matrices with NO
 # reductions. The dimensions are huge, but there is as little of my
