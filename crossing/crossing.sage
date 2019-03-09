@@ -126,8 +126,8 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     # basis the B are written in, the action_hom is written in the
     # standard basis
-    basis = matrix(libgap.eval("sdp.nice_basis;").sage())
-    basis_change = basis.transpose()
+    basis_change = matrix(libgap.eval("sdp.nice_change;").sage())
+    basis_change_inv = matrix(libgap.eval("sdp.nice_change_inv;").sage())
 
     # TODO: work out where we need to change basis to make this fast
     # the cost matrix Q_xy is the number of adjacent transpositions needed to get from x to y^-1
@@ -146,9 +146,10 @@ def compute_alpha(m, print_irreps=False, status=True):
         sys.stdout.write("Calculating block diagonal matrices: ")
 
     t0 = time.time()
-    Q_block_diag = Q #basis_change^-1 * Q * basis_change
-    J = matrix(basis.nrows(), basis.nrows(), lambda i,j: 1)
-    J_block_diag = J #basis_change^-1 * J * basis_change
+    Q = basis_change_inv * Q * basis_change
+    J = matrix(basis_change.nrows(), basis_change.nrows(), lambda i,j: 1)
+    J = basis_change_inv * J * basis_change
+    B = [basis_change_inv * b * basis_change for b in B]
     t1 = time.time()
 
     if status:
@@ -171,8 +172,8 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     t0 = time.time()
     B = [real_mat(mat) for mat in B]
-    Q_block_diag = real_mat(Q_block_diag)
-    J_block_diag = real_mat(J_block_diag)
+    Q = real_mat(Q)
+    J = real_mat(J)
     L = [real_mat(mat) for mat in L]
     t1 = time.time()
 
@@ -198,7 +199,7 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     # verify the pairs
     if status:
-        print("Seen all: {}".format(all(x in seen for x in range(len(B)))))
+        print("All indices have been paired: {}".format(all(x in seen for x in range(len(B)))))
         print("Pairs are correct: {}".format(all(B[x] == B[y].transpose() for (x, y) in pairs)))
         print("d_centralizer = {}".format(len(B)))
         print("d_reduced = {}".format(len(pairs)))
@@ -210,7 +211,7 @@ def compute_alpha(m, print_irreps=False, status=True):
     # the x[j] variable we use for a pair (i, i*) is the minimum since
     # the pairs cover [1..d'] where d' is the full dimension of the
     # centralizer
-    prog.set_objective(sum((Q_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d)))
+    prog.set_objective(sum((Q * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d)))
 
     # sum_i x_i L_i >= 0. This is true iff sum_i x_i B_i >= 0 due to a
     # *-isomorphism B_i -> L_i
@@ -218,7 +219,7 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     one = matrix([[1]])
 
-    constraint1 = sum((J_block_diag * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d))*one == one
+    constraint1 = sum((J * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d))*one == one
 
     if status:
         print("Adding constraints")

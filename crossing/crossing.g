@@ -112,6 +112,7 @@ CalculateSDP := function(m, irreps)
     Print("done\n");
 
     Print("Computing centralizer basis: ");
+    # these are written in the standard basis
     centralizer_basis := RepresentationCentralizerPermRep@RepnDecomp(action_perm);
     Print("done\n");
 
@@ -119,7 +120,6 @@ CalculateSDP := function(m, irreps)
 
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
-
 
     # First, we block diagonalize action_hom (TODO: give cent_basis here)
     #block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
@@ -154,7 +154,7 @@ CalculateSDP := function(m, irreps)
 
     Print("Normalizing bases: ");
     # We normalize the basis for the centralizer, each matrix is still
-    # written in the nice basis. These are the B_i.
+    # written in the standard basis. These are the B_i.
     norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(E*TransposedMat(E)))^-1)*E);
 
     # d is the dimension of the centralizer ring (sum of squares of
@@ -234,6 +234,8 @@ CalculateSDP := function(m, irreps)
 
     return rec(centralizer_basis := norm_cent_basis, # the B_i
                nice_basis := nice_basis, # basis that nicely block diagonalises everything
+               nice_change := nice_change, # basis change matrix
+               nice_change_inv := nice_change_inv, # nice_change^-1
                param_matrices := param_matrices, # the L_k
                pairs := pairs, # pairs[i] = i^*
               );
