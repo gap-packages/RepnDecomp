@@ -1,13 +1,14 @@
-gap> G := SmallGroup(77, 1);;
-gap> irreps := IrreducibleRepresentations(G);;
-gap> rho := DirectSumRepList([irreps[1], irreps[2], irreps[3]]);;
-gap> V := Cyclotomics^3;;
-gap> B := Basis(V);;
-gap> RestrictRep@RepnDecomp(rho, B) = rho;
+gap> tester := function(rep)
+> local conds, decomp;
+> conds := [];
+> decomp := CanonicalDecomposition(rep.rep);
+> # if we restrict to a canonical summand, that restricted rep
+> # should only have 1 canonical summand itself
+> Add(conds, ForAll(decomp, V -> Length(CanonicalDecomposition(RestrictRep@RepnDecomp(rep.rep, Basis(V)))) = 1));
+> # if we restrict to canonical summands then take the direct sum
+> # we should get the original representation
+> Add(conds, AreRepsIsomorphic(rep.rep, DirectSumRepList(List(decomp, V -> RestrictRep@RepnDecomp(rep.rep, Basis(V))))));
+> return ForAll(conds, x->x);
+> end;;
+gap> TestMany@RepnDecomp(tester, 3);
 true
-gap> V := VectorSpace(Cyclotomics, [[0,1,0]], Zero(V));;
-gap> B := Basis(V);;
-gap> RestrictRep@RepnDecomp(rho, B) = irreps[2];
-true
-gap> RestrictRep@RepnDecomp(rho, B) = irreps[1];
-false

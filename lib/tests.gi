@@ -20,7 +20,7 @@ RandomRepresentation@ := function(args...)
         opt := args[1];
     else
         opt := rec(lo := 2,
-                   hi := 100,
+                   hi := 50,
                    num_irreps := 2,
                    min_multiplicity := 1,
                    max_multiplicity := 2,
