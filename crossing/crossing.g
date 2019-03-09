@@ -233,6 +233,7 @@ CalculateSDP := function(m, irreps)
     # od;
 
     return rec(centralizer_basis := norm_cent_basis, # the B_i
+               nice_cent_basis := nice_cent_basis, # B_i written in block diag basis
                nice_basis := nice_basis, # basis that nicely block diagonalises everything
                nice_change := nice_change, # basis change matrix
                nice_change_inv := nice_change_inv, # nice_change^-1

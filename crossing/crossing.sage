@@ -121,8 +121,8 @@ def compute_alpha(m, print_irreps=False, status=True):
         sys.stdout.write("Formulating SDP in Sage\n")
 
 
-    # B is an orthonormal basis for the centralizer
-    B = [matrix(mat) for mat in libgap.eval("List(sdp.centralizer_basis);").sage()]
+    # B is an orthonormal basis for the centralizer, this is already block diagonalised
+    B = [matrix(mat) for mat in libgap.eval("List(sdp.nice_cent_basis);").sage()]
 
     # basis the B are written in, the action_hom is written in the
     # standard basis
@@ -141,7 +141,6 @@ def compute_alpha(m, print_irreps=False, status=True):
     if status:
         print(t1-t0)
 
-
     if status:
         sys.stdout.write("Calculating block diagonal matrices: ")
 
@@ -149,7 +148,6 @@ def compute_alpha(m, print_irreps=False, status=True):
     Q = basis_change_inv * Q * basis_change
     J = matrix(basis_change.nrows(), basis_change.nrows(), lambda i,j: 1)
     J = basis_change_inv * J * basis_change
-    B = [basis_change_inv * b * basis_change for b in B]
     t1 = time.time()
 
     if status:
