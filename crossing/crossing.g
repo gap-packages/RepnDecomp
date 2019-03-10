@@ -123,12 +123,12 @@ CalculateSDP := function(m, irreps)
 
     # First, we block diagonalize action_hom
     Print("Decomposing group action: ");
-    nice_basis := BlockDiagonalBasis(action_hom);
+    #nice_basis := BlockDiagonalBasis(action_hom);
 
     #block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     #nice_basis := block_diag_info.basis;
 
-    #nice_basis := IdentityMat(DegreeOfRepresentation(action_perm));
+    nice_basis := IdentityMat(DegreeOfRepresentation(action_perm));
     Print("done\n");
 
     nice_change := TransposedMat(nice_basis);
@@ -153,15 +153,15 @@ CalculateSDP := function(m, irreps)
 
     # We normalize the basis for the centralizer, each matrix is still
     # written in the standard basis. These are the B_i.
-    norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Trace(E*TransposedMat(E)))^-1)*E);
+    norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Float(Trace(E*TransposedMat(E))))^-1)*E);
 
     # d is the dimension of the centralizer ring (sum of squares of
     # multiplicities of each irrep)
     d := Length(norm_cent_basis);
 
     # The centralizer ring itself
-    centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
-    norm_cent_basis := Basis(centralizer, norm_cent_basis);
+    #centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
+    #norm_cent_basis := Basis(centralizer, norm_cent_basis);
 
     # This is the same but in the block diag basis. All calculations
     # should be faster when done with these since the are block diagonal
@@ -170,7 +170,7 @@ CalculateSDP := function(m, irreps)
     # normalise
     #nice_cent_basis := List(nice_cent_basis, B -> (1/Sqrt(InnerProduct@RepnDecomp(B, B))) * B);
 
-    nice_cent_basis := Basis(VectorSpace(Cyclotomics, nice_cent_basis), nice_cent_basis);
+    #nice_cent_basis := Basis(VectorSpace(Cyclotomics, nice_cent_basis), nice_cent_basis);
     Print("done\n");
 
     # TODO: SPEED THIS UP BY A LOT!
@@ -178,57 +178,57 @@ CalculateSDP := function(m, irreps)
     # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
     Print("Calculating (L_k)_ij: ");
 
-    mult_param := NullMat(d, d);
-    for i in [1..d] do
-        for j in [1..d] do
-            mult_param[i][j] := Coefficients(nice_cent_basis,
-                                             nice_cent_basis[i]*nice_cent_basis[j]);
-        od;
-    od;
-
-    Print("done\n");
-
-    # The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i
-    param_matrices := List([1..d], k -> NullMat(d, d));
-    for k in [1..d] do
-        for i in [1..d] do
-            for j in [1..d] do
-                param_matrices[k][i][j] := mult_param[k][j][i];
-            od;
-        od;
-    od;
-
-
-    # # makes a square matrix of fails
-    # failmat := function(n)
-    #     return Replicate@RepnDecomp(Replicate@RepnDecomp(fail, n), n);
-    # end;
-
-    # # The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i. Since B_k
-    # # B_j = \sum_i \lambda_{k,j}^i B_i, can take inner product with
-    # # B_i to get coefficient. There are also some tricks to fill out
-    # # other coefficients due to symmetries etc.
-    # param_matrices := List([1..d], k -> failmat(d));
-    # for k in [1..d] do
+    # mult_param := NullMat(d, d);
+    # for i in [1..d] do
     #     for j in [1..d] do
-    #         product := norm_cent_basis[k]*norm_cent_basis[j];
-    #         for i in [1..d] do
-    #             if param_matrices[k][i][j] = fail then
-    #                 param_matrices[k][i][j] := InnerProduct@RepnDecomp(product, norm_cent_basis[i]);
-    #             fi;
+    #         mult_param[i][j] := Coefficients(nice_cent_basis,
+    #                                          nice_cent_basis[i]*nice_cent_basis[j]);
+    #     od;
+    # od;
 
-    #             c := param_matrices[k][i][j];
+    # Print("done\n");
 
-    #             # these are some other coefficients we now know (see
-    #             # paper for why this is true)
-    #             param_matrices[pairs[i]][pairs[j]][k] := c;
-    #             param_matrices[j][pairs[k]][pairs[i]] := c;
-    #             param_matrices[pairs[j]][pairs[i]][pairs[k]] := c;
-    #             param_matrices[pairs[k]][j][i] := c;
-    #             param_matrices[i][k][pairs[j]] := c;
+    # # The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i
+    # param_matrices := List([1..d], k -> NullMat(d, d));
+    # for k in [1..d] do
+    #     for i in [1..d] do
+    #         for j in [1..d] do
+    #             param_matrices[k][i][j] := mult_param[k][j][i];
     #         od;
     #     od;
     # od;
+
+
+    # makes a square matrix of fails
+    failmat := function(n)
+        return Replicate@RepnDecomp(Replicate@RepnDecomp(fail, n), n);
+    end;
+
+    # The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i. Since B_k
+    # B_j = \sum_i \lambda_{k,j}^i B_i, can take inner product with
+    # B_i to get coefficient. There are also some tricks to fill out
+    # other coefficients due to symmetries etc.
+    param_matrices := List([1..d], k -> failmat(d));
+    for k in [1..d] do
+        for j in [1..d] do
+            product := norm_cent_basis[k]*norm_cent_basis[j];
+            for i in [1..d] do
+                if param_matrices[k][i][j] = fail then
+                    param_matrices[k][i][j] := InnerProduct@RepnDecomp(product, norm_cent_basis[i]);
+                fi;
+
+                c := param_matrices[k][i][j];
+
+                # these are some other coefficients we now know (see
+                # paper for why this is true)
+                param_matrices[pairs[i]][pairs[j]][k] := c;
+                param_matrices[j][pairs[k]][pairs[i]] := c;
+                param_matrices[pairs[j]][pairs[i]][pairs[k]] := c;
+                param_matrices[pairs[k]][j][i] := c;
+                param_matrices[i][k][pairs[j]] := c;
+            od;
+        od;
+    od;
 
     return rec(centralizer_basis := norm_cent_basis, # the B_i
                nice_cent_basis := nice_cent_basis, # B_i written in block diag basis
