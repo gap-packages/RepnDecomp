@@ -105,16 +105,21 @@ end;
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP
 # we need to solve
 CalculateSDP := function(m, irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom, cent_basis, action_perm, pairs, product, failmat, c, nice_change, nice_change_inv, H, TN, inv_norms;
+    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom, cent_basis, action_perm, pairs, product, failmat, c, nice_change, nice_change_inv, H, TN, norms;
 
     Print("Computing group action: ");
     action_perm := ActionPermRep(m);
     Print("done\n");
 
+    H := Group(List(GeneratorsOfGroup(Source(action_perm)), g -> Image(action_perm, g)));
+
+    TN := CohCfgFromPermGroup(H);
+    CCPopulateCoeffs(TN);
+
     Print("Computing centralizer basis: ");
     # these are written in the standard basis
     centralizer_basis := RepresentationCentralizerPermRep@RepnDecomp(action_perm);
-    norms := List(centralizer_basis, E -> Sqrt(((Trace(E*TransposedMat(E))))));
+    norms := List(centralizer_basis, E -> Sqrt(Float((Trace(E*TransposedMat(E))))));
     Print("done\n");
 
     action_hom := PermToLinearRep(action_perm);
@@ -141,24 +146,20 @@ CalculateSDP := function(m, irreps)
     Print("Calculating {i, i*} pairs: ");
     pairs := List([1..Length(centralizer_basis)], x -> fail);
     for i in [1..Length(pairs)] do
-        for j in [1..Length(pairs)] do
-            if centralizer_basis[i] = TransposedMat(centralizer_basis[j]) then
-                # pairs[i] = i^*
-                pairs[i] := j;
-            fi;
-        od;
+        # pairs[i] = i^*
+        pairs[i] := i^TN.pairing;
     od;
     Print("done\n");
 
     Print("Normalizing bases: ");
 
-    # We normalize the basis for the centralizer, each matrix is still
-    # written in the standard basis. These are the B_i.
-    norm_cent_basis := List(centralizer_basis, E -> (Sqrt(Float(Trace(E*TransposedMat(E))))^-1)*E);
-
     # d is the dimension of the centralizer ring (sum of squares of
     # multiplicities of each irrep)
-    d := Length(norm_cent_basis);
+    d := Length(centralizer_basis);
+
+    # We normalize the basis for the centralizer, each matrix is still
+    # written in the standard basis. These are the B_i.
+    norm_cent_basis := List([1..d], i -> norms[i]^-1 * centralizer_basis[i]);
 
     # The centralizer ring itself
     #centralizer := VectorSpace(Cyclotomics, norm_cent_basis);
@@ -179,18 +180,11 @@ CalculateSDP := function(m, irreps)
     # The convention I use is that mult_param[i][j][k] = \lambda_{i,j}^k
     Print("Calculating (L_k)_ij: ");
 
-    H := Group(List(GeneratorsOfGroup(Source(action_perm)), g -> Image(action_perm, g)));
-
-    TN := CohCfgFromPermGroup(H);
-    CCPopulateCoeffs(TN);
 
     mult_param := NullMat(d, d);
     for i in [1..d] do
         for j in [1..d] do
-            #mult_param[i][j] := Coefficients(nice_cent_basis,
-            #                                 nice_cent_basis[i]*nice_cent_basis[j]);
             mult_param[i][j] := norms[i]^-1*norms[j]^-1*List([1..d], k -> norms[k]*CCCoeff(TN, k, i, j));
-            #mult_param[i][j] := List([1..d], k -> CCCoeff(TN, k, i, j));
         od;
     od;
 
@@ -206,43 +200,7 @@ CalculateSDP := function(m, irreps)
         od;
     od;
 
-
-    # # makes a square matrix of fails
-    # failmat := function(n)
-    #     return Replicate@RepnDecomp(Replicate@RepnDecomp(fail, n), n);
-    # end;
-
-    # # The list of matrices (L_k)_{i,j} = \lambda_{k,j}^i. Since B_k
-    # # B_j = \sum_i \lambda_{k,j}^i B_i, can take inner product with
-    # # B_i to get coefficient. There are also some tricks to fill out
-    # # other coefficients due to symmetries etc.
-    # param_matrices := List([1..d], k -> failmat(d));
-    # for k in [1..d] do
-    #     for j in [1..d] do
-    #         product := norm_cent_basis[k]*norm_cent_basis[j];
-    #         for i in [1..d] do
-    #             if param_matrices[k][i][j] = fail then
-    #                 param_matrices[k][i][j] := InnerProduct@RepnDecomp(product, norm_cent_basis[i]);
-    #             fi;
-
-    #             c := param_matrices[k][i][j];
-
-    #             # these are some other coefficients we now know (see
-    #             # paper for why this is true)
-    #             param_matrices[pairs[i]][pairs[j]][k] := c;
-    #             param_matrices[j][pairs[k]][pairs[i]] := c;
-    #             param_matrices[pairs[j]][pairs[i]][pairs[k]] := c;
-    #             param_matrices[pairs[k]][j][i] := c;
-    #             param_matrices[i][k][pairs[j]] := c;
-    #         od;
-    #     od;
-    # od;
-
-
-
     #param_matrices := CCIntersectionMats(TN);
-
-    #Error("ayy");
 
     return rec(centralizer_basis := norm_cent_basis, # the B_i
                nice_cent_basis := nice_cent_basis, # B_i written in block diag basis
