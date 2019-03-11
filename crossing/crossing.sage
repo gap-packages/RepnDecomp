@@ -208,6 +208,11 @@ def compute_alpha(m, print_irreps=False, status=True):
     # symmetric matrices
     d = len(pairs)
 
+    if status:
+        sys.stdout.write("Adding constraints: ")
+
+    t0 = time.time()
+
     # the x[j] variable we use for a pair (i, i*) is the minimum since
     # the pairs cover [1..d'] where d' is the full dimension of the
     # centralizer
@@ -221,9 +226,6 @@ def compute_alpha(m, print_irreps=False, status=True):
 
     constraint1 = sum((J * (B[i] + B[pair_map[i]])).trace()*x[i] for i in range(d))*one == one
 
-    if status:
-        print("Adding constraints")
-
     prog.add_constraint(constraint0)
     prog.add_constraint(constraint1)
 
@@ -236,6 +238,11 @@ def compute_alpha(m, print_irreps=False, status=True):
         C[i] = diagonal_matrix(diag)
 
     prog.add_constraint(sum(C[i]*x[i] for i in range(d)) >= 0)
+
+    t1 = time.time()
+
+    if status:
+        print(t1-t0)
 
     if status:
         sys.stdout.write("Solving SDP: ")
