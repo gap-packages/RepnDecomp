@@ -126,6 +126,13 @@ def compute_alpha(m, print_irreps=False, status=True):
     # B_i are the block diagonalised, normalised E_i
     B = [matrix(mat) for mat in libgap.eval("List(sdp.nice_cent_basis);").sage()]
 
+    # (L_k)_ij = lambda^i_{kj}
+    L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
+
+    # pairs[i] = i^* in GAP, need to adjust indices for Sage (GAP is
+    # 1-based)
+    pair_map = [y-1 for y in libgap.eval("sdp.pairs").sage()]
+
     # basis the B are written in, the action_hom is written in the
     # standard basis
     basis_change = matrix(libgap.eval("sdp.nice_change;").sage())
@@ -143,6 +150,8 @@ def compute_alpha(m, print_irreps=False, status=True):
     if status:
         print(t1-t0)
 
+    # from this point, we don't need GAP
+
     if status:
         sys.stdout.write("Calculating block diagonal matrices: ")
 
@@ -155,30 +164,23 @@ def compute_alpha(m, print_irreps=False, status=True):
     if status:
         print(t1-t0)
 
-    # (L_k)_ij = lambda^i_{kj}
-    L = [matrix(mat) for mat in libgap.eval("sdp.param_matrices;").sage()]
-
-    # pairs[i] = i^* in GAP, need to adjust indices for Sage (GAP is
-    # 1-based)
-    pair_map = [y-1 for y in libgap.eval("sdp.pairs").sage()]
-
     # Our matrices are all real, but largely irrational. This is ok
     # except the irrationals are represented as sums of
     # cyclotomics. Sage doesn't know they are real. We have to
     # truncate the imaginary parts.
 
-    if status:
-        sys.stdout.write("Truncating imaginary parts: ")
+    #if status:
+    #    sys.stdout.write("Truncating imaginary parts: ")
 
-    t0 = time.time()
-    B = [real_mat(mat) for mat in B]
-    Q = real_mat(Q)
-    J = real_mat(J)
-    L = [real_mat(mat) for mat in L]
-    t1 = time.time()
+    #t0 = time.time()
+    #B = [real_mat(mat) for mat in B]
+    #Q = real_mat(Q)
+    #J = real_mat(J)
+    #L = [real_mat(mat) for mat in L]
+    #t1 = time.time()
 
-    if status:
-        print(t1-t0)
+    #if status:
+    #    print(t1-t0)
 
     # See the paper https://homepages.cwi.nl/~lex/files/symm.pdf for
     # some explanation of this program
