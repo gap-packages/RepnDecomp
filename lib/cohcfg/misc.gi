@@ -1,12 +1,12 @@
 # Replace and extend GRAPE's OrbitNumbers function, using native GAP functions
 # G is a group
 # Omega is a set upon which G acts (please make sure it is closed under action by G, as this will not be checked!)
-BindGlobal("OrbitsInfo", function (G, Omega)
+OrbitsInfo@ := function (G, Omega)
     local orbits, mapping, representatives,
         i, j;
     if IsPosInt(Omega) then Omega := [1..Omega]; # backwards-compatibility with GRAPE's OrbitNumbers() syntax
     elif not IsHomogeneousList(Omega) then
-        Error("OrbitsInfo: malformed Omega");
+        Error("OrbitsInfo@: malformed Omega");
     fi;
     
     orbits := OrbitsDomain(G, Omega); # this returns a list of the orbits; WARNING: undefined behavior when Omega is not closed!
@@ -27,4 +27,4 @@ BindGlobal("OrbitsInfo", function (G, Omega)
             orbitNumbers := ~.mapping, # backwards-compatibility with GRAPE's OrbitNumbers() syntax
         representatives := representatives # a list whose i-th entry is a representative element from the i-th orbit of Omega
     );
-end);
+end;

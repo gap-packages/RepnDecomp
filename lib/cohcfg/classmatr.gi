@@ -1,7 +1,7 @@
 LoadPackage("GRAPE");
 
-# BUILD AN IsCohCfg OBJECT
-BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbitals, and a transversal.
+# BUILD AN IsCohCfg@ OBJECT
+CohCfgFromPermGroup@ := function(arg) # computes the number of orbitals, and a transversal.
 # arg[1] = G, the group;
 # arg[2] (optional) = Omega, the set on which G acts;
 # arg[3] (optional) = H, a list of stabilizer subgroups of G, one for each orbit
@@ -37,7 +37,7 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
 
     # Sanity check
     if not IsPermGroup(G) then
-        Error("CohCfgFromPermGroup: G must be a permutation group (IsPermGroup object).\n");
+        Error("CohCfgFromPermGroup@: G must be a permutation group (IsPermGroup object).\n");
     fi;
 
     if IsBound(arg[2]) then
@@ -46,13 +46,13 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
         elif IsPosInt(arg[2]) then
             Omega := [1..arg[2]]; # but if it is just a number, we assume the range from 1 to the number is intended
         else
-            Error("CohCfgFromPermGroup: Omega must be a set on which G acts (IsHomogeneousList object containing IsPosInt objects) or a natural number (IsPosInt object) n which will be interpreted as [1..n].\n");
+            Error("CohCfgFromPermGroup@: Omega must be a set on which G acts (IsHomogeneousList object containing IsPosInt objects) or a natural number (IsPosInt object) n which will be interpreted as [1..n].\n");
         fi;
     else
         Omega := [1..LargestMovedPoint(G)]; # autodetect Omega when it is not given
     fi;
 
-    orbs := OrbitsInfo(G, Omega); # a GRAPE-style "Numbers"-type record; .orbits is a list of the orbits, .mapping is a list mapping group elements to the number of the orbit they are in, and .representatives is a transversal of the orbits.
+    orbs := OrbitsInfo@(G, Omega); # a GRAPE-style "Numbers"-type record; .orbits is a list of the orbits, .mapping is a list mapping group elements to the number of the orbit they are in, and .representatives is a transversal of the orbits.
     #orbs := List(orbs.representatives, w -> Orbit(G, w));
     d := Length(orbs.representatives); # the size of the transversal set is the number of orbits.
 
@@ -66,12 +66,12 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
         fi;
 
         if Length(H) <> d then # check if the number of point stabilizers matches the number of orbits calculated
-            Error("CohCfgFromPermGroup: The wrong number of point stabilisers was supplied.\n");
+            Error("CohCfgFromPermGroup@: The wrong number of point stabilisers was supplied.\n");
         fi;
 
         for i in [1..d] do # for each orbit...
             if ForAny(GeneratorsOfGroup(H[i]), x -> orbs.representatives[i]^x <> orbs.representatives[i]) then # check that the point stabilizer given is truly a stabilizer for the points in that orbit
-                Error("CohCfgFromPermGroup: H[", i, "] does not fix the point ", orbs.representatives[i], " .\n");
+                Error("CohCfgFromPermGroup@: H[", i, "] does not fix the point ", orbs.representatives[i], " .\n");
             fi;
         od;
     else
@@ -83,7 +83,7 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
 
     for I in [1..d] do # for each I-th orbit...
         #Add(onums, List([1..d], rec(orbnums := OrbitNumbers(H[i], n), paired := [])));
-        w := OrbitsInfo(H[I], Omega); # w is an OrbitNumbers object representing the orbits of the action on the entire set Omega of the stabilizer of the I-th orbit of G
+        w := OrbitsInfo@(H[I], Omega); # w is an OrbitNumbers object representing the orbits of the action on the entire set Omega of the stabilizer of the I-th orbit of G
 
         # need to localize orbit representatives per G-orbit.
         ctr := List([1..d], i -> 0); # will be a list showing how many H[I]-orbits each G-orbit contains
@@ -121,8 +121,8 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
         ttorbs := ttorbs + len; # increment the uid offset for counting H[?]-orbits
     od;
     # now, onums is a list of records, per G-orbit on Omega, with the I-th list containing:
-    #   .globalTwoOrbitNumbers - gives an OrbitsInfo.mapping for H[I] acting on Omega, but with the indices of the (H[I]-)orbits shifted to be unique over all I
-    #   .stabiliser - an OrbitsInfo object representing the H[I]-orbits on Omega
+    #   .globalTwoOrbitNumbers - gives an OrbitsInfo@.mapping for H[I] acting on Omega, but with the indices of the (H[I]-)orbits shifted to be unique over all I
+    #   .stabiliser - an OrbitsInfo@ object representing the H[I]-orbits on Omega
     #   .representatives - a list whose x-th sublist is a list of representatives of the H[I]-orbits contained within the x-th G-orbit
     #   .perBlockOrbitNumber - a list showing, for each H[I]-orbit, what number it is (in the order it was found) inside its corresponding G-orbit
     #   .numberTwoOrbits - the total number of H[I]-orbits (which is equal to the total number of orbitals of G whose first coordinate is restricted to the I-th G-orbit)
@@ -130,7 +130,7 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
     #   .subdegree - a list of the subdegrees of G acting on the I-th G-orbit on Omega
     # now, ttorbs is the total number of H[I] orbits over all I. (which is equal to the total number of orbitals of G)
         if Omega<>[1..Length(Omega)] then
-            Error("CohCfgFromPermGroup: Schreier Vector of a non-solid range is not implemented.\n");
+            Error("CohCfgFromPermGroup@: Schreier Vector of a non-solid range is not implemented.\n");
         fi;
     sv := NullGraph(G,Length(Omega)).schreierVector; # the Schreier vector for G, computed by GRAPE's NullGraph function
     gens := GeneratorsOfGroup(G);
@@ -187,57 +187,57 @@ BindGlobal("CohCfgFromPermGroup", function(arg) # computes the number of orbital
         dimension := ttorbs, # the number of orbitals, which is the same as cardinality of the coherent configuration and the dimension of the algebra it generates
         pairing := PermList(gpairs) # a permutation which, when applied to the ordered list of orbitals, will transpose each orbital
     );
-end);
+end;
 
 ###########################################################################
 # standard function to test whether this is the consistent record
 ###########################################################################
-BindGlobal("IsCohCfg", function(T)
+IsCohCfg@ := function(T)
     return IsRecord(T) and IsBound(T.isTwoOrbitNumbers) and T.isTwoOrbitNumbers;
-end);
+end;
 
 ###########################################################################
 # underlying group
 ###########################################################################
-BindGlobal("CCGroup", function(T)
-    if not IsCohCfg(T) then
-        Error("CCGroup: this is not a coherent configuration.\n");
+CCGroup@ := function(T)
+    if not IsCohCfg@(T) then
+        Error("CCGroup@: this is not a coherent configuration.\n");
     fi;
 
     return T.group;
-end);
+end;
 
 ###########################################################################
 # size of the domain operated on by the underlying group
 ###########################################################################
-BindGlobal("CCDegree", function(T)
-    if not IsCohCfg(T) then
-        Error("CCDegree: this is not a coherent configuration.\n");
+CCDegree@ := function(T)
+    if not IsCohCfg@(T) then
+        Error("CCDegree@: this is not a coherent configuration.\n");
     fi;
 
     return T.degree;
-end);
+end;
 
 ###########################################################################
 # orbit lengths of the underlying group
 ###########################################################################
-BindGlobal("CCFiberSizes", function(T)
-    if not IsCohCfg(T) then
-        Error("CCFiberSizes: this is not a coherent configuration.\n");
+CCFiberSizes@ := function(T)
+    if not IsCohCfg@(T) then
+        Error("CCFiberSizes@: this is not a coherent configuration.\n");
     fi;
 
     return T.orbitLengths;
-end);
+end;
 
-BindGlobal("CCCountByLeftFiber", function(TN, I) #orbitals on an orbit
-    if not IsCohCfg(TN) then
-        Error("CCCountByLeftFiber: this is not a coherent configuration.\n");
+CCCountByLeftFiber@ := function(TN, I) #orbitals on an orbit
+    if not IsCohCfg@(TN) then
+        Error("CCCountByLeftFiber@: this is not a coherent configuration.\n");
     fi;
 
     return TN.twoOrbitNumbers[I].numberTwoOrbits;
-end);
+end;
 
-BindGlobal("indexInLeftFiber", function(TN, onum, blk)
+indexInLeftFiber@ := function(TN, onum, blk)
     local b;
 
     # TODO: fail if given CC element is in the wrong block
@@ -247,78 +247,78 @@ BindGlobal("indexInLeftFiber", function(TN, onum, blk)
     od;
 
     return onum;
-end);
+end;
 
 # convert the rec(orbitNumber, twoOrbitNumber) into the global number
-BindGlobal("CCGlobalIndex", function(TN, lnum)
+CCGlobalIndex@ := function(TN, lnum)
     local j, s, I;
 
-    if not IsCohCfg(TN) then
-        Error("CCGlobalIndex: this is not a coherent configuration.\n");
+    if not IsCohCfg@(TN) then
+        Error("CCGlobalIndex@: this is not a coherent configuration.\n");
     fi;
 
     I := lnum.orbitNumber;
     s := lnum.twoOrbitNumber;
     for j in [1..I-1] do
-        s := s + CCCountByLeftFiber(TN, j);
+        s := s + CCCountByLeftFiber@(TN, j);
     od;
 
     return s;
-end);
+end;
 
 # and the reverse conversion
-BindGlobal("CCLocalIndex", function(TN, i)
+CCLocalIndex@ := function(TN, i)
     local I, lnum;
 
-    if not IsCohCfg(TN) then
-        Error("CCLocalIndex: this is not a coherent configuration.\n");
+    if not IsCohCfg@(TN) then
+        Error("CCLocalIndex@: this is not a coherent configuration.\n");
     fi;
 
     I := 1;
-    while i > CCCountByLeftFiber(TN, I) do
-        i := i - CCCountByLeftFiber(TN, I);
+    while i > CCCountByLeftFiber@(TN, I) do
+        i := i - CCCountByLeftFiber@(TN, I);
         I := I + 1;
     od;
 
     lnum := rec(orbitNumber := I, twoOrbitNumber := i);
     return lnum;
-end);
+end;
 
 ########################################################################
 # for a 2-orbit t, compute Trace(tt^*)
 ########################################################################
-BindGlobal("CCElementSize", function(T, t)
+CCElementSize@ := function(T, t)
     local lon, orblen, deg;
 
-    if not IsCohCfg(T) then
-        Error("CCElementSize: this is not a coherent configuration.\n");
+    if not IsCohCfg@(T) then
+        Error("CCElementSize@: this is not a coherent configuration.\n");
     fi;
 
-    lon := CCLocalIndex(T, t);
-    orblen := CCFiberSizes(T)[lon.orbitNumber];
+    lon := CCLocalIndex@(T, t);
+    orblen := CCFiberSizes@(T)[lon.orbitNumber];
     deg := T.twoOrbitNumbers[lon.orbitNumber].subdegree[lon.twoOrbitNumber];
 
     return deg*orblen;
-end);
+end;
 
 ########################################################################
 # for an arc (a, b), find the (global) number of the two-orbit it lies in
 ########################################################################
-BindGlobal("CCElementContainingPair", function(TN, pair)
+CCElementContainingPair@ := function(TN, pair)
     local sv, w, gens, I, lnum, globalNumber,
         a, b;
     a := pair[1]; b := pair[2];
-    if (not IsCohCfg(TN)
-        or a>CCDegree(TN)
-        or b>CCDegree(TN)
+    if (not IsCohCfg@(TN)
+        or a>CCDegree@(TN)
+        or b>CCDegree@(TN)
         or not IsPosInt(a)
         or not IsPosInt(b)
     ) then
-        Error("CCElementContainingPair: Usage is CCElementContainingPair(IsCohCfg object, pair := [int, int]).\n");
+        Error("CCElementContainingPair@: Usage is CCElementContainingPair@(IsCohCfg@ object, pair := [int, int]).\n");
     fi;
 
     sv := TN.schreierVector;
-    gens := GeneratorsOfGroup(CCGroup(TN));
+    gens := GeneratorsOfGroup(CCGroup@(TN));
     w := sv[a];
     while w > 0 do
         a := a/gens[w];
@@ -328,36 +328,36 @@ BindGlobal("CCElementContainingPair", function(TN, pair)
 
     I := TN.orbitMapping[a];
     return TN.twoOrbitNumbers[I].globalTwoOrbitNumbers[b];
-end);
+end;
 
-BindGlobal("CCNumFibers", function(TN)
-    if not IsCohCfg(TN) then
-        Error("CCNumFibers: Usage is CCNumFibers(IsCohCfg object).\n");
+CCNumFibers@ := function(TN)
+    if not IsCohCfg@(TN) then
+        Error("CCNumFibers@: Usage is CCNumFibers@(IsCohCfg@ object).\n");
     fi;
 
     return Length(TN.orbitNumberRepresentatives);
-end);
+end;
 
 ########################################################################
 # dimension of the algebra
 ########################################################################
-BindGlobal("CCDimension", function(TN)
+CCDimension@ := function(TN)
     local x;
-    if not IsCohCfg(TN) then
-        Error("CCDimension: Usage is CCDimension(IsCohCfg object).\n");
+    if not IsCohCfg@(TN) then
+        Error("CCDimension@: Usage is CCDimension@(IsCohCfg@ object).\n");
     fi;
 
     return TN.dimension;
-end);
+end;
 
 #########################################################################
 # list a pair for each 2-orbit
 #########################################################################
-BindGlobal("CCTransversal", function(T)
+CCTransversal@ := function(T)
     local i, x;
 
-    if not IsCohCfg(T) then
-        Error("CCTransversal: this is not a coherent configuration.\n");
+    if not IsCohCfg@(T) then
+        Error("CCTransversal@: this is not a coherent configuration.\n");
     fi;
 
     return Concatenation(List(
@@ -367,18 +367,18 @@ BindGlobal("CCTransversal", function(T)
             x -> [T.orbitNumberRepresentatives[i], x]
         )
     ));
-end);
+end;
 
 #########################################################################
 # a naive implementation ignoring block structures
 # (initialization (?) )
 # 6.12.08 - added sparsity handling
 #########################################################################
-BindGlobal("doCoeffsComputation", function(T, ci, cj, I, J, k)
+doCoeffsComputation@ := function(T, ci, cj, I, J, k)
     local t, p, i, M;
 
     M := List([1..T.dimension], i -> []);
-    for i in [1..CCDegree(T)] do
+    for i in [1..CCDegree@(T)] do
         p := PositionSet(List(M[ci[i]], t -> t[1]), cj[i]);
         if p = fail then
             AddSet(M[ci[i]], [cj[i], 1]);
@@ -388,23 +388,23 @@ BindGlobal("doCoeffsComputation", function(T, ci, cj, I, J, k)
     od;
 
     #M := NullMat(T.dimension, T.dimension);
-    #for i in [1..CCDegree(T)] do
+    #for i in [1..CCDegree@(T)] do
     #   M[ci[i]][cj[i]] := M[ci[i]][cj[i]] + 1;
     #od;
 
     T.P[k] := M;
 
     return 1;
-end);
+end;
 
 #########################################################################
 # for a given k, compute p^k_{ij} for all i, j
 #########################################################################
-BindGlobal("doCoeffsPerCCElement", function(TN, k)
+doCoeffsPerCCElement@ := function(TN, k)
     local word, w, sv, gens, x, iii, ci, I, twoonum, Ir,
         gamma, cj, J, M, i, j;
 
-    Ir := CCLocalIndex(TN, k);
+    Ir := CCLocalIndex@(TN, k);
     I := Ir.orbitNumber;
     twoonum := Ir.twoOrbitNumber;
 
@@ -429,7 +429,7 @@ BindGlobal("doCoeffsPerCCElement", function(TN, k)
     ci := TN.twoOrbitNumbers[I].globalTwoOrbitNumbers;
 
     sv := TN.schreierVector;
-    gens := GeneratorsOfGroup(CCGroup(TN));
+    gens := GeneratorsOfGroup(CCGroup@(TN));
     w := sv[j];
 
     # need to compute the word in generators,
@@ -446,28 +446,28 @@ BindGlobal("doCoeffsPerCCElement", function(TN, k)
         cj := Permuted(cj, gens[w]);
     od;
 
-    doCoeffsComputation(TN, ci, cj, I, J, k);
+    doCoeffsComputation@(TN, ci, cj, I, J, k);
     return 1;
-end);
+end;
 
-BindGlobal("CCPopulateCoeffs", function(TN)
+CCPopulateCoeffs@ := function(TN)
     local k;
 
     if IsEmpty(TN.P) then # compute them
-        List([1..CCDimension(TN)], k ->
-            doCoeffsPerCCElement(TN, k)
+        List([1..CCDimension@(TN)], k ->
+            doCoeffsPerCCElement@(TN, k)
         );
 
         return 1;
     fi;
 
     return 2; # they were already computed
-end);
+end;
 
 ##########################################################################
 # retrieving p^a_{bc}
 ##########################################################################
-BindGlobal("CCCoeff", function(TN, a, b, c) # XXX Make this actually check whether the coefficients have been generated
+CCCoeff@ := function(TN, a, b, c) # XXX Make this actually check whether the coefficients have been generated
     local p, x;
     #return TN.P[a][b][c]; # naive, non-sparse implementation
     p := PositionSet(List(TN.P[a][b], x -> x[1]), c);
@@ -477,47 +477,47 @@ BindGlobal("CCCoeff", function(TN, a, b, c) # XXX Make this actually check wheth
     else
         return TN.P[a][b][p][2];
     fi;
-end);
+end;
 
 ###########################################################################
 # computing the isomorphism to the regular representation, i.e.
 # A_b -> (L_b)_{ac} := p^a_{bc}, for a, b, c=1, ..., algebra dimension
 ###########################################################################
-BindGlobal("CCIntersectionMat", function(TN, b)
+CCIntersectionMat@ := function(TN, b)
     local L, d, a, c;
 
-    d := CCDimension(TN);
+    d := CCDimension@(TN);
     L := NullMat(d, d);
     for a in [1..d] do
         for c in [1..d] do
-            L[a][c] := CCCoeff(TN, a, b, c);
+            L[a][c] := CCCoeff@(TN, a, b, c);
         od;
     od;
 
     return L;
-end);
+end;
 
 # retrieve the regular representation matrices
-BindGlobal("CCIntersectionMats", function(TN)
+CCIntersectionMats@ := function(TN)
     local b;
     if IsEmpty(TN.P) then
-        CCPopulateCoeffs(TN);
+        CCPopulateCoeffs@(TN);
     fi;
 
-    return List([1..CCDimension(TN)],
-        b -> CCIntersectionMat(TN, b)
+    return List([1..CCDimension@(TN)],
+        b -> CCIntersectionMat@(TN, b)
     );
-end);
+end;
 
 # sparse version
-BindGlobal("CCIntersectionMatLIL", function(TN, b)
+CCIntersectionMatLIL@ := function(TN, b)
     local v, a, c, d, L;
 
-    d := CCDimension(TN);
+    d := CCDimension@(TN);
     L := List([1..d], i -> []);
     for a in [1..d] do
         for c in [1..d] do
-            v := CCCoeff(TN, a, b, c);
+            v := CCCoeff@(TN, a, b, c);
             if v <> 0 then
                 AddSet(L[a], [c, v]);
             fi;
@@ -525,19 +525,19 @@ BindGlobal("CCIntersectionMatLIL", function(TN, b)
     od;
 
     return L;
-end);
+end;
 
 # packed version
 # for each non-zero entry M_{ij}, list the tuple [i,j,M_{ij}]
 # and return the resulting list (ordered 1st by i, and then by j)
-BindGlobal("CCIntersectionMatCOO", function(TN, b)
+CCIntersectionMatCOO@ := function(TN, b)
     local v, a, c, d, L;
 
-    d := CCDimension(TN);
+    d := CCDimension@(TN);
     L := [];
     for a in [1..d] do
         for c in [1..d] do
-            v := CCCoeff(TN, a, b, c);
+            v := CCCoeff@(TN, a, b, c);
             if v <> 0 then
                 Add(L,[a,c,v]);
             fi;
@@ -545,19 +545,19 @@ BindGlobal("CCIntersectionMatCOO", function(TN, b)
     od;
 
     return L;
-end);
+end;
 
 # packed version
-BindGlobal("CCIntersectionMatsCOO", function(TN)
+CCIntersectionMatsCOO@ := function(TN)
     if IsEmpty(TN.P) then
-        CCPopulateCoeffs(TN);
+        CCPopulateCoeffs@(TN);
     fi;
 
-    return List([1..CCDimension(TN)], x-> CCIntersectionMatCOO(TN,x));
-end);
+    return List([1..CCDimension@(TN)], x-> CCIntersectionMatCOO@(TN,x));
+end;
 
 # transposes a sparse matrix
-BindGlobal("TransposedMatLILMutable", function(A)
+TransposedMatLILMutable@ := function(A)
     local p, d, i, j, L;
 
     d := Length(A);
@@ -569,34 +569,34 @@ BindGlobal("TransposedMatLILMutable", function(A)
     od;
 
     return L;
-end);
+end;
 
 ###############################################################
 # this is mainly for debugging purposes
 ###############################################################
-BindGlobal("CCBasisMats", function(TN)
+CCBasisMats@ := function(TN)
     local M, i, j, n, d;
 
-    if not IsCohCfg(TN) then
-        Error("CCBasisMats: Usage is CCBasisMats(IsCohCfg object).\n");
+    if not IsCohCfg@(TN) then
+        Error("CCBasisMats@: Usage is CCBasisMats@(IsCohCfg@ object).\n");
     fi;
 
     if IsBound(TN.basisMats) then
         return TN.basisMats;
     fi;
 
-    d := CCDimension(TN);
-    n := CCDegree(TN);
+    d := CCDimension@(TN);
+    n := CCDegree@(TN);
     M := List([1..d], x -> NullMat(n, n));
     for i in [1..n] do
         for j in [1..n] do
-            M[CCElementContainingPair(TN, [i, j])][i][j] := 1; # TODO: can this be done more efficiently?
+            M[CCElementContainingPair@(TN, [i, j])][i][j] := 1; # TODO: can this be done more efficiently?
         od;
     od;
 
     for i in [1..d] do
         if M[i]<>TransposedMat(M[i^TN.pairing]) then
-            Error("CCBasisMats: Stored pairing is faulty.\n");
+            Error("CCBasisMats@: Stored pairing is faulty.\n");
         fi;
     od;
 
@@ -604,14 +604,14 @@ BindGlobal("CCBasisMats", function(TN)
     TN.basisMats := M;
 
     return TN.basisMats;
-end);
+end;
 
 # produce the aggregate basis matrix whose (i,j)-th entry gives the number of the CC element which (i,j) lies in (0-based)
-BindGlobal("CCAggregateBasisMat", function(TN)
+CCAggregateBasisMat@ := function(TN)
     local As, A;
 
-    if not IsCohCfg(TN) then
-        Error("CCAggregateBasisMat: Usage is CCAggregateBasisMat(IsCohCfg object).\n");
+    if not IsCohCfg@(TN) then
+        Error("CCAggregateBasisMat@: Usage is CCAggregateBasisMat@(IsCohCfg@ object).\n");
     fi;
 
     if IsBound(TN.aggregateBasisMat) then
@@ -619,11 +619,11 @@ BindGlobal("CCAggregateBasisMat", function(TN)
     fi;
 
     # TODO: do this more efficiently
-    As := CCBasisMats(TN);
-    A := Sum([2 .. CCDimension(TN)], x -> (x - 1) * As[x]);
+    As := CCBasisMats@(TN);
+    A := Sum([2 .. CCDimension@(TN)], x -> (x - 1) * As[x]);
 
     MakeImmutable(A);
     TN.aggregateBasisMat := A;
 
     return TN.aggregateBasisMat;
-end);
+end;

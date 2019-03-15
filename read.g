@@ -4,6 +4,11 @@
 # Reading the implementation part of the package.
 #
 
+ReadPackage( "RepnDecomp", "lib/cohcfg/misc.gi");
+ReadPackage( "RepnDecomp", "lib/cohcfg/classmatr.gi");
+ReadPackage( "RepnDecomp", "lib/cohcfg/classsum.gi");
+ReadPackage( "RepnDecomp", "lib/cohcfg/SubgroupCC.gi");
+
 ReadPackage( "RepnDecomp", "lib/utils.gi");
 ReadPackage( "RepnDecomp", "lib/serre.gi");
 ReadPackage( "RepnDecomp", "lib/centralizer.gi");

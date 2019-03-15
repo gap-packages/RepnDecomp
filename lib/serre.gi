@@ -37,8 +37,8 @@ RepresentationCentralizerPermRep@ := function(rho)
     local G, H, T, two_orbit_reps;
     G := Source(rho);
     H := Group(List(GeneratorsOfGroup(G), g -> Image(rho, g))); # is perm group
-    T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
-    two_orbit_reps := CCTransversal(T); # list of reps of 2-orbits (pairs)
+    T := CohCfgFromPermGroup@(H); # computes conjugacy classes and orbitals
+    two_orbit_reps := CCTransversal@(T); # list of reps of 2-orbits (pairs)
 
     # the orbital matrices themselves, this gives a basis for the
     # centraliser
@@ -86,7 +86,7 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
         # centralizer, can calculate a basis for C from from scratch
         character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
         H := Range(rho); # is perm group
-        T := CohCfgFromPermGroup(H); # computes conjugacy classes and orbitals
+        T := CohCfgFromPermGroup@(H); # computes conjugacy classes and orbitals
         cc := ConjugacyClasses(H);
 
         # the orbital matrices give a basis for the centralizer
@@ -97,7 +97,7 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
             rep := Representative(class);
 
             # coeffs of orbitals making up the class sum
-            v := ClassSum(T, class);
+            v := ClassSum@(T, class);
 
             # the class sum itself
             A := Sum([1..Length(v)], i -> v[i] * orbitals[i]);
