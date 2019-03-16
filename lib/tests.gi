@@ -223,6 +223,7 @@ TestBlockDiagonalRepresentation@ := function(rep, info)
 
     Add(conds, TestIrreducibleDecomposition@(rep, info.decomposition));
 
+    # want to change back to the old basis to verify centralisers are the same
     Add(conds, TestCentralizerBasis@(rep, List(info.centralizer_basis, blocks -> A * BlockDiagonalMatrix(blocks) * A^-1)));
 
     if ForAll(conds, x->x) then

@@ -225,3 +225,10 @@ InstallGlobalFunction( AreRepsIsomorphic, function(rep1, rep2)
     # iff they are isomorphic
     return DecomposeCharacter@(rep1, irr_chars) = DecomposeCharacter@(rep2, irr_chars);
 end );
+
+# checks if A rho(g) = tau(g) A
+InstallGlobalFunction( IsLinearRepresentationIsomorphism, function(A, rho, tau)
+    local gens;
+    gens := GeneratorsOfGroup(Source(rho));
+    return ForAll(gens, g -> A * Image(rho, g) = Image(tau, g) * A);
+end );
