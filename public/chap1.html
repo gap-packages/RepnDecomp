@@ -28,6 +28,7 @@
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X796E97C0829CAC27">1.1-1 BlockDiagonalBasis</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X85D284E386A4257F">1.1-2 BlockDiagonalRepresentation</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X87AA8AD6818E9DCA">1.1-3 BlockDiagonalRepresentationFast</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap1.html#X832CFFFF78F3EB78">1.1-4 BlockDiagonalRepresentationFastCanonical</a></span>
 </div></div>
 </div>
 
@@ -61,10 +62,10 @@
 
 <h5>1.1-3 BlockDiagonalRepresentationFast</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalRepresentationFast</code>( <var class="Arg">rho</var>[, <var class="Arg">irreps</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalRepresentationFast</code>( <var class="Arg">rho</var>[, <var class="Arg">irreps</var>, <var class="Arg">rho_cent_basis</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: A record</p>
 
-<p>Calculates some values given by other functions in this package, but without summing over G (in case G is very large). Most of the time, G is a symmetric group (or nearly one) so calculation of conjugacy classes is easy. <var class="Arg">irreps</var> is the complete list of irreps involved in the direct sum decomposition of <var class="Arg">rho</var>, this can be given in case the default (running Dixon's algorithm) is too expensive, or e.g. you don't want representations over Cyclotomics. The return value of this function is a record with fields:</p>
+<p>Calculates some values given by other functions in this package, but without summing over G (in case G is very large). Most of the time, G is a symmetric group (or nearly one) so calculation of conjugacy classes is easy. <var class="Arg">irreps</var> is the complete list of irreps involved in the direct sum decomposition of <var class="Arg">rho</var>, this can be given in case the default (running Dixon's algorithm) is too expensive, or e.g. you don't want representations over Cyclotomics. If you have an orthonormal basis for the centraliser of <var class="Arg">rho</var>, you can pass it in as <var class="Arg">rho_cent_basis</var> and it will be used to speed up calculations. The return value of this function is a record with fields:</p>
 
 
 <ul>
@@ -82,6 +83,15 @@
 </li>
 </ul>
 <p>When I say "the same", I mean up to reordering and isomorphism as representations.</p>
+
+<p><a id="X832CFFFF78F3EB78" name="X832CFFFF78F3EB78"></a></p>
+
+<h5>1.1-4 BlockDiagonalRepresentationFastCanonical</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalRepresentationFastCanonical</code>( <var class="Arg">rho</var>[, <var class="Arg">irreps</var>, <var class="Arg">rho_cent_basis</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A record in the same format as <code class="func">BlockDiagonalRepresentationFast</code> (<a href="chap1.html#X87AA8AD6818E9DCA"><span class="RefLink">1.1-3</span></a>).</p>
+
+<p>Does the same thing as <code class="func">BlockDiagonalRepresentationFast</code> (<a href="chap1.html#X87AA8AD6818E9DCA"><span class="RefLink">1.1-3</span></a>), but first splits the representation into canonical summands. This might reduce the size of the matrices we need to work over, so could much faster.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap0.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap2.html">[Next Chapter]</a>&nbsp;  </div>

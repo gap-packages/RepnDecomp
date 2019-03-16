@@ -31,6 +31,7 @@
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7F0D3CFB7800149A">4.1-1 LinearRepresentationIsomorphism</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X841DE7D08491325F">4.1-2 LinearRepresentationIsomorphismSlow</a></span>
 <span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X86EB9DD586958473">4.1-3 AreRepsIsomorphic</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X81080E1B7917B361">4.1-4 IsLinearRepresentationIsomorphism</a></span>
 </div></div>
 </div>
 
@@ -66,6 +67,23 @@
 <p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as representations, false otherwise.</p>
 
 <p>Note that two representations are isomorphic iff they give similar matrices, also iff they have the same irreducible decomposition. We use characters to determine the latter: the first is expensive to check for large degree representations.</p>
+
+<p><a id="X81080E1B7917B361" name="X81080E1B7917B361"></a></p>
+
+<h5>4.1-4 IsLinearRepresentationIsomorphism</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsLinearRepresentationIsomorphism</code>( <var class="Arg">A</var>, <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as as representations with the isomorphism given by the linear map <var class="Arg">A</var></p>
+
+<p>This function tests if, for all <span class="SimpleMath">\(g \in G\)</span>, <span class="SimpleMath">\(A \rho(g) = \tau(g) A\)</span>. That is, true is returned iff <span class="SimpleMath">\(A\)</span> is the intertwining operator taking <span class="SimpleMath">\(\rho\)</span> to <span class="SimpleMath">\(\tau\)</span>. Note that it is always the case that:</p>
+
+
+<div class="example"><pre>
+ gap&gt; IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
+ true
+</pre></div>
+
+<p>as long as an isomorphism between the given representations actually exists.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap5_mj.html">[Next Chapter]</a>&nbsp;  </div>
