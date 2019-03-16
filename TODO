@@ -1,4 +1,3 @@
-* Clean up all of the cohcfg defines, nothing is supposed to be global
 * Some bug with the RestrictRep@ thing
 * Avoid normalising basis until late - coefficients blow up
 * Reduce memory usage (sparse matrices etc)
