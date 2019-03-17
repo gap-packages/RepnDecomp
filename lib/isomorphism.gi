@@ -68,23 +68,20 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # over g in G, h in G of tau(g) \otimes rho^*(h), and we can
     # calculate these group sums using the centraliser bases
 
-    used_tensors := true;
+    # we can just do (sum_{g in G} tau(g)) \otimes (sum_{g in G} rho^*(g))
+    # which still gives a projection (although a different one)
 
-    # if there was no basis, just sum over the whole group
-    if rho_cent_basis = fail or tau_cent_basis = fail then
-        used_tensors := false;
-        alpha := FuncToHom@(G, g -> KroneckerProduct(Image(tau, g), TransposedMat(Image(rho, g^-1))));
-        triv_proj := Sum(G, g -> Image(alpha, g));
-    else
-        # we can just do (sum_{g in G} tau(g)) \otimes (sum_{g in G} rho^*(g))
-        # which still gives a projection
+    # The group sum for rho^* is the same as for rho, but
+    # transposed (the relabelling g -> g^-1 is just a bijection and ^T is linear)
 
-        # The group sum for rho^* is the same as for rho, but
-        # transposed (the relabelling g -> g^-1 is just a bijection and ^T is linear)
-        triv_proj := TensorProductOfMatrices(GroupSumWithCentralizer@(tau, tau_cent_basis),
-                                             TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
+    # TODO: is there a pure tensor map to V_triv hitting invertible pts?
+    #triv_proj := TensorProductOfMatrices(GroupSumWithCentralizer@(tau, tau_cent_basis),
+    #                                     TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
 
-    fi;
+    #triv_proj := KroneckerProduct(GroupSumWithCentralizer@(tau, tau_cent_basis),
+    #                              TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
+
+    triv_proj := Sum(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
 
     A := NullMat(n, n);
 
@@ -93,12 +90,9 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # vectors over a ball in C^n^2.
     repeat
         # we pick a "random vector" and project it to get a fixed one
-        if used_tensors then
-            A := triv_proj * RandomInvertibleMat(n);
-        else
-            A_vec := triv_proj * Flat(RandomInvertibleMat(n));
-            A := WrapMatrix@(A_vec, n);
-        fi;
+        #A := triv_proj * RandomInvertibleMat(n);
+        A_vec := triv_proj * Flat(RandomInvertibleMat(n));
+        A := WrapMatrix@(A_vec, n);
     until RankMat(A) = n;
 
     return A;
