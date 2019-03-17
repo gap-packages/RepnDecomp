@@ -153,5 +153,9 @@ GroupSumWithCentralizer@ := function(rho, cent_basis)
     local G, classes;
     G := Source(rho);
     classes := ConjugacyClasses(G);
-    return Sum(classes, class -> ClassSumCentralizer(rho, class, cent_basis));
+    if cent_basis <> fail then
+        return Sum(classes, class -> ClassSumCentralizer(rho, class, cent_basis));
+    else
+        return Sum(G, g -> Image(rho, g));
+    fi;
 end;
