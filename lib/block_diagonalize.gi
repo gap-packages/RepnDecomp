@@ -113,7 +113,8 @@ InstallGlobalFunction( BlockDiagonalRepresentationFast, function(rho, args...)
     # Note: this is where the heavy lifting of the function is
 
     basis_change := LinearRepresentationIsomorphism(new_rho, rho,
-                                                    new_rho_cent_basis, rho_cent_basis);
+                                                    new_rho_cent_basis,
+                                                    rho_cent_basis);
 
     basis := TransposedMat(basis_change);
 

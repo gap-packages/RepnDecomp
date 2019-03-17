@@ -24,7 +24,7 @@ end;
 # Calculates the isomorphism using the cool fact about the product
 # (see below)
 InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args...)
-    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj;
+    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual;
 
     # if set, these bases for the centralisers will be used to avoid
     # summing over G
@@ -55,12 +55,11 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # is actually \tau \otimes \rho^*, i.e. g -> tau(g) \otimes
     # \rho(g^-1)^T.
 
-    # Standard basis for M_n(C)
-    matrix_basis := MatrixBasis@(n);
-
     # the representation alpha : G -> GL(V) (V is the space of matrices)
     # TODO: investigate if we can avoid huge matrices in some way
-    alpha := FuncToHom@(G, g -> KroneckerProduct(Image(tau, g), TransposedMat(Image(rho, g^-1))));
+
+    rho_dual := FuncToHom@(G, g -> TransposedMat(Image(rho, g^-1)));
+    alpha := TensorProductOfRepresentations(tau, rho_dual);
 
     # the projection of V onto V_triv, the trivial canonical summand,
     # is just given by the sum over whole group of alpha(g)
@@ -69,8 +68,12 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # over g in G, h in G of tau(g) \otimes rho^*(h), and we can
     # calculate these group sums using the centraliser bases
 
+    used_tensors := true;
+
     # if there was no basis, just sum over the whole group
     if rho_cent_basis = fail or tau_cent_basis = fail then
+        used_tensors := false;
+        alpha := FuncToHom@(G, g -> KroneckerProduct(Image(tau, g), TransposedMat(Image(rho, g^-1))));
         triv_proj := Sum(G, g -> Image(alpha, g));
     else
         # we can just do (sum_{g in G} tau(g)) \otimes (sum_{g in G} rho^*(g))
@@ -78,8 +81,8 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
 
         # The group sum for rho^* is the same as for rho, but
         # transposed (the relabelling g -> g^-1 is just a bijection and ^T is linear)
-        triv_proj := KroneckerProduct(GroupSumWithCentralizer@(tau, tau_cent_basis),
-                                      TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
+        triv_proj := TensorProductOfMatrices(GroupSumWithCentralizer@(tau, tau_cent_basis),
+                                             TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
 
     fi;
 
@@ -90,8 +93,12 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # vectors over a ball in C^n^2.
     repeat
         # we pick a "random vector" and project it to get a fixed one
-        A_vec := triv_proj * Flat(RandomInvertibleMat(n));
-        A := WrapMatrix@(A_vec, n);
+        if used_tensors then
+            A := triv_proj * RandomInvertibleMat(n);
+        else
+            A_vec := triv_proj * Flat(RandomInvertibleMat(n));
+            A := WrapMatrix@(A_vec, n);
+        fi;
     until RankMat(A) = n;
 
     return A;
