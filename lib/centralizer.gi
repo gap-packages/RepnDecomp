@@ -130,12 +130,9 @@ end );
 ClassSumCentralizerCoeffs@ := function(rho, class, cent_basis)
     local prod, coeff, conj;
 
-    conj := A -> List(A, row -> List(row, ComplexConjugate));
-    prod := function(A, B) return Trace(A * conj(TransposedMat(B))); end;
-
     # TODO: why doesn't this work?
     #coeff := B -> Size(class) * prod(Image(rho, Representative(class)), B);
-    coeff := B -> Sum(class, g -> prod(Image(rho, g), B));
+    coeff := B -> Sum(class, g -> InnerProduct@(Image(rho, g), B));
 
     return List(cent_basis, coeff);
 end;
@@ -144,8 +141,13 @@ end;
 # the coefficients
 InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
     local coeffs;
-    coeffs := ClassSumCentralizerCoeffs@(rho, class, cent_basis);
-    return Sum([1..Length(coeffs)], i -> coeffs[i] * cent_basis[i]);
+
+    if cent_basis <> fail then
+        coeffs := ClassSumCentralizerCoeffs@(rho, class, cent_basis);
+        return Sum([1..Length(coeffs)], i -> coeffs[i] * cent_basis[i]);
+    else
+        return Sum(class, g -> Image(rho, g));
+    fi;
 end );
 
 # Does the group sum (just for convenience, nothing clever)

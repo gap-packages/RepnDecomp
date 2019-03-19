@@ -24,7 +24,7 @@ end;
 # Calculates the isomorphism using the cool fact about the product
 # (see below)
 InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args...)
-    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual;
+    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual, class1, class2, candidate_map, classes, tries, sum, v, v_0;
 
     # if set, these bases for the centralisers will be used to avoid
     # summing over G
@@ -55,10 +55,9 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # is actually \tau \otimes \rho^*, i.e. g -> tau(g) \otimes
     # \rho(g^-1)^T.
 
-    # the representation alpha : G -> GL(V) (V is the space of matrices)
-    # TODO: investigate if we can avoid huge matrices in some way
-
     rho_dual := FuncToHom@(G, g -> TransposedMat(Image(rho, g^-1)));
+
+    # The representation alpha : G -> GL(V) (V is the space of matrices)
     alpha := TensorProductOfRepresentations(tau, rho_dual);
 
     # the projection of V onto V_triv, the trivial canonical summand,
@@ -74,26 +73,45 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # The group sum for rho^* is the same as for rho, but
     # transposed (the relabelling g -> g^-1 is just a bijection and ^T is linear)
 
-    # TODO: is there a pure tensor map to V_triv hitting invertible pts?
+    classes := ConjugacyClasses(G);
+
     #triv_proj := TensorProductOfMatrices(GroupSumWithCentralizer@(tau, tau_cent_basis),
     #                                     TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
 
     #triv_proj := KroneckerProduct(GroupSumWithCentralizer@(tau, tau_cent_basis),
     #                              TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
 
-    triv_proj := Sum(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
+    #triv_proj := Sum(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
+
+    # The idea here is that we want an element that is fixed by alpha,
+    # the natural choice is the sum of an orbit of some random vector
+    # v. We know that some choice of v gives an orbit sum that is
+    # invertible, so "almost all" choices of v work.
 
     A := NullMat(n, n);
 
-    # Keep picking matrices until we get an invertible one. This would
-    # happen with probability 1 if we really picked uniformly random
-    # vectors over a ball in C^n^2.
+    tries := 0;
+
     repeat
-        # we pick a "random vector" and project it to get a fixed one
+        v_0 := RandomInvertibleMat(n);
+        sum := v_0;
+
+        v := alpha * v_0;
+
+        # This sums the orbit of v_0 under alpha. We know this will
+        # terminate since G is finite.
+        while v <> v_0 do
+            A := A + v;
+            v := alpha * v_0;
+        od;
+
         #A := triv_proj * RandomInvertibleMat(n);
-        A_vec := triv_proj * Flat(RandomInvertibleMat(n));
-        A := WrapMatrix@(A_vec, n);
-    until RankMat(A) = n;
+        #A_vec := triv_proj * Flat(RandomInvertibleMat(n));
+        #A := WrapMatrix@(A_vec, n);
+        tries := tries + 1;
+    until RankMat(A) = n; # i.e. until A is invertible
+
+    Print(tries, " tries\n");
 
     return A;
 end );
