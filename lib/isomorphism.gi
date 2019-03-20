@@ -24,7 +24,7 @@ end;
 # Calculates the isomorphism using the cool fact about the product
 # (see below)
 InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args...)
-    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual, class1, class2, candidate_map, classes, tries, sum, v, v_0;
+    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual, class1, class2, candidate_map, classes, tries, sum, v, v_0, im, orbit, gen, i;
 
     # if set, these bases for the centralisers will be used to avoid
     # summing over G
@@ -75,14 +75,6 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
 
     classes := ConjugacyClasses(G);
 
-    #triv_proj := TensorProductOfMatrices(GroupSumWithCentralizer@(tau, tau_cent_basis),
-    #                                     TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
-
-    #triv_proj := KroneckerProduct(GroupSumWithCentralizer@(tau, tau_cent_basis),
-    #                              TransposedMat(GroupSumWithCentralizer@(rho, rho_cent_basis)));
-
-    #triv_proj := Sum(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
-
     # The idea here is that we want an element that is fixed by alpha,
     # the natural choice is the sum of an orbit of some random vector
     # v. We know that some choice of v gives an orbit sum that is
@@ -95,23 +87,28 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     repeat
         v_0 := RandomInvertibleMat(n);
         sum := v_0;
-
-        v := alpha * v_0;
+        orbit := [v_0];
 
         # This sums the orbit of v_0 under alpha. We know this will
         # terminate since G is finite.
-        while v <> v_0 do
-            A := A + v;
-            v := alpha * v_0;
+        i := 1;
+        while i <= Length(orbit) do
+            for gen in GeneratorsOfGroup(G) do
+                im := Image(alpha, gen) * orbit[i];
+                if not (im in orbit) then
+                    Add(orbit, im);
+                fi;
+            od;
+            i := i + 1;
         od;
+
+        A := Sum(orbit);
 
         #A := triv_proj * RandomInvertibleMat(n);
         #A_vec := triv_proj * Flat(RandomInvertibleMat(n));
         #A := WrapMatrix@(A_vec, n);
         tries := tries + 1;
     until RankMat(A) = n; # i.e. until A is invertible
-
-    Print(tries, " tries\n");
 
     return A;
 end );
