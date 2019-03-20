@@ -47,7 +47,7 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep, args...)
-    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis;
+    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis, summand;
 
     G := Source(rho);
     #ker := KernelOfMultiplicativeGeneralMapping(arg_rho);
@@ -71,7 +71,7 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
     # In Serre's text, irrep is called W_i, the character is chi_i
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    if cent_basis <> fail then
+    if false and cent_basis <> fail then
         # First, if we are given a basis for the centralizer
         character := g -> Trace(Image(irrep, g));
         cc := ConjugacyClasses(G);
@@ -108,9 +108,15 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
     else
         # Lastly, given no special info at all we just have to sum over G
 
-        # Given as a matrix, using Serre's formula directly, p_i is:
+        # Doing this with the StabChain method might actually be quite
+        # fast, maybe faster than the other methods, need to investigate
+
         character := g -> Trace(Image(irrep, g));
-        projection := (degree/Order(G)) * Sum(G, t -> ComplexConjugate(character(t)) * Image(rho, t));
+
+        # This maps t to the summand from Serre's formula
+        summand := t -> ComplexConjugate(character(t)) * Image(rho, t);
+
+        projection := (degree/Order(G)) * GroupSumBSGS(G, summand);
     fi;
 
     # Calculate V_i, the canonical summand
@@ -185,7 +191,11 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     # First compute the projections p_ab. We only actually use projections with
     # a=1..n and b=1, so we can just compute those. projections[a] is p_{a1}
     # from Serre.
-    projections := List([1..n], a -> (n/Order(G)) * Sum(G, t -> Image(irrep,t^-1)[1][a]*Image(rho,t)));
+    projections := List([1..n], function(a)
+                           local summand;
+                           summand := t -> Image(irrep,t^-1)[1][a]*Image(rho,t);
+                           return (n/Order(G)) * Sum(G, summand);
+                       end );
 
     p_11 := projections[1];
     V_i1 := MatrixImage@(p_11, V_i);
