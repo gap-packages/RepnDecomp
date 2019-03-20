@@ -1,8 +1,5 @@
-InstallGlobalFunction( GroupSumBSGS, function(rho)
-    local G, H, n, chain, groups, m, sum, i, cosets, iso;
-
-    G := Source(rho);
-    n := DegreeOfRepresentation(rho);
+InstallGlobalFunction( GroupSumBSGS, function(G, summand)
+    local H, n, chain, groups, m, sum, i, cosets, iso;
 
     # stab chain computation only works on permutation groups
     iso := IsomorphismPermGroup(G);
@@ -16,7 +13,7 @@ InstallGlobalFunction( GroupSumBSGS, function(rho)
     # group and so on
     m := Length(groups);
 
-    sum := Sum(GroupStabChain(groups[m-1]), g -> Image(rho, PreImage(iso, g)));
+    sum := Sum(GroupStabChain(groups[m-1]), g -> summand(PreImage(iso, g)));
 
     for i in [m-2,m-3..1] do
         # `sum` is the sum for G_{i+1}
@@ -24,7 +21,7 @@ InstallGlobalFunction( GroupSumBSGS, function(rho)
         cosets := RightCosets(GroupStabChain(groups[i]),
                               GroupStabChain(groups[i+1]));
 
-        sum := Sum(cosets, S -> sum * Image(rho, PreImage(iso, Representative(S))));
+        sum := Sum(cosets, S -> sum * summand(PreImage(iso, Representative(S))));
     od;
 
     return sum;
