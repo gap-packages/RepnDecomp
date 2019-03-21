@@ -1,3 +1,3 @@
 LoadPackage("RepnDecomp");
 
-BenchMany@RepnDecomp(rep -> BlockDiagonalRepresentation(rep.rep), "serre.txt", 100);
+BenchMany@RepnDecomp(rep -> REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps), "serre.txt", 100);

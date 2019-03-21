@@ -268,7 +268,7 @@ end;
 # method to get irreducibles from that. Uses orthonormal basis for
 # C_rho if given.
 IrreducibleDecompositionCollectedHybrid@ := function(rho)
-    local irreps, G, irred_decomp;
+    local irreps, G, irred_decomp, do_decompose, parallel;
     G := Source(rho);
     irreps := ValueOption("irreps");
     if irreps = fail then
