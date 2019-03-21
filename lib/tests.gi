@@ -52,7 +52,7 @@ RandomRepresentation@ := function(args...)
 
     chosen_irreps := List(chosen_irreps, irrep -> Replicate@(irrep, Random([opt.min_multiplicity..opt.max_multiplicity])));
 
-    diag_rho := DirectSumRepList(Flat(chosen_irreps));
+    diag_rho := DirectSumOfRepresentations(Flat(chosen_irreps));
     n := DegreeOfRepresentation(diag_rho);
 
     # scramble the basis to avoid it being too easy

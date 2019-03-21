@@ -13,3 +13,4 @@ ReadPackage( "RepnDecomp", "lib/filters.gd" );
 ReadPackage( "RepnDecomp", "lib/isomorphism.gd" );
 ReadPackage( "RepnDecomp", "lib/tensor.gd" );
 ReadPackage( "RepnDecomp", "lib/groupsum.gd" );
+ReadPackage( "RepnDecomp", "lib/mymethod.gd" );

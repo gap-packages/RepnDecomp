@@ -32,7 +32,7 @@ DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 
 #! @Description Computes the decomposition of $V$ into irreducible
 #! subprepresentations.
-DeclareAttribute( "IrreducibleDecomposition", IsGroupHomomorphism );
+DeclareGlobalFunction( "IrreducibleDecomposition", IsGroupHomomorphism );
 
 #! @Arguments rho
 
@@ -43,4 +43,6 @@ DeclareAttribute( "IrreducibleDecomposition", IsGroupHomomorphism );
 #! @Description Computes the decomposition of $V$ into irreducible
 #! subrepresentations, grouping together the isomorphic
 #! subrepresentations.
-DeclareAttribute( "IrreducibleDecompositionCollected", IsGroupHomomorphism );
+DeclareGlobalFunction( "IrreducibleDecompositionCollected", IsGroupHomomorphism );
+
+DeclareAttribute( "REPN_ComputeUsingSerre", IsGroupHomomorphism );

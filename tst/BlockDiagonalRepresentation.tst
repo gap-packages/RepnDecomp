@@ -1,6 +1,6 @@
 gap> G := SmallGroup(56, 3);;
 gap> irreps := IrreducibleRepresentations(G);;
-gap> rho := DirectSumRepList([irreps[1], irreps[2], irreps[5]]);;
+gap> rho := DirectSumOfRepresentations([irreps[1], irreps[2], irreps[5]]);;
 gap> # rho is already block diagonal, so shouldn't change
 gap> BlockDiagonalRepresentation(rho) = rho;
 true

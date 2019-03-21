@@ -86,7 +86,7 @@ end;
 
 # Returns a block diagonal representation isomorphic to the direct sum
 # of the list of reps
-InstallGlobalFunction( DirectSumRepList, function(reps)
+InstallGlobalFunction( DirectSumOfRepresentations, function(reps)
     local G, gens, imgs, H;
     G := Source(reps[1]);
     return FuncToHom@(G, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
@@ -94,7 +94,7 @@ end );
 
 # Takes the inner product of two characters, given as rows of the
 # character table
-CharacterInnerProduct@ := function(chi1, chi2, G)
+InnerProductOfCharacters@ := function(chi1, chi2, G)
     local classes;
 
     # We avoid summing over the whole group
@@ -105,7 +105,7 @@ CharacterInnerProduct@ := function(chi1, chi2, G)
 end;
 
 # Gives the row of the character table corresponding to irrep
-IrrepToCharacter@ := function(irrep)
+CharacterOfRepresentation@ := function(irrep)
     local G;
     G := Source(irrep);
     return List(ConjugacyClasses(G),
@@ -124,12 +124,12 @@ IrrWithCorrectOrdering@ := function(G, args...)
         irreps := IrreducibleRepresentationsDixon(G);
     fi;
 
-    return List(irreps, irrep -> IrrepToCharacter@(irrep));
+    return List(irreps, irrep -> CharacterOfRepresentation@(irrep));
 end;
 
 # Writes the character of rho as a vector in the basis given by the
 # irreducible characters (if chars are not given, use Dixon's method)
-DecomposeCharacter@ := function(rho, args...)
+IrrVectorOfRepresentation@ := function(rho, args...)
     local G, classes, irr_chars, char_rho, char_rho_basis;
 
     G := Source(rho);
@@ -150,7 +150,7 @@ DecomposeCharacter@ := function(rho, args...)
 
     # Write char_rho in the irr_chars basis for class functions
     char_rho_basis := List(irr_chars,
-                           irr_char -> CharacterInnerProduct@(char_rho, irr_char, G));
+                           irr_char -> InnerProductOfCharacters@(char_rho, irr_char, G));
 
     return char_rho_basis;
 end;

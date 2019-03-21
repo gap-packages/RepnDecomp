@@ -6,14 +6,14 @@
 
 #! @Returns List of standard generators (as a vector space) for the
 #! centralizer ring of $\rho(G)$, written in the basis given by <Ref
-#! Attr="BlockDiagonalBasis" />.  The matrices are given as a list of
+#! Attr="BlockDiagonalBasisOfRepresentation" />.  The matrices are given as a list of
 #! blocks.
 
 #! @Description Let $G$ have irreducible representations $\rho_i$ with
 #! multiplicities $m_i$. The centralizer has dimension $\sum_i m_i^2$
 #! as a $\mathbb{C}$-vector space. This function gives the minimal
 #! number of generators required.
-DeclareGlobalFunction( "RepresentationCentralizerBlocks" );
+DeclareGlobalFunction( "CentralizerBlocksOfRepresentation" );
 
 #! @Section Useful convenience functions
 
@@ -23,10 +23,10 @@ DeclareGlobalFunction( "RepresentationCentralizerBlocks" );
 #! centralizer ring of $\rho(G)$.
 
 #! @Description This gives the same result as <Ref
-#! Func="RepresentationCentralizerBlocks" />, but with the matrices
+#! Func="CentralizerBlocksOfRepresentation" />, but with the matrices
 #! given in their entirety: not as lists of blocks, but as full
 #! matrices.
-DeclareGlobalFunction( "RepresentationCentralizer" );
+DeclareGlobalFunction( "CentralizerOfRepresentation" );
 
 #! @Arguments rho, class, cent_basis
 

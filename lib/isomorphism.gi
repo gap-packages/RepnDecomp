@@ -239,7 +239,7 @@ InstallGlobalFunction( AreRepsIsomorphic, function(rep1, rep2)
 
     # Writes the characters in the irr_chars basis, they are the same
     # iff they are isomorphic
-    return DecomposeCharacter@(rep1, irr_chars) = DecomposeCharacter@(rep2, irr_chars);
+    return IrrVectorOfRepresentation@(rep1, irr_chars) = IrrVectorOfRepresentation@(rep2, irr_chars);
 end );
 
 # checks if A rho(g) = tau(g) A

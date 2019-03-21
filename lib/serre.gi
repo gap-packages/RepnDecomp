@@ -46,7 +46,7 @@ RepresentationCentralizerPermRep@ := function(rho)
 end;
 
 # Gives the canonical summand corresponding to irrep
-IrrepCanonicalSummand@ := function(rho, irrep, args...)
+IrrepCanonicalSummand@ := function(rho, irrep)
     local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis, summand;
 
     G := Source(rho);
@@ -62,11 +62,7 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
 
     # if we are given an orthonormal basis for the centralizer of rho,
     # then we can use it to speed up class sum computation
-    if Length(args) > 0 then
-        cent_basis := args[1];
-    else
-        cent_basis := fail;
-    fi;
+    cent_basis := ValueOption("cent_basis");
 
     # In Serre's text, irrep is called W_i, the character is chi_i
 
@@ -116,7 +112,7 @@ IrrepCanonicalSummand@ := function(rho, irrep, args...)
         # This maps t to the summand from Serre's formula
         summand := t -> ComplexConjugate(character(t)) * Image(rho, t);
 
-        projection := (degree/Order(G)) * GroupSumBSGS(G, summand);
+        projection := (degree/Order(G)) * Sum(G, summand);
     fi;
 
     # Calculate V_i, the canonical summand
@@ -131,7 +127,7 @@ RelevantIrreps@ := function(rho, irreps)
 
     G := Source(rho);
     irr_chars := IrrWithCorrectOrdering@(G, irreps);
-    char_rho := DecomposeCharacter@(rho, irr_chars);
+    char_rho := IrrVectorOfRepresentation@(rho, irr_chars);
 
     # indices of irreps that appear in rho
     relevant_indices := Filtered([1..Length(irreps)],
@@ -140,16 +136,23 @@ RelevantIrreps@ := function(rho, irreps)
     return irreps{relevant_indices};
 end;
 
-InstallGlobalFunction( CanonicalDecomposition, function(rho, args...)
+InstallGlobalFunction( CanonicalDecomposition, function(rho)
     local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
 
     # The group we are taking representations of
     G := Source(rho);
 
     # The list of irreps W_i of G over F appearing in rho
-    # We need to convert here, since this function needs a linear rep
+    irreps := ValueOption("irreps");
+
+    if irreps = fail then
+        irreps := IrreducibleRepresentationsDixon(G);
+    fi;
+
+    # We might need to convert here, since this function needs a
+    # linear rep
     irreps := RelevantIrreps@(ConvertRhoIfNeeded@(rho),
-                              IrreducibleRepresentations(G));
+                              irreps);
 
     # if there's only 1 irrep, the canonical summand is just the whole
     # space!
@@ -159,12 +162,9 @@ InstallGlobalFunction( CanonicalDecomposition, function(rho, args...)
 
     # otherwise do the calculation per irrep
 
-    # if given a basis for centralizer, use it!
-    if Length(args) > 0 then
-        return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep, args[1]));
-    else
-        return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
-    fi;
+    # if given a basis for centralizer, it lives in the option stack
+    # and gets used
+    return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
 
 # Decomposes the representation V_i into a direct sum of some number
@@ -225,7 +225,7 @@ end;
 # are isomorphic collected together. This returns a list of lists of
 # vector spaces (L) with each element of L being a list of vector
 # spaces arising from the same irreducible.
-InstallMethod( IrreducibleDecompositionCollected, "for linear representations", [ IsGroupHomomorphism ], function(arg_rho)
+InstallGlobalFunction( IrreducibleDecompositionCollected, function(arg_rho)
     local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
 
     rho := ConvertRhoIfNeeded@(arg_rho);
@@ -248,7 +248,7 @@ end );
 
 # Gives the list of vector spaces in the direct sum decomposition of
 # rho : G -> GL(V) into irreducibles.
-InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsGroupHomomorphism ], function(arg_rho)
+InstallGlobalFunction( IrreducibleDecomposition, function(arg_rho)
     local rho, zero;
     rho := ConvertRhoIfNeeded@(arg_rho);
     zero := Replicate@(0, DegreeOfRepresentation(rho));
@@ -257,7 +257,7 @@ InstallMethod( IrreducibleDecomposition, "for linear representations", [ IsGroup
                      rec_list -> List(rec_list, r -> VectorSpace(Cyclotomics, r.basis, zero))));
 end );
 
-# Uses BlockDiagonalRepresentationFast to decompose a canonical
+# Uses REPN_ComputeUsingMyMethod to decompose a canonical
 # summand. Ideally canonical summands are small compared to the whole
 # rep, so could be faster than Serre's formula
 DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
@@ -268,7 +268,7 @@ DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
 
     # we know in advance that restricted_rho only consists of direct
     # sums of irrep
-    block_diag_info := BlockDiagonalRepresentationFast(restricted_rho, [irrep]);
+    block_diag_info := REPN_ComputeUsingMyMethod(restricted_rho : irreps := [irrep]);
 
     # This is a list of spaces, with vectors written as coefficients
     # of the basis for V_i. We know this list only has 1 element,
@@ -293,25 +293,27 @@ end;
 # Uses Serre's formula to get canonical decomposition, then "fast"
 # method to get irreducibles from that. Uses orthonormal basis for
 # C_rho if given.
-IrreducibleDecompositionCollectedHybrid@ := function(rho, args...)
-    local irreps, G, full_decomposition, cent_basis;
+IrreducibleDecompositionCollectedHybrid@ := function(rho)
+    local irreps, G, full_decomposition;
     G := Source(rho);
-    cent_basis := fail;
-    if Length(args) >= 1 then
-        irreps := args[1];
-    else
+    irreps := ValueOption("irreps");
+    if irreps = fail then
         irreps := IrreducibleRepresentations(G);
-    fi;
-    if Length(args) >= 2 then
-        cent_basis := args[2];
     fi;
     irreps := RelevantIrreps@(rho, irreps);
     full_decomposition := List(irreps,
                                irrep -> DecomposeCanonicalSummandFast@(rho,
                                                                        irrep,
                                                                        IrrepCanonicalSummand@(rho,
-                                                                                              irrep,
-                                                                                              cent_basis)));
+                                                                                              irrep)));
 
     return rec(decomp := full_decomposition, used_rho := rho);
 end;
+
+# TODO: move all calculations here and make the function access this record
+InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism ], function(rho)
+    return rec(basis := BlockDiagonalBasisOfRepresentation(rho),
+               diagonal_rep := BlockDiagonalRepresentation(rho),
+               decomposition := IrreducibleDecompositionCollected(rho),
+               centralizer_basis := CentralizerBlocksOfRepresentation(rho));
+end );

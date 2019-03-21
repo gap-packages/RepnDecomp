@@ -23,5 +23,5 @@ DeclareGlobalFunction( "IrreducibleDecompositionCollectedParallel" );
 #! @Arguments rho, num_jobs[, irreps]
 
 #! @Returns The same result as <Ref
-#! Func="BlockDiagonalRepresentationFast" />.
+#! Func="REPN_ComputeUsingMyMethod" />.
 DeclareGlobalFunction( "BlockDiagonalRepresentationParallel" );

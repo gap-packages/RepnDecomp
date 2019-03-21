@@ -1,6 +1,6 @@
 gap> G := DirectProduct(SymmetricGroup(3), SymmetricGroup(3));;
 gap> irreps := IrreducibleRepresentations(G);;
-gap> rho := DirectSumRepList([irreps[2], irreps[2], irreps[2]]);;
+gap> rho := DirectSumOfRepresentations([irreps[2], irreps[2], irreps[2]]);;
 gap> # so the canonical summand is just the whole space
 gap> summand := Cyclotomics^3;;
 gap> # and each axis is an irreducible G-invariant space, we should get
@@ -11,7 +11,7 @@ true
 gap> Length(decomp);
 3
 gap> # something more complicated
-gap> rho := DirectSumRepList([irreps[1], irreps[2], irreps[2], irreps[3]]);;
+gap> rho := DirectSumOfRepresentations([irreps[1], irreps[2], irreps[2], irreps[3]]);;
 gap> decomp := DecomposeCanonicalSummandFast@RepnDecomp(rho, irreps[2], VectorSpace(Cyclotomics, [[0,1,0,0],[0,0,1,0]]));;
 gap> ForAll(decomp, r -> IsGInvariant@RepnDecomp(rho, VectorSpace(Cyclotomics, r.basis)));
 true

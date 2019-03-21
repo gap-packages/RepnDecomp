@@ -34,7 +34,7 @@ DeclareGlobalFunction( "TensorProductRepLists" );
 #! @Arguments list
 
 #! @Returns Direct sum of the list of representations <A>list</A>
-DeclareGlobalFunction( "DirectSumRepList" );
+DeclareGlobalFunction( "DirectSumOfRepresentations" );
 
 #! @Arguments rho
 

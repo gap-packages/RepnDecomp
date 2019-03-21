@@ -89,8 +89,8 @@ end;
 
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks.
-# NOTE: This is written in the nice basis given by BlockDiagonalBasis
-InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args...)
+# NOTE: This is written in the nice basis given by BlockDiagonalBasisOfRepresentation
+InstallGlobalFunction( CentralizerBlocksOfRepresentation, function(orig_rho, args...)
     local decomp, irrep_lists, rho, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
 
     rho := ConvertRhoIfNeeded@(orig_rho);
@@ -104,7 +104,7 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args.
         irr_chars := IrrWithCorrectOrdering@(G);
     fi;
 
-    char_rho_basis := DecomposeCharacter@(rho, irr_chars);
+    char_rho_basis := IrrVectorOfRepresentation@(rho, irr_chars);
 
     # Calculate sizes based on the fact irr_char[1] is the degree
     all_sizes := List([1..Size(irr_chars)],
@@ -119,8 +119,8 @@ InstallGlobalFunction( RepresentationCentralizerBlocks, function(orig_rho, args.
 end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices
-InstallGlobalFunction( RepresentationCentralizer, function(rho)
-    return List(RepresentationCentralizerBlocks(rho), BlockDiagonalMatrix);
+InstallGlobalFunction( CentralizerOfRepresentation, function(rho)
+    return List(CentralizerBlocksOfRepresentation(rho), BlockDiagonalMatrix);
 end );
 
 # Given an orthonormal basis for the centralizer (w.r.t the product
