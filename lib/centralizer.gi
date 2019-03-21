@@ -47,7 +47,7 @@ end;
 
 # Converts a list of sizes of blocks in a decomposition to a basis for
 # the centralizer ring of the representation
-SizesToBlocks@ := function(sizes)
+InstallGlobalFunction( SizesToBlocks, function(sizes)
     local possible_blocks, zero_blocks, std_gens;
 
     # Note: we don't sort by the dimension of the blocks or anything
@@ -85,7 +85,7 @@ SizesToBlocks@ := function(sizes)
                                    i -> ReplaceBlocks@(i, possible_blocks[i], zero_blocks)));
 
     return std_gens;
-end;
+end );
 
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks.

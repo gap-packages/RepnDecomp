@@ -1,3 +1,5 @@
+LoadPackage("IO");
+
 # These are the implementations of Serre's formulas from his book
 # Linear Representations of Finite Groups.
 
@@ -266,25 +268,33 @@ end;
 # method to get irreducibles from that. Uses orthonormal basis for
 # C_rho if given.
 IrreducibleDecompositionCollectedHybrid@ := function(rho)
-    local irreps, G, full_decomposition;
+    local irreps, G, irred_decomp;
     G := Source(rho);
     irreps := ValueOption("irreps");
     if irreps = fail then
         irreps := IrreducibleRepresentations(G);
     fi;
     irreps := RelevantIrreps@(rho, irreps);
-    full_decomposition := List(irreps,
-                               irrep -> DecomposeCanonicalSummandAlternate@(rho,
-                                                                            irrep,
-                                                                            IrrepCanonicalSummand@(rho,
-                                                                                                   irrep)));
 
-    return rec(decomp := full_decomposition, used_rho := rho);
+    do_decompose := irrep -> DecomposeCanonicalSummandAlternate@(rho,
+                                                                 irrep,
+                                                                 IrrepCanonicalSummand@(rho,
+                                                                                        irrep));
+    parallel := ValueOption("parallel");
+    if parallel = true then
+        irred_decomp := ParListByFork(irreps, do_decompose);
+    else
+        irred_decomp := List(irreps, do_decompose);
+    fi;
+
+    return rec(decomp := irred_decomp, used_rho := rho);
 end;
 
 # TODO: move all calculations here and make the function access this record
 InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism ], function(rho)
-    local irreps, irr_chars, centralizer_basis, irred_decomp, new_bases, basis, basis_change, diag_rho, char_rho_basis, all_sizes, sizes, centralizer_blocks;
+    local irreps, irr_chars, centralizer_basis, irred_decomp, new_bases, basis, basis_change, diag_rho, char_rho_basis, all_sizes, sizes, centralizer_blocks, G, parallel, do_decompose;
+
+    G := Source(rho);
 
     irreps := ValueOption("irreps");
     if irreps = fail then
@@ -296,24 +306,31 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
         irr_chars := IrrWithCorrectOrdering@(G);
     fi;
 
+
     centralizer_basis := ValueOption("centralizer_basis");
 
-    irred_decomp := List(irreps,
-                         function(irrep)
-                             local canonical;
-                             canonical := IrrepCanonicalSummand@(rho, irrep : centralizer_basis := centralizer_basis);
-                             return DecomposeCanonicalSummand@(rho,
-                                                               irrep,
-                                                               canonical);
-                         end );
+    do_decompose := function(irrep)
+        local canonical;
+        canonical := IrrepCanonicalSummand@(rho, irrep : centralizer_basis := centralizer_basis);
+        return DecomposeCanonicalSummand@(rho,
+                                          irrep,
+                                          canonical);
+    end;
+
+    parallel := ValueOption("parallel");
+    if parallel = true then
+        irred_decomp := ParListByFork(irreps, do_decompose);
+    else
+        irred_decomp := List(irreps, do_decompose);
+    fi;
 
     new_bases := List(irred_decomp,
                       rec_list -> List(rec_list, r -> r.basis));
     basis := Concatenation(Concatenation(new_bases));
     basis_change := TransposedMat(basis);
-    diag_rho := ComposeHomFunction(rho, x -> A^-1 * x * A);
+    diag_rho := ComposeHomFunction(rho, x -> basis_change^-1 * x * basis_change);
 
-    char_rho_basis := IrrVectorOfRepresentation@(rho : irr_chars := irr_chars);
+    char_rho_basis := IrrVectorOfRepresentation@(rho, irr_chars);
 
     # Calculate sizes based on the fact irr_char[1] is the degree
     all_sizes := List([1..Size(irr_chars)],
@@ -324,7 +341,7 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
     # end result)
     sizes := Filtered(all_sizes, r -> r.nblocks > 0);
 
-    centralizer_blocks := SizesToBlocks@(sizes);
+    centralizer_blocks := SizesToBlocks(sizes);
 
     return rec(basis := basis,
                diagonal_rep := diag_rho,

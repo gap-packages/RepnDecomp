@@ -127,21 +127,14 @@ end;
 
 # Writes the character of rho as a vector in the basis given by the
 # irreducible characters (if chars are not given, use Dixon's method)
-IrrVectorOfRepresentation@ := function(rho)
-    local G, classes, irr_chars, char_rho, char_rho_basis;
+IrrVectorOfRepresentation@ := function(rho, irr_chars)
+    local G, classes, char_rho, char_rho_basis;
 
     G := Source(rho);
 
     # Otherwise, we just compute using characters
     classes := ConjugacyClasses(G);
 
-    # If we are given chars, just use those
-    irr_chars := ValueOption("irr_chars");
-    if irr_chars = fail then
-        # We could use Irr(G) here, but we want to keep all ordering
-        # consistent with IrreducibleRepresentations
-        irr_chars := IrrWithCorrectOrdering@(G);
-    fi;
     char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
 
     # Write char_rho in the irr_chars basis for class functions

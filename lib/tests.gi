@@ -66,7 +66,7 @@ RandomRepresentation@ := function(args...)
     centralizer_basis := List(chosen_irreps, irrep_list -> rec(dimension := DegreeOfRepresentation(irrep_list[1]),
                                                                nblocks := Length(irrep_list)));
 
-    centralizer_basis := List(SizesToBlocks@(centralizer_basis), BlockDiagonalMatrix);
+    centralizer_basis := List(SizesToBlocks(centralizer_basis), BlockDiagonalMatrix);
 
     # put them in the scrambled basis
     centralizer_basis := List(centralizer_basis, M -> A^-1 * M * A);

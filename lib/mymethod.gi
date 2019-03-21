@@ -24,7 +24,7 @@ InstallMethod( REPN_ComputeUsingMyMethod, "for linear reps", [ IsGroupHomomorphi
     fi;
 
     # Write the character of rho in the basis of irreducible characters
-    char_rho_basis := IrrVectorOfRepresentation@(rho : irr_chars := chars);
+    char_rho_basis := IrrVectorOfRepresentation@(rho, chars);
 
     # Relying on the ordering of the basis, make a list of irreps in
     # the decomposition of rho.
@@ -44,7 +44,7 @@ InstallMethod( REPN_ComputeUsingMyMethod, "for linear reps", [ IsGroupHomomorphi
                                                  nblocks := char_rho_basis[i]));
 
     # Don't use the blocks that don't appear
-    centralizer_blocks := SizesToBlocks@(Filtered(all_sizes, r -> r.nblocks > 0));
+    centralizer_blocks := SizesToBlocks(Filtered(all_sizes, r -> r.nblocks > 0));
 
     new_rho_cent_basis := List(centralizer_blocks, BlockDiagonalMatrix);
 
@@ -103,7 +103,7 @@ InstallMethod( REPN_ComputeUsingMyMethodCanonical, "for linear reps", [ IsGroupH
 
     cent_basis := ValueOption("centralizer_basis");
 
-    decomp := IrreducibleDecompositionCollectedHybrid@(rho, irreps, cent_basis).decomp;
+    decomp := IrreducibleDecompositionCollectedHybrid@(rho : irreps := irreps).decomp;
     spaces_collected := List(decomp, rec_list -> List(rec_list, r -> VectorSpace(Cyclotomics, r.basis)));
     block_sizes := List(spaces_collected, l -> rec(dimension := Dimension(l[1]),
                                                    nblocks := Length(l)));
@@ -120,5 +120,5 @@ InstallMethod( REPN_ComputeUsingMyMethodCanonical, "for linear reps", [ IsGroupH
     return rec(basis := block_diag_basis,
                diagonal_rep := diag_rho,
                decomposition := spaces_collected,
-               centralizer_basis := SizesToBlocks@(block_sizes));
+               centralizer_basis := SizesToBlocks(block_sizes));
 end );

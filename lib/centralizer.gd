@@ -39,3 +39,5 @@ DeclareGlobalFunction( "CentralizerOfRepresentation" );
 #! ring of <A>rho</A> to calculate the sum of the conjugacy class
 #! <A>class</A> quickly, i.e. without summing over the class.
 DeclareGlobalFunction( "ClassSumCentralizer" );
+
+DeclareGlobalFunction( "SizesToBlocks" );
