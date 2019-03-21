@@ -62,7 +62,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
 
     # if we are given an orthonormal basis for the centralizer of rho,
     # then we can use it to speed up class sum computation
-    cent_basis := ValueOption("cent_basis");
+    cent_basis := ValueOption("centralizer_basis");
 
     # In Serre's text, irrep is called W_i, the character is chi_i
 
@@ -126,7 +126,7 @@ RelevantIrreps@ := function(rho, irreps)
     local G, irr_chars, char_rho, relevant_indices;
 
     G := Source(rho);
-    irr_chars := IrrWithCorrectOrdering@(G, irreps);
+    irr_chars := IrrWithCorrectOrdering@(G : irreps := irreps);
     char_rho := IrrVectorOfRepresentation@(rho, irr_chars);
 
     # indices of irreps that appear in rho
@@ -225,42 +225,14 @@ end;
 # are isomorphic collected together. This returns a list of lists of
 # vector spaces (L) with each element of L being a list of vector
 # spaces arising from the same irreducible.
-InstallGlobalFunction( IrreducibleDecompositionCollected, function(arg_rho)
-    local irreps, N, canonical_summands, full_decomposition, G, F, n, V, gens, ims, high, new_ims, new_range, rho;
-
-    rho := ConvertRhoIfNeeded@(arg_rho);
-    G := Source(rho);
-    irreps := RelevantIrreps@(rho, IrreducibleRepresentations(G));
-
-    # This gives a list of lists of vector spaces, each a
-    # decomposition of a canonical summand into irreducibles.
-    full_decomposition := List(irreps,
-                               irrep -> DecomposeCanonicalSummand@(rho,
-                                                                   irrep,
-                                                                   IrrepCanonicalSummand@(rho,
-                                                                                          irrep)));
-
-    # Here we return the rho we actually used i.e. after we convert to
-    # an isomorphic rep that goes to a matrix group (not a permutation
-    # group)
-    return rec(decomp := full_decomposition, used_rho := rho);
-end );
-
-# Gives the list of vector spaces in the direct sum decomposition of
-# rho : G -> GL(V) into irreducibles.
-InstallGlobalFunction( IrreducibleDecomposition, function(arg_rho)
-    local rho, zero;
-    rho := ConvertRhoIfNeeded@(arg_rho);
-    zero := Replicate@(0, DegreeOfRepresentation(rho));
-    # We only want to return the vector spaces here
-    return Flat(List(IrreducibleDecompositionCollected(rho).decomp,
-                     rec_list -> List(rec_list, r -> VectorSpace(Cyclotomics, r.basis, zero))));
+InstallGlobalFunction( IrreducibleDecompositionCollected, function(rho)
+    return ComputeUsingMethod@(rho).decomposition;
 end );
 
 # Uses REPN_ComputeUsingMyMethod to decompose a canonical
 # summand. Ideally canonical summands are small compared to the whole
 # rep, so could be faster than Serre's formula
-DecomposeCanonicalSummandFast@ := function(rho, irrep, V_i)
+DecomposeCanonicalSummandAlternate@ := function(rho, irrep, V_i)
     local basis, restricted_rho, block_diag_info, space_list, big_space;
 
     basis := Basis(V_i);
@@ -302,18 +274,60 @@ IrreducibleDecompositionCollectedHybrid@ := function(rho)
     fi;
     irreps := RelevantIrreps@(rho, irreps);
     full_decomposition := List(irreps,
-                               irrep -> DecomposeCanonicalSummandFast@(rho,
-                                                                       irrep,
-                                                                       IrrepCanonicalSummand@(rho,
-                                                                                              irrep)));
+                               irrep -> DecomposeCanonicalSummandAlternate@(rho,
+                                                                            irrep,
+                                                                            IrrepCanonicalSummand@(rho,
+                                                                                                   irrep)));
 
     return rec(decomp := full_decomposition, used_rho := rho);
 end;
 
 # TODO: move all calculations here and make the function access this record
 InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism ], function(rho)
-    return rec(basis := BlockDiagonalBasisOfRepresentation(rho),
-               diagonal_rep := BlockDiagonalRepresentation(rho),
-               decomposition := IrreducibleDecompositionCollected(rho),
-               centralizer_basis := CentralizerBlocksOfRepresentation(rho));
+    local irreps, irr_chars, centralizer_basis, irred_decomp, new_bases, basis, basis_change, diag_rho, char_rho_basis, all_sizes, sizes, centralizer_blocks;
+
+    irreps := ValueOption("irreps");
+    if irreps = fail then
+        irreps := IrreducibleRepresentations(G);
+    fi;
+
+    irr_chars := ValueOption("irr_chars");
+    if irr_chars = fail then
+        irr_chars := IrrWithCorrectOrdering@(G);
+    fi;
+
+    centralizer_basis := ValueOption("centralizer_basis");
+
+    irred_decomp := List(irreps,
+                         function(irrep)
+                             local canonical;
+                             canonical := IrrepCanonicalSummand@(rho, irrep : centralizer_basis := centralizer_basis);
+                             return DecomposeCanonicalSummand@(rho,
+                                                               irrep,
+                                                               canonical);
+                         end );
+
+    new_bases := List(irred_decomp,
+                      rec_list -> List(rec_list, r -> r.basis));
+    basis := Concatenation(Concatenation(new_bases));
+    basis_change := TransposedMat(basis);
+    diag_rho := ComposeHomFunction(rho, x -> A^-1 * x * A);
+
+    char_rho_basis := IrrVectorOfRepresentation@(rho : irr_chars := irr_chars);
+
+    # Calculate sizes based on the fact irr_char[1] is the degree
+    all_sizes := List([1..Size(irr_chars)],
+                      i -> rec(dimension := irr_chars[i][1],
+                               nblocks := char_rho_basis[i]));
+
+    # Now we remove all of the ones with nblocks = 0 (doesn't affect
+    # end result)
+    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
+
+    centralizer_blocks := SizesToBlocks@(sizes);
+
+    return rec(basis := basis,
+               diagonal_rep := diag_rho,
+               decomposition := irred_decomp,
+               centralizer_basis := centralizer_blocks);
 end );

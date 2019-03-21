@@ -90,32 +90,8 @@ end;
 # Computes the centralizer C of rho, returning generators of C as
 # lists of blocks.
 # NOTE: This is written in the nice basis given by BlockDiagonalBasisOfRepresentation
-InstallGlobalFunction( CentralizerBlocksOfRepresentation, function(orig_rho, args...)
-    local decomp, irrep_lists, rho, irr_chars, char_rho, char_rho_basis, all_sizes, sizes, G;
-
-    rho := ConvertRhoIfNeeded@(orig_rho);
-    G := Source(rho);
-
-    irr_chars := [];
-    if Length(args) > 0 then
-        # take args[1] to be a list of irreps
-        irr_chars := IrrWithCorrectOrdering@(G, args[1]);
-    else
-        irr_chars := IrrWithCorrectOrdering@(G);
-    fi;
-
-    char_rho_basis := IrrVectorOfRepresentation@(rho, irr_chars);
-
-    # Calculate sizes based on the fact irr_char[1] is the degree
-    all_sizes := List([1..Size(irr_chars)],
-                      i -> rec(dimension := irr_chars[i][1],
-                               nblocks := char_rho_basis[i]));
-
-    # Now we remove all of the ones with nblocks = 0 (doesn't affect
-    # end result)
-    sizes := Filtered(all_sizes, r -> r.nblocks > 0);
-
-    return SizesToBlocks@(sizes);
+InstallGlobalFunction( CentralizerBlocksOfRepresentation, function(rho)
+    return ComputeUsingMethod@(rho).centralizer_blocks;
 end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices

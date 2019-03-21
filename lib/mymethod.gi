@@ -18,10 +18,13 @@ InstallMethod( REPN_ComputeUsingMyMethod, "for linear reps", [ IsGroupHomomorphi
     # irreps don't necessarily match up. Also it may be that we want
     # to exclude some irreps for some reason (e.g. avoiding
     # cyclotomics).
-    chars := IrrWithCorrectOrdering@(G, irreps);
+    chars := ValueOption("irr_chars");
+    if chars = fail then
+        chars := IrrWithCorrectOrdering@(G : irreps := irreps);
+    fi;
 
     # Write the character of rho in the basis of irreducible characters
-    char_rho_basis := IrrVectorOfRepresentation@(rho, chars);
+    char_rho_basis := IrrVectorOfRepresentation@(rho : irr_chars := chars);
 
     # Relying on the ordering of the basis, make a list of irreps in
     # the decomposition of rho.

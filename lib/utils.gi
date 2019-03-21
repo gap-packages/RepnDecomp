@@ -114,13 +114,11 @@ end;
 
 # Irr(G), but guaranteed to be ordered the same as
 # IrreducibleRepresentationsDixon (or the list of irreps given)
-IrrWithCorrectOrdering@ := function(G, args...)
+IrrWithCorrectOrdering@ := function(G)
     local irreps;
-    irreps := [];
+    irreps := ValueOption("irreps");
 
-    if Length(args) > 0 then
-        irreps := args[1];
-    else
+    if irreps = fail then
         irreps := IrreducibleRepresentationsDixon(G);
     fi;
 
@@ -129,7 +127,7 @@ end;
 
 # Writes the character of rho as a vector in the basis given by the
 # irreducible characters (if chars are not given, use Dixon's method)
-IrrVectorOfRepresentation@ := function(rho, args...)
+IrrVectorOfRepresentation@ := function(rho)
     local G, classes, irr_chars, char_rho, char_rho_basis;
 
     G := Source(rho);
@@ -138,10 +136,8 @@ IrrVectorOfRepresentation@ := function(rho, args...)
     classes := ConjugacyClasses(G);
 
     # If we are given chars, just use those
-    irr_chars := [];
-    if Length(args) > 0 then
-        irr_chars := args[1];
-    else
+    irr_chars := ValueOption("irr_chars");
+    if irr_chars = fail then
         # We could use Irr(G) here, but we want to keep all ordering
         # consistent with IrreducibleRepresentations
         irr_chars := IrrWithCorrectOrdering@(G);

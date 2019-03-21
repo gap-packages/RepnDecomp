@@ -9,30 +9,15 @@ BasisChangeMatrix@ := function(rho)
 end;
 
 # Gives the nice basis for rho
-InstallGlobalFunction( BlockDiagonalBasisOfRepresentation, function(arg_rho)
-    local new_bases, new_basis, rho;
-
-    rho := ConvertRhoIfNeeded@(arg_rho);
-
-    # Extract the basis vectors, this is now a list of lists of bases
-    # (each basis is a list of vectors)
-    new_bases := List(IrreducibleDecompositionCollected(rho).decomp,
-                      rec_list -> List(rec_list, r -> r.basis));
-
-    # List of new basis as row vectors
-    return Concatenation(Concatenation(new_bases));
+InstallGlobalFunction( BlockDiagonalBasisOfRepresentation, function(rho)
+    return ComputeUsingMethod@(rho).basis;
 end );
 
 # Takes a representation going to a matrix group and gives you an
 # isomorphic representation where the images are block-diagonal with
 # each block corresponding to an irreducible representation
-InstallGlobalFunction( BlockDiagonalRepresentation, function(arg_rho)
-    local decomp, A, G, gens, imgs, range, rho;
-
-    rho := ConvertRhoIfNeeded@(arg_rho);
-    A := BasisChangeMatrix@(rho);
-
-    return ComposeHomFunction(rho, x -> A^-1 * x * A);
+InstallGlobalFunction( BlockDiagonalRepresentation, function(rho)
+    return ComputeUsingMethod@(rho).diagonal_rep;
 end );
 
 # Calculates a matrix P such that X = P^-1 Y P
