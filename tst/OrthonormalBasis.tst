@@ -5,5 +5,5 @@ gap> tester := function(rep)
 > # make sure spans are the same
 > return VectorSpace(Cyclotomics, basis) = VectorSpace(Cyclotomics, orth);
 > end;;
-gap> TestMany@RepnDecomp(tester, 2);
+gap> TestMany@RepnDecomp(tester, 1);
 true
