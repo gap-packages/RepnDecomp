@@ -9,9 +9,9 @@ gap> cc := ConjugacyClasses(G);;
 gap> cent_basis := List(diag_info.centralizer_basis, BlockDiagonalMatrix);; # given in block form, need to convert
 gap> cent_basis := List(cent_basis, m -> 1/Sqrt(Trace(m * TransposedMat(m))) * m);; # need to normalize (already ortho)
 gap> # coeffs[i] = number of times irreps[i] appears in the decomposition
-gap> coeffs := IrrVectorOfRepresentation@RepnDecomp(rho, IrrWithCorrectOrdering@RepnDecomp(G, irreps));;
+gap> coeffs := IrrVectorOfRepresentation@RepnDecomp(rho, IrrWithCorrectOrdering@RepnDecomp(G : irreps := irreps));;
 gap> # check the blocks are the right size when we give the cent_basis
-gap> ForAll([1..Length(irreps)], i -> Dimension(IrrepCanonicalSummand@RepnDecomp(rho, irreps[i], cent_basis)) = coeffs[i]*DegreeOfRepresentation(irreps[i]));
+gap> ForAll([1..Length(irreps)], i -> Dimension(IrrepCanonicalSummand@RepnDecomp(rho, irreps[i] : centralizer_basis:= cent_basis)) = coeffs[i]*DegreeOfRepresentation(irreps[i]));
 true
 gap> # also when we use the no cent_basis method, still linear
 gap> ForAll([1..Length(irreps)], i -> Dimension(IrrepCanonicalSummand@RepnDecomp(rho, irreps[i])) = coeffs[i]*DegreeOfRepresentation(irreps[i]));
@@ -21,6 +21,6 @@ gap> h := RegularActionHomomorphism(G);;
 gap> rho := GroupHomomorphismByImages(G, Image(h, G));;
 gap> linear_rho := ConvertRhoIfNeeded@RepnDecomp(rho);;
 gap> # check block sizes are right and spaces are really G-invariant
-gap> coeffs := IrrVectorOfRepresentation@RepnDecomp(linear_rho, IrrWithCorrectOrdering@RepnDecomp(G, irreps));;
+gap> coeffs := IrrVectorOfRepresentation@RepnDecomp(linear_rho, IrrWithCorrectOrdering@RepnDecomp(G : irreps := irreps));;
 gap> ForAll([1..Length(irreps)], function(i) local V; V := IrrepCanonicalSummand@RepnDecomp(rho, irreps[i]); return Dimension(V) = coeffs[i]*DegreeOfRepresentation(irreps[i]) and IsGInvariant@RepnDecomp(linear_rho, V); end );
 true
