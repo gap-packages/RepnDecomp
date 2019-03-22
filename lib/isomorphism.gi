@@ -3,7 +3,19 @@
 
 # Wraps an n^2 long list into a n long list of n long lists
 WrapMatrix@ := function(vec, n)
-    return List([0..n-1], i -> vec{[1+n*i..n*(i+1)]});
+    local result, current_row, elems_seen;
+    result := [];
+    current_row := [];
+    elems_seen := 0;
+    while elems_seen < Length(vec) do
+        elems_seen := elems_seen + 1;
+        Add(current_row, vec[elems_seen]);
+        if Length(current_row) = n then
+            Add(result, current_row);
+            current_row := [];
+        fi;
+    od;
+    return result;
 end;
 
 # Gives the full list of the E_ij standard basis matrices for M_n(C)
