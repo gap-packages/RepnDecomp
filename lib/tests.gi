@@ -14,7 +14,7 @@ end;
 
 # Generate a random representation of a random group
 RandomRepresentation@ := function(args...)
-    local x, id, G, irreps, chosen_irreps, rho, n, A, centralizer_basis, isomorphism_type, diag_rho, opt;
+    local x, id, G, irreps, chosen_irreps, rho, n, A, centralizer_basis, isomorphism_type, diag_rho, opt, degree_so_far, new_irrep;
 
     if Length(args) >= 1 then
         opt := args[1];
@@ -24,8 +24,9 @@ RandomRepresentation@ := function(args...)
                    num_irreps := 2,
                    min_multiplicity := 1,
                    max_multiplicity := 2,
-                   restrict_small_degree := false,
-                   small_degree := 10);
+                   max_total_degree := 4,
+                   restrict_small_degree := true,
+                   small_degree := 4);
     fi;
 
     id := RandomGroup@(opt);
@@ -39,10 +40,19 @@ RandomRepresentation@ := function(args...)
         irreps := Filtered(irreps, irrep -> DegreeOfRepresentation(irrep) <= opt.small_degree);
     fi;
 
+    degree_so_far := 0;
     chosen_irreps := [];
 
     for x in [1..opt.num_irreps] do
-        Add(chosen_irreps, Random(irreps));
+        # if the degree total is too high, bail out!
+        new_irrep := Random(irreps);
+        degree_so_far := degree_so_far + DegreeOfRepresentation(new_irrep);
+
+        if degree_so_far >= opt.max_total_degree then
+            break;
+        fi;
+
+        Add(chosen_irreps, new_irrep);
     od;
 
     # eliminate duplicates to avoid counting issues
