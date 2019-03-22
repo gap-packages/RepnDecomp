@@ -56,7 +56,7 @@ InstallMethod( \*,
                    # Linearity also lets us avoid materialising the
                    # Kronecker product, but we have to spend O(n^4)
                    # time looping over indices
-                   local i, j, result, e, n, m;
+                   local i, j, result, e, n, m, ith_col, jth_col;
 
                    e := function(i, n)
                        local v;
@@ -78,8 +78,9 @@ InstallMethod( \*,
                    for i in [1..n] do
                        for j in [1..m] do
                            # TODO: you can just take a column here right?
-                           result := result + A[i][j] * KroneckerProduct(TransposedMat([prod![1] * e(i, n)]),
-                                                                         [prod![2] * e(j, m)]);
+                           ith_col := TransposedMat([TransposedMat(prod![1])[i]]);
+                           jth_col := [TransposedMat(prod![2])[j]];
+                           result := result + A[i][j] * KroneckerProduct(ith_col, jth_col);
                        od;
                    od;
 
