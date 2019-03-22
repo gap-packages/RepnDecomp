@@ -52,10 +52,6 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis, summand;
 
     G := Source(rho);
-    #ker := KernelOfMultiplicativeGeneralMapping(arg_rho);
-    #quotient_hom := NaturalHomomorphismByNormalSubgroupNC(G, ker);
-    #rho := GroupHomomorphismByFunction(FactorGroup(G, ker),
-    #                                   Range(arg_rho), gclass -> Image(arg_rho, PreImagesRepresentative(quotient_hom, gclass)));
 
     degree := DegreeOfRepresentation(rho);
 
@@ -69,7 +65,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     # In Serre's text, irrep is called W_i, the character is chi_i
 
     # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    if false and cent_basis <> fail then
+    if cent_basis <> fail then
         # First, if we are given a basis for the centralizer
         character := g -> Trace(Image(irrep, g));
         cc := ConjugacyClasses(G);
