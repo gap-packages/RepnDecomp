@@ -91,7 +91,7 @@ end );
 # lists of blocks.
 # NOTE: This is written in the nice basis given by BlockDiagonalBasisOfRepresentation
 InstallGlobalFunction( CentralizerBlocksOfRepresentation, function(rho)
-    return ComputeUsingMethod@(rho).centralizer_blocks;
+    return ComputeUsingMethod@(rho).centralizer_basis;
 end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices
