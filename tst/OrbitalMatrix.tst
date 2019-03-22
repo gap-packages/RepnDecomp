@@ -1,6 +1,6 @@
 gap> G := SymmetricGroup(4);;
-gap> T := CohCfgFromPermGroup(G);;
-gap> reps := CCTransversal(T);;
+gap> T := CohCfgFromPermGroup@RepnDecomp(G);;
+gap> reps := CCTransversal@RepnDecomp(T);;
 gap> n := LargestMovedPoint(G);;
 gap> all_one := Replicate@RepnDecomp(Replicate@RepnDecomp(1, n), n);;
 gap> orbitals := List(reps, rep -> OrbitalMatrix@RepnDecomp(G, rep));;
