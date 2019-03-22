@@ -7,11 +7,11 @@ gap> rho := DirectSumOfRepresentations([irreps[1], irreps[3], irreps[3]]);;
 gap> B := RandomInvertibleMat(5);;
 gap> tau2 := ComposeHomFunction(tau, x -> B^-1 * x * B);;
 gap> M := LinearRepresentationIsomorphism(rho, tau);;
-gap> IsLinearRepresentationIsomorphism(rho, tau, M);
+gap> IsLinearRepresentationIsomorphism(M, rho, tau);
 true
 gap> M := LinearRepresentationIsomorphism(rho, tau2);;
-gap> IsLinearRepresentationIsomorphism(rho, tau2, M);
+gap> IsLinearRepresentationIsomorphism(M, rho, tau2);
 true
 gap> M := LinearRepresentationIsomorphism(tau, tau2);;
-gap> IsLinearRepresentationIsomorphism(tau, tau2, M);
+gap> IsLinearRepresentationIsomorphism(M, tau, tau2);
 true

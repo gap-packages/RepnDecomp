@@ -78,7 +78,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # We do this with the BSGS method, this is probably fast. We try
     # to sum in a way that doesn't require us to store any huge
     # Kronecker products.
-    triv_proj := A -> GroupSumBSGS(G, g -> Image(alpha, g) * A);
+    triv_proj := GroupSumBSGS(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
 
     classes := ConjugacyClasses(G);
 
@@ -111,7 +111,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
 
         # A := Sum(orbit);
 
-        A := triv_proj(RandomInvertibleMat(n));
+        A := WrapMatrix@(triv_proj * Flat(RandomInvertibleMat(n)), n);
 
         tries := tries + 1;
     until RankMat(A) = n; # i.e. until A is invertible
@@ -237,5 +237,5 @@ end );
 InstallGlobalFunction( IsLinearRepresentationIsomorphism, function(A, rho, tau)
     local gens;
     gens := GeneratorsOfGroup(Source(rho));
-    return ForAll(gens, g -> A * Image(rho, g) = Image(tau, g) * A);
+    return RankMat(A) = DegreeOfRepresentation(rho) and ForAll(gens, g -> A * Image(rho, g) = Image(tau, g) * A);
 end );
