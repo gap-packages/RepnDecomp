@@ -224,7 +224,13 @@ end;
 # vector spaces (L) with each element of L being a list of vector
 # spaces arising from the same irreducible.
 InstallGlobalFunction( IrreducibleDecompositionCollected, function(rho)
-    return ComputeUsingMethod@(rho).decomposition;
+    # user is probably only interested in the nonempty summands, but we
+    # store all of them for consistency
+    return Filtered(ComputeUsingMethod@(rho).decomposition, l -> Length(l) > 0);
+end );
+
+InstallGlobalFunction( IrreducibleDecomposition, function(rho)
+    return List(Flat(IrreducibleDecompositionCollected(rho)), r -> r.space);
 end );
 
 # Uses REPN_ComputeUsingMyMethod to decompose a canonical
