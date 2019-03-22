@@ -62,16 +62,15 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
 
     # the projection of V onto V_triv, the trivial canonical summand,
     # is just given by the sum over whole group of alpha(g)
-    #
-    # we can get a projection into the same space by doing the sum
-    # over g in G, h in G of tau(g) \otimes rho^*(h), and we can
-    # calculate these group sums using the centraliser bases
 
-    # we can just do (sum_{g in G} tau(g)) \otimes (sum_{g in G} rho^*(g))
-    # which still gives a projection (although a different one)
-
-    # The group sum for rho^* is the same as for rho, but
-    # transposed (the relabelling g -> g^-1 is just a bijection and ^T is linear)
+    # We do this with the BSGS method, this is probably fast. We try
+    # to sum in a way that doesn't require us to store any huge
+    # Kronecker products.
+    triv_proj := function(A)
+        local sum, summand;
+        summand := g -> Image(alpha, g) * A;
+        return GroupSumBSGS(G, summand);
+    end;
 
     classes := ConjugacyClasses(G);
 
@@ -85,28 +84,27 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     tries := 0;
 
     repeat
-        v_0 := RandomInvertibleMat(n);
-        sum := v_0;
-        orbit := [v_0];
+        # v_0 := RandomInvertibleMat(n);
+        # sum := v_0;
+        # orbit := [v_0];
 
-        # This sums the orbit of v_0 under alpha. We know this will
-        # terminate since G is finite.
-        i := 1;
-        while i <= Length(orbit) do
-            for gen in GeneratorsOfGroup(G) do
-                im := Image(alpha, gen) * orbit[i];
-                if not (im in orbit) then
-                    Add(orbit, im);
-                fi;
-            od;
-            i := i + 1;
-        od;
+        # # This sums the orbit of v_0 under alpha. We know this will
+        # # terminate since G is finite.
+        # i := 1;
+        # while i <= Length(orbit) do
+        #     for gen in GeneratorsOfGroup(G) do
+        #         im := Image(alpha, gen) * orbit[i];
+        #         if not (im in orbit) then
+        #             Add(orbit, im);
+        #         fi;
+        #     od;
+        #     i := i + 1;
+        # od;
 
-        A := Sum(orbit);
+        # A := Sum(orbit);
 
-        #A := triv_proj * RandomInvertibleMat(n);
-        #A_vec := triv_proj * Flat(RandomInvertibleMat(n));
-        #A := WrapMatrix@(A_vec, n);
+        A := triv_proj(RandomInvertibleMat(n));
+
         tries := tries + 1;
     until RankMat(A) = n; # i.e. until A is invertible
 
