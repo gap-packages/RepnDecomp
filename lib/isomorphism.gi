@@ -173,21 +173,6 @@ LinearRepresentationIsomorphismNoProduct@ := function(rho, tau)
     return A;
 end;
 
-
-# checks if it is the case that for all g in G, tau(g)*A = A*rho(g)
-IsRepresentationIsomorphism@ := function(rho, tau, A)
-    local G, gens, n;
-
-    G := Source(rho);
-    n := DegreeOfRepresentation(rho);
-
-    # we only need to check the property for the generators
-    gens := GeneratorsOfGroup(G);
-
-    # need bijection and G-action preserving
-    return RankMat(A) = n and ForAll(gens, g -> Image(tau, g) * A = A * Image(rho, g));
-end;
-
 # calculates an isomorphism between rho and tau by summing over G
 # (slow, but works)
 # TODO: can I use a trick to sum over the generators instead of G?
@@ -210,7 +195,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphismSlow, function(rho, tau, a
         candidate := RandomInvertibleMat(n);
         candidate := Sum(G, g -> Image(tau, g) * candidate * Image(rho, g^-1));
         tries := tries + 1;
-    until IsRepresentationIsomorphism@(rho, tau, candidate);
+    until LinearRepresentationIsomorphism(candidate, rho, tau);
 
     if Length(args) > 0 and args[1] = "print tries" then
         Print(tries, " tries\n");
