@@ -66,11 +66,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     # We do this with the BSGS method, this is probably fast. We try
     # to sum in a way that doesn't require us to store any huge
     # Kronecker products.
-    triv_proj := function(A)
-        local sum, summand;
-        summand := g -> Image(alpha, g) * A;
-        return GroupSumBSGS(G, summand);
-    end;
+    triv_proj := A -> GroupSumBSGS(G, g -> Image(alpha, g) * A);
 
     classes := ConjugacyClasses(G);
 

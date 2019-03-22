@@ -23,11 +23,9 @@ InstallGlobalFunction( GroupSumBSGS, function(G, summand)
 
     for i in [m-2,m-3..1] do
         # `sum` is the sum for G_{i+1}
-
         cosets := RightCosets(GroupStabChain(groups[i]),
                               GroupStabChain(groups[i+1]));
 
-        sum := zero;
         for S in cosets do
             sum := sum + sum * summand(PreImage(iso, Representative(S)));
         od;
