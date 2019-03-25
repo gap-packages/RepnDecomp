@@ -36,7 +36,7 @@ end;
 # Calculates the isomorphism using the cool fact about the product
 # (see below)
 InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args...)
-    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual, class1, class2, candidate_map, classes, tries, sum, v, v_0, im, orbit, gen, i;
+    local G, n, matrix_basis, vector_basis, alpha, triv, fixed_space, A, A_vec, rho_cent_basis, tau_cent_basis, triv_proj, used_tensors, rho_dual, class1, class2, candidate_map, classes, tries, sum, v, v_0, im, orbit, gen, i, rand;
 
     # if set, these bases for the centralisers will be used to avoid
     # summing over G
@@ -69,16 +69,20 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
 
     rho_dual := FuncToHom@(G, g -> TransposedMat(Image(rho, g^-1)));
 
-    # The representation alpha : G -> GL(V) (V is the space of matrices)
+    # The representation alpha : G -> GL(V) (V is the space of
+    # matrices).  We only actually need this if we are *not* using
+    # Kronecker products.
     alpha := TensorProductOfRepresentations(tau, rho_dual);
 
     # the projection of V onto V_triv, the trivial canonical summand,
     # is just given by the sum over whole group of alpha(g)
 
-    # We do this with the BSGS method, this is probably fast. We try
-    # to sum in a way that doesn't require us to store any huge
-    # Kronecker products.
-    triv_proj := GroupSumBSGS(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
+    if ValueOption("use_kronecker") = true then
+        # We do this with the BSGS method, this is probably fast. We try
+        # to sum in a way that doesn't require us to store any huge
+        # Kronecker products.
+        triv_proj := GroupSumBSGS(G, g -> KroneckerProduct(Image(tau, g), Image(rho_dual, g)));
+    fi;
 
     classes := ConjugacyClasses(G);
 
@@ -92,27 +96,37 @@ InstallGlobalFunction( LinearRepresentationIsomorphism, function(rho, tau, args.
     tries := 0;
 
     repeat
-        # v_0 := RandomInvertibleMat(n);
-        # sum := v_0;
-        # orbit := [v_0];
+        if ValueOption("use_orbit_sum") = true then
+            v_0 := RandomInvertibleMat(n);
+            sum := v_0;
+            orbit := [v_0];
 
-        # # This sums the orbit of v_0 under alpha. We know this will
-        # # terminate since G is finite.
-        # i := 1;
-        # while i <= Length(orbit) do
-        #     for gen in GeneratorsOfGroup(G) do
-        #         im := Image(alpha, gen) * orbit[i];
-        #         if not (im in orbit) then
-        #             Add(orbit, im);
-        #         fi;
-        #     od;
-        #     i := i + 1;
-        # od;
+            # This sums the orbit of v_0 under alpha. We know this will
+            # terminate since G is finite.
+            i := 1;
+            while i <= Length(orbit) do
+                for gen in GeneratorsOfGroup(G) do
+                    im := Image(alpha, gen) * orbit[i];
+                    if not (im in orbit) then
+                        Add(orbit, im);
+                    fi;
+                od;
+                i := i + 1;
+            od;
 
-        # A := Sum(orbit);
-
-        A := WrapMatrix@(triv_proj * Flat(RandomInvertibleMat(n)), n);
-
+            A := Sum(orbit);
+        elif ValueOption("use_kronecker") = true then
+            A := WrapMatrix@(triv_proj * Flat(RandomInvertibleMat(n)), n);
+        else
+            # Anything involving kronecker products has O(degree^4)
+            # space usage, Could be excessive. in some cases we have
+            # to resort to summing over the group which usually works
+            # but is slow. We can use linearity of alpha and the pair
+            # representation of tensor products to avoid excessive
+            # memory usage.
+            rand := RandomInvertibleMat(n);
+            A := Sum(G, g -> Image(alpha, g) * rand);
+        fi;
         tries := tries + 1;
     until RankMat(A) = n; # i.e. until A is invertible
 

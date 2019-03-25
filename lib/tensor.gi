@@ -58,13 +58,6 @@ InstallMethod( \*,
                    # time looping over indices
                    local i, j, result, e, n, m, ith_col, jth_col;
 
-                   e := function(i, n)
-                       local v;
-                       v := List([1..n], x -> 0);
-                       v[i] := 1;
-                       return v;
-                   end;
-
                    n := Length(A);
                    m := Length(A[1]);
 
@@ -77,7 +70,6 @@ InstallMethod( \*,
 
                    for i in [1..n] do
                        for j in [1..m] do
-                           # TODO: you can just take a column here right?
                            ith_col := TransposedMat([TransposedMat(prod![1])[i]]);
                            jth_col := [TransposedMat(prod![2])[j]];
                            result := result + A[i][j] * KroneckerProduct(ith_col, jth_col);
