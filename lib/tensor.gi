@@ -150,6 +150,11 @@ InstallGlobalFunction( TensorProductOfRepresentations, function(rho, tau)
     return FuncToHom@(G, g -> TensorProductOfMatricesObj(F, Image(rho, g), Image(tau, g)));
 end );
 
+# this is the old way, sometimes useful if you need to sum
+InstallGlobalFunction( KroneckerProductOfRepresentations, function(rho, tau)
+    return FuncToHom@(Source(rho), g -> KroneckerProduct(Image(rho, g), Image(tau, g)));
+end );
+
 # don't have to materialise matrices if you just want the character
 InstallGlobalFunction( CharacterOfTensorProductOfRepresentations, function(rho)
     return function(g)

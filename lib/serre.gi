@@ -165,12 +165,27 @@ InstallGlobalFunction( CanonicalDecomposition, function(rho)
     return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
 
+# Divides mat into nxn blocks, returns the matrix corresponding to the
+# block in the ath row, bth column
+ExtractBlock@ := function(mat, a, b, n)
+    local result, row, i, j;
+    result := [];
+    for i in [1..n] do
+        row := [];
+        for j in [1..n] do
+            Add(row, mat[i+(a-1)*n][j+(b-1)*n]);
+        od;
+        Add(result, row);
+    od;
+    return result;
+end;
+
 # Decomposes the representation V_i into a direct sum of some number
 # (maybe zero) of spaces, all isomorphic to W_i. W_i is the space
 # corresponding to the irrep : G -> GL(W_i). rho is the "full"
 # representation that we're decomposing.
 DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
-    local projections, p_11, V_i1, basis, n, step_c, G, H, F, V, m;
+    local projections, p_11, V_i1, basis, n, step_c, G, H, F, V, m, p, tau, irrep_dual;
 
     G := Source(irrep);
 
@@ -186,14 +201,27 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     F := Cyclotomics;
     V := F^n;
 
-    # First compute the projections p_ab. We only actually use projections with
-    # a=1..n and b=1, so we can just compute those. projections[a] is p_{a1}
-    # from Serre.
-    projections := List([1..n], function(a)
-                           local summand;
-                           summand := t -> Image(irrep,t^-1)[1][a]*Image(rho,t);
-                           return (n/Order(G)) * Sum(G, summand);
-                       end );
+    # First compute the projections p_ab. We only actually use
+    # projections with a=1..n and b=1, so we can just compute
+    # those. projections[a] is p_{a1} from Serre. Here we can use a
+    # neat trick to sum over a BSGS, but this requires some possibly
+    # big matrices that might not fit in memory so we don't do it by
+    # default.
+    if ValueOption("use_kronecker") = true then
+        # p = \sum_g (\rho_i^* \otimes \rho) so p_ab is the matrix we
+        # get if we divide that sum into deg rho square blocks and pick the _ab
+        # one
+        irrep_dual := FuncToHom@(G, g -> TransposedMat(Image(irrep, g^-1)));
+        tau := KroneckerProductOfRepresentations(irrep_dual, rho);
+        p := GroupSumBSGS(G, g -> Image(tau, g));
+        projections := List([1..n], a -> ExtractBlock@(p, a, 1, DegreeOfRepresentation(rho)));
+    else
+        projections := List([1..n], function(a)
+                               local summand;
+                               summand := t -> Image(irrep,t^-1)[1][a]*Image(rho,t);
+                               return (n/Order(G)) * Sum(G, summand);
+                           end );
+    fi;
 
     p_11 := projections[1];
     V_i1 := MatrixImage@(p_11, V_i);

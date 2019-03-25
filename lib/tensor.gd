@@ -39,4 +39,6 @@ DeclareGlobalFunction( "TensorProductOfMatricesFamily" );
 
 DeclareGlobalFunction( "TensorProductOfRepresentations" );
 
+DeclareGlobalFunction( "KroneckerProductOfRepresentations" );
+
 DeclareGlobalFunction( "CharacterOfTensorProductOfRepresentations" );

@@ -13,3 +13,11 @@ gap> DecomposeCanonicalSummand@RepnDecomp(rho, irreps[2], summand); # should get
         1 generators> ),
   rec( basis := [ [ 0, 0, 1 ] ], space := <vector space over Cyclotomics, with
         1 generators> ) ]
+gap> # should also work if we use small-degree kronecker trick (same up to scaling)
+gap> DecomposeCanonicalSummand@RepnDecomp(rho, irreps[2], summand : use_kronecker);
+[ rec( basis := [ [ 36, 0, 0 ] ], space := <vector space over Cyclotomics, with
+        1 generators> ),
+  rec( basis := [ [ 0, 36, 0 ] ], space := <vector space over Cyclotomics, with
+        1 generators> ),
+  rec( basis := [ [ 0, 0, 36 ] ], space := <vector space over Cyclotomics, with
+        1 generators> ) ]
