@@ -333,7 +333,7 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
 
     irr_chars := ValueOption("irr_chars");
     if irr_chars = fail then
-        irr_chars := IrrWithCorrectOrdering@(G);
+        irr_chars := IrrWithCorrectOrdering@(G : irreps := irreps);
     fi;
 
 
