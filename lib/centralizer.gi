@@ -104,17 +104,16 @@ end );
 # sum of the conjugacy class matrices. Result is given as a list of
 # coefficients in the basis.
 ClassSumCentralizerCoeffs@ := function(rho, class, cent_basis)
-    local prod, coeff, conj;
+    local coeff, conj;
 
-    # TODO: why doesn't this work?
-    #coeff := B -> Size(class) * prod(Image(rho, Representative(class)), B);
-    coeff := B -> Sum(class, g -> InnerProduct@(Image(rho, g), B));
+    coeff := B -> Size(class) * InnerProduct@(Image(rho, Representative(class)), B);
 
     return List(cent_basis, coeff);
 end;
 
 # Returns the actual class sum, i.e. after summing the cent_basis with
-# the coefficients
+# the coefficients. Requires rho to be unitary and cent_basis to be
+# orthonormal!
 InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
     local coeffs;
 
