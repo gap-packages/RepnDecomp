@@ -49,7 +49,7 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, V, character, degree, projection, canonical_summand, H, T, cc, serre_class_contribution, two_orbit_reps, orbitals, cent_basis, summand;
+    local G, degree, V, cent_basis, character, cc, projection, H, T, orbitals, serre_class_contribution, summand, canonical_summand;
 
     G := Source(rho);
 
@@ -70,41 +70,36 @@ IrrepCanonicalSummand@ := function(rho, irrep)
         character := g -> Trace(Image(irrep, g));
         cc := ConjugacyClasses(G);
         projection := (degree/Order(G)) * Sum(cc,
-          cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizer(rho, cl, cent_basis));
-    # I want to check if rho is injective - otherwise this doesn't
-    # work, but checking that checks each element of G has a different
-    # image - slow.
-    #elif IsPermGroup(Range(rho)) and IsInjective(rho) then
-    elif IsPermGroup(Range(rho)) then
-        # Then if we are given a perm group, but not a basis for the
-        # centralizer, can calculate a basis for C from from scratch
+          cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizerNC(rho, cl, cent_basis));
+    elif IsPermGroup(Range(rho)) and IsInjective(rho) then
+        # If we are given an injective perm rep, but not a basis for
+        # the centralizer, can calculate a basis for C from from
+        # scratch
         character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
-        H := Range(rho); # is perm group
+        H := ImagesSource(rho); # is perm group
         T := CohCfgFromPermGroup@(H); # computes conjugacy classes and orbitals
         cc := ConjugacyClasses(H);
 
         # the orbital matrices give a basis for the centralizer
         orbitals := RepresentationCentralizerPermRep@(rho);
 
+        # normalize (cent_basis = fail before this, so we don't
+        # overwrite anything useful)
+        cent_basis := List(orbitals, m -> 1/Sqrt(InnerProduct@(m, m)) * m);
+
         serre_class_contribution := function(class)
             local rep, v, A;
             rep := Representative(class);
 
-            # coeffs of orbitals making up the class sum
             v := ClassSum@(T, class);
-
-            # the class sum itself
             A := Sum([1..Length(v)], i -> v[i] * orbitals[i]);
+
             return ComplexConjugate(character(rep)) * A;
         end;
 
         projection := (degree/Order(G)) * Sum(cc, serre_class_contribution);
     else
         # Lastly, given no special info at all we just have to sum over G
-
-        # Doing this with the StabChain method might actually be quite
-        # fast, maybe faster than the other methods, need to investigate
-
         character := g -> Trace(Image(irrep, g));
 
         # This maps t to the summand from Serre's formula
@@ -135,7 +130,7 @@ RelevantIrreps@ := function(rho, irreps)
 end;
 
 InstallGlobalFunction( CanonicalDecomposition, function(rho)
-    local G, F, n, V, irreps, chars, char_to_proj, canonical_projections, canonical_summands;
+    local G, irreps;
 
     # The group we are taking representations of
     G := Source(rho);
@@ -338,6 +333,10 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
 
 
     centralizer_basis := ValueOption("centralizer_basis");
+
+    if centralizer_basis <> fail and not IsOrthonormalSet(centralizer_basis, InnerProduct@) then
+        Error("<centralizer_basis> is not orthonormal!");
+    fi;
 
     do_decompose := function(irrep)
         local canonical;

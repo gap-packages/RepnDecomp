@@ -114,7 +114,7 @@ end;
 # Returns the actual class sum, i.e. after summing the cent_basis with
 # the coefficients. Requires rho to be unitary and cent_basis to be
 # orthonormal!
-InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
+InstallGlobalFunction( ClassSumCentralizerNC, function(rho, class, cent_basis)
     local coeffs;
 
     if cent_basis <> fail then
@@ -125,13 +125,25 @@ InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
     fi;
 end );
 
+InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
+    if not IsUnitaryRepresentation(rho) then
+        Error("<rho> is not unitary!");
+    fi;
+
+    if not IsOrthonormalSet(cent_basis, InnerProduct@) then
+        Error("<cent_basis> is not an orthonormal set!");
+    fi;
+
+    return ClassSumCentralizerNC(rho, class, cent_basis);
+end );
+
 # Does the group sum (just for convenience, nothing clever)
 GroupSumWithCentralizer@ := function(rho, cent_basis)
     local G, classes;
     G := Source(rho);
     classes := ConjugacyClasses(G);
     if cent_basis <> fail then
-        return Sum(classes, class -> ClassSumCentralizer(rho, class, cent_basis));
+        return Sum(classes, class -> ClassSumCentralizerNC(rho, class, cent_basis));
     else
         return Sum(G, g -> Image(rho, g));
     fi;
