@@ -264,3 +264,21 @@ OrthonormalBasis@ := function(v)
 
     return e;
 end;
+
+InstallGlobalFunction( IsOrthonormalSet, function(S, prod)
+    return ForAll(S, v1 -> ForAll(S, function(v2)
+                                     if v1 = v2 then
+                                         return prod(v1, v2) = 1;
+                                     else
+                                         return prod(v1, v2) = 0;
+                                     fi;
+                                 end ));
+end );
+
+InstallGlobalFunction( IsUnitaryRepresentation, function(rho)
+     local G;
+     # note we only need to check for generators since a product of
+     # unitary matrices is unitary
+     G := Source(rho);
+     return ForAll(GeneratorsOfGroup(G), g -> Image(rho, g^-1) = ConjugateTranspose@(Image(rho, g)));
+end );

@@ -27,8 +27,9 @@ DeclareGlobalFunction( "Replicate" );
 #! @Arguments list1, list2
 
 #! @Returns All possible tensor products given by $\rho \otimes \tau$
-#! where $\rho$ is taken from <A>list1</A> and $\tau$ is taken from
-#! <A>list2</A>.
+#! where $\rho : G \to \mbox{GL}(V)$ is taken from <A>list1</A> and
+#! $\tau : H \to \mbox{GL}(W)$ is taken from <A>list2</A>. The result
+#! is then a list of representations of $G \times H$.
 DeclareGlobalFunction( "TensorProductRepLists" );
 
 #! @Arguments list
@@ -48,3 +49,16 @@ DeclareGlobalFunction( "DegreeOfRepresentation" );
 #! @Returns Linear representation $\rho$ isomorphic to the permutation
 #! representation <A>rho</A>.
 DeclareGlobalFunction( "PermToLinearRep" );
+
+#! @Arguments S, prod
+
+#! @Returns Whether <A>S</A> is an orthonormal set with respect to the
+#! inner product <A>prod</A>.
+DeclareGlobalFunction( "IsOrthonormalSet" );
+
+#! @Arguments rho
+
+#! @Returns Whether <A>rho</A> is unitary, i.e. for all $g \in G$,
+#! $\rho(g^{-1}) = \rho(g)^*$ (where $^*$ denotes the conjugate
+#! transpose).
+DeclareGlobalFunction( "IsUnitaryRepresentation" );
