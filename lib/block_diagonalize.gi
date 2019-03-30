@@ -31,3 +31,5 @@ BasisChangeMatrixSimilar@ := function(X, Y)
     # Now A^-1 X A = B^-1 Y B, so P = BA^-1
     return B * A^-1;
 end;
+
+InstallGlobalFunction( BasisChangeMatrixSimilar, BasisChangeMatrixSimilar@ );

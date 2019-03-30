@@ -62,3 +62,8 @@ DeclareGlobalFunction( "IsOrthonormalSet" );
 #! $\rho(g^{-1}) = \rho(g)^*$ (where $^*$ denotes the conjugate
 #! transpose).
 DeclareGlobalFunction( "IsUnitaryRepresentation" );
+
+#! @Arguments rho
+
+#! @Returns A unitary representation isomorphic to <A>rho</A>
+DeclareGlobalFunction( "UnitarizationOfRepresentation" );

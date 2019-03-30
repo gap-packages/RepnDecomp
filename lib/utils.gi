@@ -282,3 +282,33 @@ InstallGlobalFunction( IsUnitaryRepresentation, function(rho)
      G := Source(rho);
      return ForAll(GeneratorsOfGroup(G), g -> Image(rho, g^-1) = ConjugateTranspose@(Image(rho, g)));
 end );
+
+InstallGlobalFunction( UnitarizationOfRepresentation, function(rho)
+    local G, S, R, M, tau, L, old_S;
+
+    G := Source(rho);
+
+    # If rho is already unitary, then this will be cI for some
+    # c>0. Otherwise, since we know rho can be made unitary, we know S
+    # can be diagonalised and that transformation also unitarises rho.
+
+    # TODO: do this sum quickly
+    S := Sum(G, g -> Image(rho, g) * ConjugateTranspose@(Image(rho, g)));
+
+    # make mutable
+    S := List(S, ShallowCopy);
+
+    old_S := List(S, ShallowCopy);
+
+    R := DefaultRing(Flat(S));
+
+    M := DoDiagonalizeMat(R, S, true, false);
+
+    L := BasisChangeMatrixSimilar(S, old_S);
+
+    Error("brk");
+
+    tau := ComposeHomFunction(rho, a ->  a * M.coltrans);
+
+    return tau;
+end );

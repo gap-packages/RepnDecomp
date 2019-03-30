@@ -3,6 +3,21 @@ LoadPackage("IO");
 # These are the implementations of Serre's formulas from his book
 # Linear Representations of Finite Groups.
 
+# Divides mat into nxn blocks, returns the matrix corresponding to the
+# block in the ath row, bth column
+ExtractBlock@ := function(mat, a, b, n)
+    local result, row, i, j;
+    result := [];
+    for i in [1..n] do
+        row := [];
+        for j in [1..n] do
+            Add(row, mat[i+(a-1)*n][j+(b-1)*n]);
+        od;
+        Add(result, row);
+    od;
+    return result;
+end;
+
 MatrixImage@ := function(p, V)
     local F;
 
@@ -47,9 +62,19 @@ RepresentationCentralizerPermRep@ := function(rho)
     return List(two_orbit_reps, rep -> OrbitalMatrix@(H, rep));
 end;
 
+# calculates the matrix with blocks p_ab
+PMatrix@ := function(rho, irrep)
+    local G, irrep_dual, tau, p;
+    G := Source(rho);
+    irrep_dual := FuncToHom@(G, g -> TransposedMat(Image(irrep, g^-1)));
+    tau := KroneckerProductOfRepresentations(irrep_dual, rho);
+    p := GroupSumBSGS(G, g -> Image(tau, g));
+    return p;
+end;
+
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, degree, V, cent_basis, character, cc, projection, H, T, orbitals, serre_class_contribution, summand, canonical_summand;
+    local G, degree, V, cent_basis, p, projection, character, cc, H, T, orbitals, serre_class_contribution, summand, canonical_summand;
 
     G := Source(rho);
 
@@ -64,9 +89,21 @@ IrrepCanonicalSummand@ := function(rho, irrep)
 
     # In Serre's text, irrep is called W_i, the character is chi_i
 
-    # Calculate the projection map from V to irrep using Theorem 8 (Serre)
-    if cent_basis <> fail then
-        # First, if we are given a basis for the centralizer
+    # Now we calculate the projection map from V to irrep using
+    # Theorem (Serre)
+
+    # first we check if we are allowed to use the kronecker products,
+    # this lets us use the fact that p_i = \sum_\alpha
+    # p_{\alpha\alpha}, we can calculate these now and pass these to
+    # the canonical summand breakdown algorithm later
+    if ValueOption("use_kronecker") = true then
+        p := PMatrix@(rho, irrep);
+        projection := Sum([1..DegreeOfRepresentation(irrep)],
+                          alpha -> ExtractBlock@(p, alpha, alpha, degree));
+    elif cent_basis <> fail then
+        # if we are given a basis for the centralizer, we assume the
+        # user knows what they're doing - the rep is unitary and the
+        # basis is orthonormal, this is not checked (too expensive).
         character := g -> Trace(Image(irrep, g));
         cc := ConjugacyClasses(G);
         projection := (degree/Order(G)) * Sum(cc,
@@ -110,7 +147,14 @@ IrrepCanonicalSummand@ := function(rho, irrep)
 
     # Calculate V_i, the canonical summand
     canonical_summand := MatrixImage@(projection, V);
-    return canonical_summand;
+
+    # if we calculated using kronecker products, we calculated the
+    # p_ab, let's return it so the later stages can use it
+    if ValueOption("use_kronecker") = true then
+        return rec(space := canonical_summand, p := p);
+    else
+        return canonical_summand;
+    fi;
 end;
 
 # filters out the irreps that don't appear in the direct sum
@@ -160,27 +204,12 @@ InstallGlobalFunction( CanonicalDecomposition, function(rho)
     return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
 end );
 
-# Divides mat into nxn blocks, returns the matrix corresponding to the
-# block in the ath row, bth column
-ExtractBlock@ := function(mat, a, b, n)
-    local result, row, i, j;
-    result := [];
-    for i in [1..n] do
-        row := [];
-        for j in [1..n] do
-            Add(row, mat[i+(a-1)*n][j+(b-1)*n]);
-        od;
-        Add(result, row);
-    od;
-    return result;
-end;
-
 # Decomposes the representation V_i into a direct sum of some number
 # (maybe zero) of spaces, all isomorphic to W_i. W_i is the space
 # corresponding to the irrep : G -> GL(W_i). rho is the "full"
 # representation that we're decomposing.
 DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
-    local projections, p_11, V_i1, basis, n, step_c, G, H, F, V, m, p, tau, irrep_dual;
+    local projections, p_11, V_i1, basis, n, step_c, G, H, F, V, m, p, tau, irrep_dual, myspace;
 
     G := Source(irrep);
 
@@ -196,6 +225,16 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     F := Cyclotomics;
     V := F^n;
 
+    # if the V_i is a record, then this means we have been given the
+    # matrix with the blocks p_\alpha\beta
+    if IsRecord(V_i) then
+        p := V_i.p;
+        myspace := V_i.space;
+    else
+        p := fail;
+        myspace := V_i;
+    fi;
+
     # First compute the projections p_ab. We only actually use
     # projections with a=1..n and b=1, so we can just compute
     # those. projections[a] is p_{a1} from Serre. Here we can use a
@@ -206,9 +245,9 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
         # p = \sum_g (\rho_i^* \otimes \rho) so p_ab is the matrix we
         # get if we divide that sum into deg rho square blocks and pick the _ab
         # one
-        irrep_dual := FuncToHom@(G, g -> TransposedMat(Image(irrep, g^-1)));
-        tau := KroneckerProductOfRepresentations(irrep_dual, rho);
-        p := GroupSumBSGS(G, g -> Image(tau, g));
+        if p = fail then
+            p := PMatrix@(rho, irrep);
+        fi;
         projections := List([1..n], a -> ExtractBlock@(p, a, 1, DegreeOfRepresentation(rho)));
     else
         projections := List([1..n], function(a)
@@ -219,7 +258,7 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     fi;
 
     p_11 := projections[1];
-    V_i1 := MatrixImage@(p_11, V_i);
+    V_i1 := MatrixImage@(p_11, myspace);
     basis := Basis(V_i1);
 
     # Now we define the map taking x to W(x), a subrepresentation of

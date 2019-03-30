@@ -25,3 +25,5 @@ DeclareGlobalFunction( "BlockDiagonalBasisOfRepresentation", IsGroupHomomorphism
 #! Attr="BlockDiagonalBasisOfRepresentation" /> to calculate the basis change matrix
 #! and put $\rho$ into a nice form.
 DeclareGlobalFunction( "BlockDiagonalRepresentation", IsGroupHomomorphism );
+
+DeclareGlobalFunction( "BasisChangeMatrixSimilar" );
