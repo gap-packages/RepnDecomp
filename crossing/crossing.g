@@ -113,8 +113,8 @@ CalculateSDP := function(m, irreps)
 
     H := Group(List(GeneratorsOfGroup(Source(action_perm)), g -> Image(action_perm, g)));
 
-    TN := CohCfgFromPermGroup(H);
-    CCPopulateCoeffs(TN);
+    TN := CohCfgFromPermGroup@RepnDecomp(H);
+    CCPopulateCoeffs@RepnDecomp(TN);
 
     Print("Computing centralizer basis: ");
     # these are written in the standard basis
@@ -184,7 +184,7 @@ CalculateSDP := function(m, irreps)
     mult_param := NullMat(d, d);
     for i in [1..d] do
         for j in [1..d] do
-            mult_param[i][j] := norms[i]^-1*norms[j]^-1*List([1..d], k -> norms[k]*CCCoeff(TN, k, i, j));
+            mult_param[i][j] := norms[i]^-1*norms[j]^-1*List([1..d], k -> norms[k]*CCCoeff@RepnDecomp(TN, k, i, j));
         od;
     od;
 
