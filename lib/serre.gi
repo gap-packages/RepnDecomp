@@ -74,7 +74,7 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, degree, V, cent_basis, p, projection, character, cc, H, T, orbitals, serre_class_contribution, summand, canonical_summand;
+    local G, degree, V, cent_basis, p, projection, character, cc, H, T, orbitals, serre_class_contribution, summand, canonical_summand, opt;
 
     G := Source(rho);
 
@@ -87,6 +87,9 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     # then we can use it to speed up class sum computation
     cent_basis := ValueOption("centralizer_basis");
 
+    # sometimes we may want to disable all optimisations
+    opt := ValueOption("no_optimisations") <> true;
+
     # In Serre's text, irrep is called W_i, the character is chi_i
 
     # Now we calculate the projection map from V to irrep using
@@ -96,11 +99,11 @@ IrrepCanonicalSummand@ := function(rho, irrep)
     # this lets us use the fact that p_i = \sum_\alpha
     # p_{\alpha\alpha}, we can calculate these now and pass these to
     # the canonical summand breakdown algorithm later
-    if ValueOption("use_kronecker") = true then
+    if opt and ValueOption("use_kronecker") = true then
         p := PMatrix@(rho, irrep);
         projection := Sum([1..DegreeOfRepresentation(irrep)],
                           alpha -> ExtractBlock@(p, alpha, alpha, degree));
-    elif cent_basis <> fail then
+    elif opt and cent_basis <> fail then
         # if we are given a basis for the centralizer, we assume the
         # user knows what they're doing - the rep is unitary and the
         # basis is orthonormal, this is not checked (too expensive).
@@ -108,7 +111,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
         cc := ConjugacyClasses(G);
         projection := (degree/Order(G)) * Sum(cc,
           cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizerNC(rho, cl, cent_basis));
-    elif IsPermGroup(Range(rho)) and IsInjective(rho) then
+    elif opt and IsPermGroup(Range(rho)) and IsInjective(rho) then
         # If we are given an injective perm rep, but not a basis for
         # the centralizer, can calculate a basis for C from from
         # scratch
