@@ -55,15 +55,3 @@ DeclareGlobalFunction( "PermToLinearRep" );
 #! @Returns Whether <A>S</A> is an orthonormal set with respect to the
 #! inner product <A>prod</A>.
 DeclareGlobalFunction( "IsOrthonormalSet" );
-
-#! @Arguments rho
-
-#! @Returns Whether <A>rho</A> is unitary, i.e. for all $g \in G$,
-#! $\rho(g^{-1}) = \rho(g)^*$ (where $^*$ denotes the conjugate
-#! transpose).
-DeclareGlobalFunction( "IsUnitaryRepresentation" );
-
-#! @Arguments rho
-
-#! @Returns A unitary representation isomorphic to <A>rho</A>
-DeclareGlobalFunction( "UnitarizationOfRepresentation" );

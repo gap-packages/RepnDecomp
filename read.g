@@ -20,3 +20,4 @@ ReadPackage( "RepnDecomp", "lib/tests.gi" );
 ReadPackage( "RepnDecomp", "lib/tensor.gi" );
 ReadPackage( "RepnDecomp", "lib/groupsum.gi" );
 ReadPackage( "RepnDecomp", "lib/mymethod.gi" );
+ReadPackage( "RepnDecomp", "lib/unitary.gi" );
