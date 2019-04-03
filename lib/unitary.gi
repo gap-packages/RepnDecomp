@@ -27,7 +27,7 @@ InstallGlobalFunction( LDLDecomposition, function(A)
 end );
 
 InstallGlobalFunction( UnitaryRepresentation, function(rho)
-    local G, S, decomp, L, D;
+    local G, S, n, prod, T, S2, i, j, decomp, L, D, s, unitary_rep;
 
     G := Source(rho);
 
@@ -35,11 +35,36 @@ InstallGlobalFunction( UnitaryRepresentation, function(rho)
     # c>0. Otherwise, since we know rho can be made unitary, we know S
     # can be diagonalised and that transformation also unitarises rho.
 
-    # TODO: do this sum quickly
-    S := Sum(G, g -> Image(rho, g) * ConjugateTranspose@(Image(rho, g)));
+    # This is the slow version of the sum, we don't use it
+    # S := Sum(G, g -> Image(rho, g) * ConjugateTranspose@(Image(rho, g)));
+
+    n := DegreeOfRepresentation(rho);
+
+    # fast version
+    prod := g -> KroneckerProduct(Image(rho, g), ComplexConjugate(Image(rho, g)));
+    T := GroupSumBSGS(G, prod);
+    S := NullMat(n,n);
+
+    for i in [1..n] do
+        for j in [1..n] do
+            S[i][j] := Sum([1..n], k -> ExtractBlock@(T, i, k, n)[j][k]);
+        od;
+    od;
 
     decomp := LDLDecomposition(S);
-    L := decomp.L;
-    D := DiagonalMat(decomp.D);
 
+    L := decomp.L;
+    D := decomp.D;
+
+    s := List(D, x -> 1);
+
+    # We want to scale D so it's |G|I
+    #s := List(D, c -> c/Size(G));
+
+    # then sqrt so that (Ls)(|G|I)(Ls)^*
+    #s := List(s, Sqrt);
+
+    return rec(L := L * DiagonalMat(s),
+               D := DiagonalMat(s)^2 * decomp.D,
+               unitary_rep := ComposeHomFunction(rho, m -> decomp.L^-1 * m * decomp.L));
 end );
