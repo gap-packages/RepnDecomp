@@ -58,6 +58,8 @@ InstallGlobalFunction( UnitaryRepresentation, function(rho)
 
     s := List(D, x -> 1);
 
+    Error("brk");
+
     # We want to scale D so it's |G|I
     #s := List(D, c -> c/Size(G));
 
@@ -67,4 +69,70 @@ InstallGlobalFunction( UnitaryRepresentation, function(rho)
     return rec(L := L * DiagonalMat(s),
                D := DiagonalMat(s)^2 * decomp.D,
                unitary_rep := ComposeHomFunction(rho, m -> decomp.L^-1 * m * decomp.L));
+end );
+
+# finds a nonscalar matrix in the centraliser of rho. This method is
+# due to Dixon and involves summing over G, so may not be the
+# fastest. Also it only works for unitary matrices.
+FindCentraliser@ := function(rho)
+    local G, n, A, H, r, s;
+    G := Source(rho);
+    n := DegreeOfRepresentation(rho);
+
+    A := function(r, s)
+        local B;
+        B := NullMat(n, n);
+        B[r][s] := 1;
+        return B;
+    end;
+
+    H := function(r, s)
+            if r = s then
+                return A(r,r);
+            elif r > s then
+                return A(r,s) + A(s,r);
+            else
+                return E(4) * (A(r,s) - A(s,r));
+            fi;
+    end;
+
+    # find a non-scalar H in the centraliser
+    for r in [1..n] do
+        for s in [1..n] do
+            H := 1/Order(G) * Sum(G, g -> ConjugateTranspose@(Image(rho, g)) * H(r,s) * Image(rho, g));
+
+            # if it's nonscalar, return it!
+            if H[1][1] * IdentityMat(n) <> H then
+                return H;
+            fi;
+        od;
+    od;
+
+    return fail;
+end;
+
+InstallGlobalFunction( IrreducibleDecompositionDixon, function(rho)
+    local G, n, H;
+
+    G := Source(rho);
+    n := DegreeOfRepresentation(rho);
+
+    if not IsUnitaryRepresentation(rho) then
+        Error("<rho> is not unitary!");
+    fi;
+
+    H := FindCentraliser@(rho);
+
+    if H = fail then
+        # this means rho is irreducible, only scalar matrices commute
+        # with it, so there's only one component to the decomposition
+        return [Cyclotomics^n];
+    fi;
+
+    # H is hermitian, so diagonalisable. we can find the jordan
+    # decomp. of H then orthonormalise it
+
+    # TODO: implement this maybe
+    Error("not implemented yet");
+
 end );

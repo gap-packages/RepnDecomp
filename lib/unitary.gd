@@ -19,3 +19,11 @@ DeclareGlobalFunction( "IsUnitaryRepresentation" );
 #! diagonal matrix $\mbox{diag}(D)$ (where <A>A</A> is an $n \times n$
 #! matrix).
 DeclareGlobalFunction( "LDLDecomposition" );
+
+#! @Arguments rho
+
+#! @Returns a list of irreps in the decomposition of <A>rho</A>
+
+#! @Description Assumes that <A>rho</A> is unitary. This implements an
+#! algorithm due to Dixon.
+DeclareGlobalFunction( "IrreducibleDecompositionDixon" );
