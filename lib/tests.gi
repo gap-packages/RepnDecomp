@@ -46,13 +46,12 @@ RandomRepresentation@ := function(args...)
     for x in [1..opt.num_irreps] do
         # if the degree total is too high, bail out!
         new_irrep := Random(irreps);
+        Add(chosen_irreps, new_irrep);
         degree_so_far := degree_so_far + DegreeOfRepresentation(new_irrep);
 
         if degree_so_far >= opt.max_total_degree then
             break;
         fi;
-
-        Add(chosen_irreps, new_irrep);
     od;
 
     # eliminate duplicates to avoid counting issues
