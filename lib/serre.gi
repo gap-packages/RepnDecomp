@@ -302,7 +302,9 @@ end );
 # summand. Ideally canonical summands are small compared to the whole
 # rep, so could be faster than Serre's formula
 DecomposeCanonicalSummandAlternate@ := function(rho, irrep, V_i)
-    local basis, restricted_rho, block_diag_info, space_list, big_space;
+    local basis, restricted_rho, block_diag_info, space_list,
+          full_basis, big_space, bas_index, decomp, space,
+          current_basis, _;
 
     basis := Basis(V_i);
     restricted_rho := RestrictRep@(rho, basis);
@@ -316,19 +318,29 @@ DecomposeCanonicalSummandAlternate@ := function(rho, irrep, V_i)
     # there is only one irrep.
     space_list := block_diag_info.decomposition[1];
 
-    # Convert back to big space vectors
-    big_space := function(space)
-        local orig, new;
-        orig := Basis(space);
-        new := List(orig, v -> Sum([1..Length(v)], i -> v[i] * basis[i]));
-        return VectorSpace(Cyclotomics, new, Zero(V_i));
-    end;
+    # this is the nice basis, we can read off the basis for each
+    # space_list[i] from this list, in order
+    full_basis := block_diag_info.basis;
 
-    space_list := List(space_list, big_space);
+    # Convert back to big space vectors
+    big_space := v -> Sum([1..Length(v)], i -> v[i] * basis[i]);
+    full_basis := List(full_basis, big_space);
+
+    bas_index := 1;
+
+    decomp := [];
+
+    for space in space_list do
+        current_basis := [];
+        for _ in [1..Dimension(space)] do
+            Add(current_basis, full_basis[bas_index]);
+            bas_index := bas_index + 1;
+        od;
+        Add(decomp, rec(basis := current_basis));
+    od;
 
     # same format as DecomposeCanonicalSummand
-    return List(space_list,
-                space -> rec(basis := List(Basis(space))));
+    return decomp;
 end;
 
 # Uses Serre's formula to get canonical decomposition, then "fast"
