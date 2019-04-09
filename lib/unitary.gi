@@ -32,7 +32,8 @@ InstallGlobalFunction( LDLDecomposition, function(A)
 end );
 
 InstallGlobalFunction( UnitaryRepresentation, function(rho)
-    local G, S, n, prod, T, S2, i, j, decomp, L, D, s, unitary_rep;
+    local G, n, prod, T, S, i, j, decomp, L, D, C, unitary_rep;
+
 
     G := Source(rho);
 
@@ -60,20 +61,10 @@ InstallGlobalFunction( UnitaryRepresentation, function(rho)
 
     L := decomp.L;
     D := decomp.D;
+    C := L * DiagonalMat(List(D, Sqrt));
 
-    s := List(D, x -> 1);
-
-    Error("brk");
-
-    # We want to scale D so it's |G|I
-    #s := List(D, c -> c/Size(G));
-
-    # then sqrt so that (Ls)(|G|I)(Ls)^*
-    #s := List(s, Sqrt);
-
-    return rec(L := L * DiagonalMat(s),
-               D := DiagonalMat(s)^2 * decomp.D,
-               unitary_rep := ComposeHomFunction(rho, m -> decomp.L^-1 * m * decomp.L));
+    return rec(basis_change := C,
+               unitary_rep := ComposeHomFunction(rho, m -> C^-1 * m * C));
 end );
 
 # finds a nonscalar matrix in the centraliser of rho. This method is
