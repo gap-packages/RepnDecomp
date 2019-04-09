@@ -23,9 +23,7 @@ improved with the help of the program.
 
 ## Testing
 
-To run the tests, make sure you have all needed packages installed
-(the only one not included with GAP is
-[cohcfg](https://bitbucket.org/dimpase/cohcfg)), and run:
+To run the tests, make sure you have all needed packages installed (GRAPE).
 
     $ gap tst/testall.g
 
