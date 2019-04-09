@@ -9,12 +9,17 @@ end );
 InstallGlobalFunction( LDLDecomposition, function(A)
     local n, L, D, i, j;
 
+    if A <> TransposedMat(A) then
+        Error("<A> is not symmetric!");
+        return fail;
+    fi;
+
     n := Length(A);
 
     L := IdentityMat(n);
 
     # This stores the diagonal of D, not the full matrix
-    D := List([1..n], x -> 0);
+    D := List([1..n], x -> 1);
 
     for i in [1..n] do
         D[i] := A[i][i] - Sum([1..(i-1)], j -> L[i][j]*ComplexConjugate(L[i][j])*D[j]);
