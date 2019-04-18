@@ -2,3 +2,6 @@
 *.txt
 *.csv
 *.g
+*.tex
+*.pgf
+*.png
