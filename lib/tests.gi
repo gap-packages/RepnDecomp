@@ -303,13 +303,14 @@ BenchMany@ := function(f, out, n)
 
     # this set of options to the random representation generator is
     # designed to avoid trivial cases
-    opt := rec(lo := 1500,
-               hi := 2000,
-               num_irreps := 1,
+    opt := rec(lo := 10,
+               hi := 50,
+               num_irreps := 2,
                min_multiplicity := 1,
-               max_multiplicity := 1,
-               restrict_small_degree := true,
-               small_degree := 10);
+               max_multiplicity := 2,
+               max_total_degree := 10,
+               restrict_small_degree := false,
+               small_degree := 10); # if we pick a rep with huge degree, this will be bad
 
     # We deliberately avoid resetting the GlobalMersenneTwister since
     # we want the same reps to come up when you bench. This doesn't

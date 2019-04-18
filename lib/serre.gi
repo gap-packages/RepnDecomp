@@ -150,6 +150,7 @@ IrrepCanonicalSummand@ := function(rho, irrep)
 
     # Calculate V_i, the canonical summand
     canonical_summand := MatrixImage@(projection, V);
+    canonical_summand := Basis(canonical_summand);
 
     # if we calculated using kronecker products, we calculated the
     # p_ab, let's return it so the later stages can use it
@@ -238,6 +239,8 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
         myspace := V_i;
     fi;
 
+    myspace := VectorSpace(F, myspace, Zero(V));
+
     # First compute the projections p_ab. We only actually use
     # projections with a=1..n and b=1, so we can just compute
     # those. projections[a] is p_{a1} from Serre. Here we can use a
@@ -280,7 +283,9 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     return List(basis, function(x)
                    local b;
                    b := step_c(x);
-                   return rec(space := VectorSpace(F, b, Zero(V)), basis := b);
+                   # can recover the space from the basis, also can't be pickled
+                   return rec(#space := VectorSpace(F, b, Zero(V)),
+                              basis := b);
                end);
 end;
 
@@ -306,7 +311,12 @@ DecomposeCanonicalSummandAlternate@ := function(rho, irrep, V_i)
           full_basis, big_space, bas_index, decomp, space,
           current_basis, _;
 
-    basis := Basis(V_i);
+    if IsRecord(V_i) then
+        basis := V_i.space;
+    else
+        basis := V_i;
+    fi;
+
     restricted_rho := RestrictRep@(rho, basis);
 
     # we know in advance that restricted_rho only consists of direct
@@ -360,8 +370,10 @@ IrreducibleDecompositionCollectedHybrid@ := function(rho)
                                                                  IrrepCanonicalSummand@(rho,
                                                                                         irrep));
     parallel := ValueOption("parallel");
-    if parallel = true then
-        irred_decomp := ParListByFork(irreps, do_decompose);
+    if IsInt(parallel) then
+        irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := parallel));
+    elif parallel <> fail then
+        irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := 4));
     else
         irred_decomp := List(irreps, do_decompose);
     fi;
@@ -401,8 +413,10 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
     end;
 
     parallel := ValueOption("parallel");
-    if parallel = true then
-        irred_decomp := ParListByFork(irreps, do_decompose);
+    if IsInt(parallel) then
+        irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := parallel));
+    elif parallel <> fail then
+        irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := 4));
     else
         irred_decomp := List(irreps, do_decompose);
     fi;

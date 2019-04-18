@@ -1,4 +1,8 @@
-#! @Arguments rho[, irreps, rho_cent_basis]
+#! @Chapter Computing decompositions of representations
+
+#! @Section Original methods
+
+#! @Arguments rho
 
 #! @Returns A record
 
@@ -30,7 +34,7 @@
 #! representations.
 DeclareAttribute( "REPN_ComputeUsingMyMethod", IsGroupHomomorphism );
 
-#! @Arguments rho[, irreps, rho_cent_basis]
+#! @Arguments rho
 
 #! @Returns A record in the same format as <Ref
 #! Func="REPN_ComputeUsingMyMethod" />.

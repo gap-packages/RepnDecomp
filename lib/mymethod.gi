@@ -1,3 +1,5 @@
+# Functions for calling the methods implemented my original algorithm.
+
 InstallMethod( REPN_ComputeUsingMyMethod, "for linear reps", [ IsGroupHomomorphism ], function(rho)
     local G, char_rho_basis, irreps, isomorphic_collected, summands, new_img, g, basis_change, basis, full_space_list, current_space_list, chars, new_rho, irrep_list, r, ret_basis, all_sizes, centralizer_blocks, rho_cent_basis, new_rho_cent_basis;
 

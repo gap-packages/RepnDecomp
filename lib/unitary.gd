@@ -1,3 +1,7 @@
+#! @Chapter Algorithms for unitary representations
+
+#! @Section Unitarising representations
+
 #! @Arguments rho
 
 #! @Returns A record with fields L and unitary_rep such that
@@ -19,6 +23,8 @@ DeclareGlobalFunction( "IsUnitaryRepresentation" );
 #! diagonal matrix $\mbox{diag}(D)$ (where <A>A</A> is an $n \times n$
 #! matrix).
 DeclareGlobalFunction( "LDLDecomposition" );
+
+#! @Section Decomposing unitary representations
 
 #! @Arguments rho
 

@@ -21,7 +21,6 @@ Persons := [
     LastName := "Hymabaccus",
     WWWHome := "https://kaashif.co.uk",
     Email := "kaashif@kaashif.co.uk",
-    PostalAddress := "TODO",
     Place := "Oxford",
     Institution := "University of Oxford",
   ),
