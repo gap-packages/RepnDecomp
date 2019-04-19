@@ -1,4 +1,4 @@
-#! @Chapter Representations of tensor products
+#! @Chapter Miscellaneous useful functions
 
 #! @Section Space-efficient representation of tensors of matrices
 
@@ -14,10 +14,10 @@
 #! implementing group operations on top of these, along with some
 #! representation-theoretic functions.
 
-#! Even though matrices do form a ring, it is only possible to
-#! guarantee an economical representation for pure tensors,
-#! i.e. matrices of the form $A \otimes B$. These are closed under
-#! group operations, so it is natural to define a group structure.
+#! It is only possible to guarantee an economical representation for
+#! pure tensors, i.e. matrices of the form $A \otimes B$. These are
+#! closed under group operations, so it is natural to define a group
+#! structure.
 DeclareCategory( "IsTensorProductOfMatricesObj", IsMultiplicativeElementWithInverse );
 CategoryCollections( IsTensorProductOfMatricesObj );
 
@@ -41,4 +41,6 @@ DeclareGlobalFunction( "TensorProductOfRepresentations" );
 
 DeclareGlobalFunction( "KroneckerProductOfRepresentations" );
 
+#! This uses the multiplicativity of characters when taking tensor
+#! products to avoid having to compute the trace of a big matrix.
 DeclareGlobalFunction( "CharacterOfTensorProductOfRepresentations" );

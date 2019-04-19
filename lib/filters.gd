@@ -1,14 +1,14 @@
-#! @Chapter Useful predicates
+#! @Chapter Miscellaneous useful functions
 
-#! @Section Types of group representations
+#! @Section Predicates for representations
 
 #! @Arguments rho
 
 #! @Returns true or false
 
 #! @Description Tells you if <A>rho</A> is a linear representation of
-#! a finite group. This is important since Serre's algorithms only
-#! work on these.
+#! a finite group. The algorithms implemented in this package work on
+#! these homomorphisms only.
 DeclareAttribute( "IsFiniteGroupLinearRepresentation", IsGroupHomomorphism );
 
 
@@ -16,7 +16,6 @@ DeclareAttribute( "IsFiniteGroupLinearRepresentation", IsGroupHomomorphism );
 
 #! @Returns true or false
 
-#! @Description Tells you if <A>rho</A> is a homomorphism from finite
-#! group to a permutation group. Such homomorphisms occur often in
-#! applications.
+#! @Description Tells you if <A>rho</A> is a homomorphism from a
+#! finite group to a permutation group.
 DeclareAttribute( "IsFiniteGroupPermutationRepresentation", IsGroupHomomorphism );

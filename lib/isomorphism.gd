@@ -12,32 +12,48 @@
 #! is the isomorphism between the representations. If the
 #! representations are not isomorphic, then fail is returned.
 
-#! If no bases for the centralizers are given, we have no option but
-#! to sum over $G$ to perform this calculation.  If bases for the
-#! centralizers are given, we can use them to calculate class/group
-#! sums and thus avoid summing over $G$.
+#! There are three methods that we can use to compute an isomorphism
+#! of linear representations, you can select one by passing options to
+#! the function.
+
+#! * `use_kronecker`: Assumes the matrices are small enough that their
+#!   Kronecker products can fit into memory. Uses <Ref
+#!   Func="GroupSumBSGS" /> and `KroneckerProduct` to compute an
+#!   element of the fixed subspace of $\rho \otimes \tau^*$.
+
+#! * `use_orbit_sum`: Finds an isomorphism by summing orbits of the
+#!   the action of $\rho \otimes \tau^*$ on matrices. Note that orbits
+#!   could be very large, so this could be as bad as summing over the
+#!   whole group.
+
+#! * The default, sums over the whole group to compute the projection
+#!   the fixed subspace.
+
 DeclareGlobalFunction( "LinearRepresentationIsomorphism" );
 
 #! @Arguments rho, tau
 
 #! @Returns A matrix $A$ or fail
 
-#! @Description The same as <Ref
+#! @Description Gives the same result as <Ref
 #! Func="LinearRepresentationIsomorphism" />, but this function uses a
-#! simpler method which always involves summing over $G$. This is slow
-#! for large $G$, but might be fast in the special case of a very
-#! large group and very small degree representation.
+#! simpler method which always involves summing over $G$, without
+#! using <Ref Func="GroupSumBSGS" />. This might be useful in some
+#! cases if computing a good BSGS is difficult. However, for all cases
+#! that have been tested, it is slow (as the name suggests).
 DeclareGlobalFunction( "LinearRepresentationIsomorphismSlow" );
+
+#! @Section Testing isomorphisms
+
+#! Since representations of finite groups over $\mathbb{C}$ are
+#! determined by their characters, it is easy to check whether two
+#! representations are isomorphic by checking if they have the same
+#! character. We try to use characters wherever possible.
 
 #! @Arguments rho, tau
 
 #! @Returns true if <A>rho</A> and <A>tau</A> are isomorphic as
 #! representations, false otherwise.
-
-#! @Description Note that two representations are isomorphic iff they
-#! give similar matrices, also iff they have the same irreducible
-#! decomposition. We use characters to determine the latter: the first
-#! is expensive to check for large degree representations.
 DeclareGlobalFunction( "AreRepsIsomorphic" );
 
 #! @Arguments A, rho, tau

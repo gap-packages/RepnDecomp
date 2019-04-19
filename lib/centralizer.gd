@@ -1,11 +1,11 @@
-#! @Chapter Calculating centralizer rings
+#! @Chapter Centralizer (commutant) rings
 
-#! @Section Centralizer (commutant) of a representation
+#! @Section Finding a basis for the centralizer
 
 #! @Arguments rho
 
-#! @Returns List of standard generators (as a vector space) for the
-#! centralizer ring of $\rho(G)$, written in the basis given by <Ref
+#! @Returns List of vector space generators for the centralizer ring
+#! of $\rho(G)$, written in the basis given by <Ref
 #! Func="BlockDiagonalBasisOfRepresentation" />.  The matrices are
 #! given as a list of blocks.
 
@@ -15,12 +15,8 @@
 #! number of generators required.
 DeclareGlobalFunction( "CentralizerBlocksOfRepresentation" );
 
-#! @Section Useful convenience functions
-
-#! @Arguments rho
-
-#! @Returns List of standard generators (as a vector space) for the
-#! centralizer ring of $\rho(G)$.
+#! @Returns List of vector space generators for the centralizer ring
+#! of $\rho(G)$.
 
 #! @Description This gives the same result as <Ref
 #! Func="CentralizerBlocksOfRepresentation" />, but with the matrices
@@ -28,16 +24,24 @@ DeclareGlobalFunction( "CentralizerBlocksOfRepresentation" );
 #! matrices.
 DeclareGlobalFunction( "CentralizerOfRepresentation" );
 
+#! @Section Using the centralizer for computations
+
 #! @Arguments rho, class, cent_basis
 
 #! @Returns $\sum_{s \in t^G} \rho(s)$, where $t$ is a representative
 #! of the conjugacy class <A>class</A> of $G$.
 
-#! @Description Uses the given orthonormal basis (with respect to the
-#! inner product $\langle A, B \rangle = \mbox{Trace}(AB^*)$) for the
-#! centralizer ring of <A>rho</A> to calculate the sum of the
-#! conjugacy class <A>class</A> quickly, i.e. without summing over the
-#! class.
+#! @Description We require that <A>rho</A> is unitary. Uses the given
+#! orthonormal basis (with respect to the inner product $\langle A, B
+#! \rangle = \mbox{Trace}(AB^*)$) for the centralizer ring of
+#! <A>rho</A> to calculate the sum of the conjugacy class <A>class</A>
+#! quickly, i.e. without summing over the class.
+
+#! NOTE: Orthonormality of <A>cent_basis</A> and unitarity of
+#! <A>rho</A> are checked. See <Ref Func="ClassSumCentralizerNC" />
+#! for a version of this function without checks. The checks are not
+#! very expensive, so it is recommended you use the function with
+#! checks.
 DeclareGlobalFunction( "ClassSumCentralizer" );
 
 #! @Arguments rho, class, cent_basis

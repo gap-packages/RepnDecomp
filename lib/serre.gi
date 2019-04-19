@@ -381,7 +381,6 @@ IrreducibleDecompositionCollectedHybrid@ := function(rho)
     return rec(decomp := irred_decomp, used_rho := rho);
 end;
 
-# TODO: move all calculations here and make the function access this record
 InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism ], function(rho)
     local irreps, irr_chars, centralizer_basis, irred_decomp, new_bases, basis, basis_change, diag_rho, char_rho_basis, all_sizes, sizes, centralizer_blocks, G, parallel, do_decompose;
 

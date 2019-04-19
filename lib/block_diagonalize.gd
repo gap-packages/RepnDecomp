@@ -1,10 +1,11 @@
-#! @Chapter Block diagonalizing representations
+#! @Chapter Decomposing representations into irreducibles
 
-#! @Section Finding the correct basis
+#! @Section Block diagonalizing
 
 #! Given a representation $\rho : G \to GL(V)$, it is often desirable
 #! to find a basis for $V$ that block diagonalizes each $\rho(g)$ with
-#! the block sizes being as small as possible.
+#! the block sizes being as small as possible. This speeds up matrix
+#! algebra operations, since they can now be done block-wise.
 
 #! @Arguments rho
 
@@ -22,8 +23,9 @@ DeclareGlobalFunction( "BlockDiagonalBasisOfRepresentation", IsGroupHomomorphism
 #! images $\rho(g)$ are block diagonalized.
 
 #! @Description This is just a convenience operation that uses <Ref
-#! Attr="BlockDiagonalBasisOfRepresentation" /> to calculate the basis change matrix
-#! and put $\rho$ into a nice form.
+#! Attr="BlockDiagonalBasisOfRepresentation" /> to calculate the basis
+#! change matrix and applies it to put $\rho$ into the block
+#! diagonalised form.
 DeclareGlobalFunction( "BlockDiagonalRepresentation", IsGroupHomomorphism );
 
 DeclareGlobalFunction( "BasisChangeMatrixSimilar" );

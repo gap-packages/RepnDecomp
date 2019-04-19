@@ -1,6 +1,6 @@
-#! @Chapter Utility functions
+#! @Chapter Miscellaneous useful functions
 
-#! @Section Miscellaneous
+#! @Section Matrices and homomorphisms
 
 #! @Arguments blocks
 

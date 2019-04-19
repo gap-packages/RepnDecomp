@@ -2,14 +2,11 @@
 
 #! @Section Algorithms due to Serre
 
-#! These operations compute various decompositions of a representation
-#! $\rho : G \to GL(V)$ where $G$ is finite and $V$ is a
-#! finite-dimensional $\mathbb{C}$-vector space.
+#! Note: all computation in this section is actually done in the
+#! function <Ref Attr="REPN_ComputeUsingSerre" />, the other functions
+#! are wrappers around it.
 
-#! The terms used here are taken from Serre's Linear Representations
-#! of Finite Groups.
-
-#! @Arguments rho[, cent_basis]
+#! @Arguments rho
 
 #! @Returns List of vector spaces $V_i$, each $G$-invariant and a
 #! direct sum of isomorphic irreducibles. That is, for each $i$, $V_i
@@ -20,9 +17,10 @@
 #! $\oplus_i\;V_i$ using the formulas for projections $V \to V_i$ due
 #! to Serre.
 
-#! If you have an orthonormal (very important!) basis for the
-#! centralizer ring of <A>rho</A>, you can pass it in as
-#! <A>cent_basis</A> and it will be used to speed up calculations.
+#! You can pass in the option `irreps` with a list of irreps of $G$,
+#! and this will be used instead of computing a complete list
+#! ourselves. If you already know which irreps will appear in $\rho$,
+#! for instance, this will save time.
 DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 
 #! @Arguments rho
@@ -44,5 +42,42 @@ DeclareGlobalFunction( "IrreducibleDecomposition", IsGroupHomomorphism );
 #! subrepresentations, grouping together the isomorphic
 #! subrepresentations.
 DeclareGlobalFunction( "IrreducibleDecompositionCollected", IsGroupHomomorphism );
+
+#! @Arguments rho
+
+#! @Returns A record, in the format described below
+
+#! @Description This function does all of the computation and (since
+#! it is an attribute) saves the results. Doing all of the
+#! calculations at the same time ensures consistency when it comes to
+#! irrep ordering, block ordering and basis ordering. There is no
+#! canonical ordering of irreps, so this is crucial.
+
+#! <A>irreps</A> is the complete list of irreps involved in the direct
+#! sum decomposition of <A>rho</A>, this can be given in case the
+#! default (running Dixon's algorithm) is too expensive, or e.g. you
+#! don't want representations over Cyclotomics.
+
+#! The return value of this function is a record with fields:
+
+#! * `basis`: The basis that block diagonalises $\rho$, see <Ref
+#!   Func="BlockDiagonalBasisOfRepresentation" />.
+
+#! * `diagonal_rep`: $\rho$, block diagonalised with the basis
+#!   above. See <Ref Func="BlockDiagonalRepresentation" />
+
+#! * `decomposition`: The irreducible $G$-invariant subspaces,
+#!   collected according to isomorphism, see <Ref
+#!   Func="IrreducibleDecompositionCollected" />
+
+#! * `centralizer_basis`: An orthonormal basis for the centralizer
+#!   ring of $\rho$, written in block form. See <Ref
+#!   Func="RepresentationCentralizerBlocks" />
+
+#! Pass the option `parallel` for the computations per-irrep to be
+#! done in parallel.
+
+#! Pass the option `irreps` with the complete list of irreps of $\rho$
+#! to avoid recomputing this list (could be very expensive)
 
 DeclareAttribute( "REPN_ComputeUsingSerre", IsGroupHomomorphism );

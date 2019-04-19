@@ -30,6 +30,7 @@ DeclareGlobalFunction( "LDLDecomposition" );
 
 #! @Returns a list of irreps in the decomposition of <A>rho</A>
 
-#! @Description Assumes that <A>rho</A> is unitary. This implements an
-#! algorithm due to Dixon.
+#! @Description NOTE: this is not implemented yet. Assumes that
+#! <A>rho</A> is unitary and uses an algorithm due to Dixon to
+#! decompose it into unitary irreps.
 DeclareGlobalFunction( "IrreducibleDecompositionDixon" );
