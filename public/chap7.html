@@ -5,7 +5,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>GAP (RepnDecomp) - Chapter 7: Utility functions</title>
+<title>GAP (RepnDecomp) - Chapter 7: Computing decompositions of representations</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta name="generator" content="GAPDoc2HTML" />
 <link rel="stylesheet" type="text/css" href="manual.css" />
@@ -20,85 +20,69 @@
 <div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap6.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chapInd.html">[Next Chapter]</a>&nbsp;  </div>
 
 <p id="mathjaxlink" class="pcenter"><a href="chap7_mj.html">[MathJax on]</a></p>
-<p><a id="X810FFB1C8035C8BE" name="X810FFB1C8035C8BE"></a></p>
-<div class="ChapSects"><a href="chap7.html#X810FFB1C8035C8BE">7 <span class="Heading">Utility functions</span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X7C5563A37D566DA5">7.1 <span class="Heading">Miscellaneous</span></a>
+<p><a id="X7F968DF987DE4A6E" name="X7F968DF987DE4A6E"></a></p>
+<div class="ChapSects"><a href="chap7.html#X7F968DF987DE4A6E">7 <span class="Heading">Computing decompositions of representations</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X863A16A179A7486B">7.1 <span class="Heading">Algorithms due to the authors</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X8668A3897972C08E">7.1-1 BlockDiagonalMatrix</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7D17785482F143B0">7.1-2 ComposeHomFunction</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X79D2F263840ED625">7.1-3 Replicate</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7DB659DB7E48D502">7.1-1 REPN_ComputeUsingMyMethodCanonical</a></span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X7C3EDA5E7A24196C">7.2 <span class="Heading">Representation theoretic functions</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap7.html#X7C22F13E80A74438">7.2 <span class="Heading">Algorithms due to Serre</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X841424DF824E258B">7.2-1 TensorProductRepLists</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7E5D5434844A6C95">7.2-2 DirectSumRepList</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X85147CF97B912CC3">7.2-3 DegreeOfRepresentation</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7B14287E7BFC548D">7.2-4 PermToLinearRep</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X7E95B0367992BEC4">7.2-1 CanonicalDecomposition</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X795C63F386C45308">7.2-2 IrreducibleDecomposition</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap7.html#X87E91CBE7992D126">7.2-3 IrreducibleDecompositionCollected</a></span>
 </div></div>
 </div>
 
-<h3>7 <span class="Heading">Utility functions</span></h3>
+<h3>7 <span class="Heading">Computing decompositions of representations</span></h3>
 
-<p><a id="X7C5563A37D566DA5" name="X7C5563A37D566DA5"></a></p>
+<p><a id="X863A16A179A7486B" name="X863A16A179A7486B"></a></p>
 
-<h4>7.1 <span class="Heading">Miscellaneous</span></h4>
+<h4>7.1 <span class="Heading">Algorithms due to the authors</span></h4>
 
-<p><a id="X8668A3897972C08E" name="X8668A3897972C08E"></a></p>
+<p><a id="X7DB659DB7E48D502" name="X7DB659DB7E48D502"></a></p>
 
-<h5>7.1-1 BlockDiagonalMatrix</h5>
+<h5>7.1-1 REPN_ComputeUsingMyMethodCanonical</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalMatrix</code>( <var class="Arg">blocks</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: Matrix given by putting the given matrix <var class="Arg">blocks</var> on the diagonal</p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; REPN_ComputeUsingMyMethodCanonical</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
+<p>Returns: A record in the same format as <code class="func">REPN_ComputeUsingSerre</code> (<span class="RefLink">???</span>) A record in the same format as <code class="func">REPN_ComputeUsingMyMethod</code> (<span class="RefLink">???</span>).</p>
 
-<p><a id="X7D17785482F143B0" name="X7D17785482F143B0"></a></p>
+<p>Computes the same values as <code class="func">REPN_ComputeUsingSerre</code> (<span class="RefLink">???</span>), taking the same options. The heavy lifting of this method is done by <code class="func">LinearRepresentationIsomorphism</code> (<span class="RefLink">???</span>), where there are some further options that can be passed to influence algorithms used. Performs the same computation as <code class="func">REPN_ComputeUsingMyMethod</code> (<span class="RefLink">???</span>), but first splits the representation into canonical summands using <code class="func">CanonicalDecomposition</code> (<a href="chap7.html#X7E95B0367992BEC4"><span class="RefLink">7.2-1</span></a>). This might reduce the size of the matrices we need to work with significantly, so could be much faster. If the option `parallel` is given, the decomposition of canonical summands into irreps is done in parallel, which could be much faster.</p>
 
-<h5>7.1-2 ComposeHomFunction</h5>
+<p><a id="X7C22F13E80A74438" name="X7C22F13E80A74438"></a></p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComposeHomFunction</code>( <var class="Arg">hom</var>, <var class="Arg">func</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: Homomorphism g given by g(x) = func(hom(x)).</p>
+<h4>7.2 <span class="Heading">Algorithms due to Serre</span></h4>
 
-<p>This is mainly for convenience, since it handles all GAP accounting issues regarding the range, ByImages vs ByFunction, etc.</p>
+<p>Note: all computation in this section is actually done in the function <code class="func">REPN_ComputeUsingSerre</code> (<span class="RefLink">???</span>), the other functions are wrappers around it.</p>
 
-<p><a id="X79D2F263840ED625" name="X79D2F263840ED625"></a></p>
+<p><a id="X7E95B0367992BEC4" name="X7E95B0367992BEC4"></a></p>
 
-<h5>7.1-3 Replicate</h5>
+<h5>7.2-1 CanonicalDecomposition</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Replicate</code>( <var class="Arg">elem</var>, <var class="Arg">n</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: List of <var class="Arg">n</var> copies of <var class="Arg">elem</var></p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; CanonicalDecomposition</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: List of vector spaces <span class="Math">V_i</span>, each <span class="Math">G</span>-invariant and a direct sum of isomorphic irreducibles. That is, for each <span class="Math">i</span>, <span class="Math">V_i \cong \oplus_j W_i</span> (as representations) where <span class="Math">W_i</span> is an irreducible <span class="Math">G</span>-invariant vector space.</p>
 
-<p><a id="X7C3EDA5E7A24196C" name="X7C3EDA5E7A24196C"></a></p>
+<p>Computes the canonical decomposition of <span class="Math">V</span> into <span class="Math">\oplus_i\;V_i</span> using the formulas for projections <span class="Math">V \to V_i</span> due to Serre. You can pass in the option `irreps` with a list of irreps of <span class="Math">G</span>, and this will be used instead of computing a complete list ourselves. If you already know which irreps will appear in <span class="Math">\rho</span>, for instance, this will save time.</p>
 
-<h4>7.2 <span class="Heading">Representation theoretic functions</span></h4>
+<p><a id="X795C63F386C45308" name="X795C63F386C45308"></a></p>
 
-<p><a id="X841424DF824E258B" name="X841424DF824E258B"></a></p>
+<h5>7.2-2 IrreducibleDecomposition</h5>
 
-<h5>7.2-1 TensorProductRepLists</h5>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IrreducibleDecomposition</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: List of vector spaces <span class="Math">W_j</span> such that <span class="Math">V = \oplus_j W_j</span> and each <span class="Math">W_j</span> is an irreducible <span class="Math">G</span>-invariant vector space.</p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TensorProductRepLists</code>( <var class="Arg">list1</var>, <var class="Arg">list2</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: All possible tensor products given by <span class="Math">\rho \otimes \tau</span> where <span class="Math">\rho</span> is taken from <var class="Arg">list1</var> and <span class="Math">\tau</span> is taken from <var class="Arg">list2</var>.</p>
+<p>Computes the decomposition of <span class="Math">V</span> into irreducible subprepresentations.</p>
 
-<p><a id="X7E5D5434844A6C95" name="X7E5D5434844A6C95"></a></p>
+<p><a id="X87E91CBE7992D126" name="X87E91CBE7992D126"></a></p>
 
-<h5>7.2-2 DirectSumRepList</h5>
+<h5>7.2-3 IrreducibleDecompositionCollected</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; DirectSumRepList</code>( <var class="Arg">list</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: Direct sum of the list of representations <var class="Arg">list</var></p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IrreducibleDecompositionCollected</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: List of lists <span class="Math">V_i</span> of vector spaces <span class="Math">V_{ij}</span> such that <span class="Math">V = \oplus_i \oplus_j V_{ij}</span> and <span class="Math">V_{ik} \cong V_{il}</span> for all <span class="Math">i</span>, <span class="Math">k</span> and <span class="Math">l</span> (as representations).</p>
 
-<p><a id="X85147CF97B912CC3" name="X85147CF97B912CC3"></a></p>
-
-<h5>7.2-3 DegreeOfRepresentation</h5>
-
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; DegreeOfRepresentation</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: Degree of the representation <var class="Arg">rho</var>. That is, <span class="Math">\mbox{Tr}(\rho(e_G))</span>, where <span class="Math">e_G</span> is the identity of the group <span class="Math">G</span> that <var class="Arg">rho</var> has as domain.</p>
-
-<p><a id="X7B14287E7BFC548D" name="X7B14287E7BFC548D"></a></p>
-
-<h5>7.2-4 PermToLinearRep</h5>
-
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; PermToLinearRep</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: Linear representation <span class="Math">\rho</span> isomorphic to the permutation representation <var class="Arg">rho</var>.</p>
+<p>Computes the decomposition of <span class="Math">V</span> into irreducible subrepresentations, grouping together the isomorphic subrepresentations.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap6.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chapInd.html">[Next Chapter]</a>&nbsp;  </div>

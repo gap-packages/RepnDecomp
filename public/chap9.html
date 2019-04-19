@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>GAP (RepnDecomp) - Chapter 9: Utility functions</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="generator" content="GAPDoc2HTML" />
+<link rel="stylesheet" type="text/css" href="manual.css" />
+<script src="manual.js" type="text/javascript"></script>
+<script type="text/javascript">overwriteStyle();</script>
+</head>
+<body class="chap9"  onload="jscontent()">
+
+
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chap9.html">9</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap8.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chapInd.html">[Next Chapter]</a>&nbsp;  </div>
+
+<p id="mathjaxlink" class="pcenter"><a href="chap9_mj.html">[MathJax on]</a></p>
+<p><a id="X810FFB1C8035C8BE" name="X810FFB1C8035C8BE"></a></p>
+<div class="ChapSects"><a href="chap9.html#X810FFB1C8035C8BE">9 <span class="Heading">Utility functions</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap9.html#X7C5563A37D566DA5">9.1 <span class="Heading">Miscellaneous</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X8668A3897972C08E">9.1-1 BlockDiagonalMatrix</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X7D17785482F143B0">9.1-2 ComposeHomFunction</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X79D2F263840ED625">9.1-3 Replicate</a></span>
+</div></div>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap9.html#X7C3EDA5E7A24196C">9.2 <span class="Heading">Representation theoretic functions</span></a>
+</span>
+<div class="ContSSBlock">
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X841424DF824E258B">9.2-1 TensorProductRepLists</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X84EAE3DB7FA8102C">9.2-2 DirectSumOfRepresentations</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X85147CF97B912CC3">9.2-3 DegreeOfRepresentation</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X7B14287E7BFC548D">9.2-4 PermToLinearRep</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap9.html#X7E67A4817A5E4879">9.2-5 IsOrthonormalSet</a></span>
+</div></div>
+</div>
+
+<h3>9 <span class="Heading">Utility functions</span></h3>
+
+<p><a id="X7C5563A37D566DA5" name="X7C5563A37D566DA5"></a></p>
+
+<h4>9.1 <span class="Heading">Miscellaneous</span></h4>
+
+<p><a id="X8668A3897972C08E" name="X8668A3897972C08E"></a></p>
+
+<h5>9.1-1 BlockDiagonalMatrix</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalMatrix</code>( <var class="Arg">blocks</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: Matrix given by putting the given matrix <var class="Arg">blocks</var> on the diagonal</p>
+
+<p><a id="X7D17785482F143B0" name="X7D17785482F143B0"></a></p>
+
+<h5>9.1-2 ComposeHomFunction</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComposeHomFunction</code>( <var class="Arg">hom</var>, <var class="Arg">func</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: Homomorphism g given by g(x) = func(hom(x)).</p>
+
+<p>This is mainly for convenience, since it handles all GAP accounting issues regarding the range, ByImages vs ByFunction, etc.</p>
+
+<p><a id="X79D2F263840ED625" name="X79D2F263840ED625"></a></p>
+
+<h5>9.1-3 Replicate</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Replicate</code>( <var class="Arg">elem</var>, <var class="Arg">n</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: List of <var class="Arg">n</var> copies of <var class="Arg">elem</var></p>
+
+<p><a id="X7C3EDA5E7A24196C" name="X7C3EDA5E7A24196C"></a></p>
+
+<h4>9.2 <span class="Heading">Representation theoretic functions</span></h4>
+
+<p><a id="X841424DF824E258B" name="X841424DF824E258B"></a></p>
+
+<h5>9.2-1 TensorProductRepLists</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; TensorProductRepLists</code>( <var class="Arg">list1</var>, <var class="Arg">list2</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: All possible tensor products given by <span class="Math">\rho \otimes \tau</span> where <span class="Math">\rho : G \to \mbox{GL}(V)</span> is taken from <var class="Arg">list1</var> and <span class="Math">\tau : H \to \mbox{GL}(W)</span> is taken from <var class="Arg">list2</var>. The result is then a list of representations of <span class="Math">G \times H</span>.</p>
+
+<p><a id="X84EAE3DB7FA8102C" name="X84EAE3DB7FA8102C"></a></p>
+
+<h5>9.2-2 DirectSumOfRepresentations</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; DirectSumOfRepresentations</code>( <var class="Arg">list</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: Direct sum of the list of representations <var class="Arg">list</var></p>
+
+<p><a id="X85147CF97B912CC3" name="X85147CF97B912CC3"></a></p>
+
+<h5>9.2-3 DegreeOfRepresentation</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; DegreeOfRepresentation</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: Degree of the representation <var class="Arg">rho</var>. That is, <span class="Math">\mbox{Tr}(\rho(e_G))</span>, where <span class="Math">e_G</span> is the identity of the group <span class="Math">G</span> that <var class="Arg">rho</var> has as domain.</p>
+
+<p><a id="X7B14287E7BFC548D" name="X7B14287E7BFC548D"></a></p>
+
+<h5>9.2-4 PermToLinearRep</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; PermToLinearRep</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: Linear representation <span class="Math">\rho</span> isomorphic to the permutation representation <var class="Arg">rho</var>.</p>
+
+<p><a id="X7E67A4817A5E4879" name="X7E67A4817A5E4879"></a></p>
+
+<h5>9.2-5 IsOrthonormalSet</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsOrthonormalSet</code>( <var class="Arg">S</var>, <var class="Arg">prod</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: Whether <var class="Arg">S</var> is an orthonormal set with respect to the inner product <var class="Arg">prod</var>.</p>
+
+
+<div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap8.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chapInd.html">[Next Chapter]</a>&nbsp;  </div>
+
+
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chap8.html">8</a>  <a href="chap9.html">9</a>  <a href="chapInd.html">Ind</a>  </div>
+
+<hr />
+<p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
+</body>
+</html>

@@ -5,7 +5,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>GAP (RepnDecomp) - Chapter 2: Calculating centralizer rings</title>
+<title>GAP (RepnDecomp) - Chapter 2: Isomorphisms between representations</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta name="generator" content="GAPDoc2HTML" />
 <link rel="stylesheet" type="text/css" href="manual.css" />
@@ -15,68 +15,106 @@
 <body class="chap2"  onload="jscontent()">
 
 
-<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chapInd.html">Ind</a>  </div>
+<div class="chlinktop"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <div class="chlinkprevnexttop">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3.html">[Next Chapter]</a>&nbsp;  </div>
 
 <p id="mathjaxlink" class="pcenter"><a href="chap2_mj.html">[MathJax on]</a></p>
-<p><a id="X78E835B779A7EB23" name="X78E835B779A7EB23"></a></p>
-<div class="ChapSects"><a href="chap2.html#X78E835B779A7EB23">2 <span class="Heading">Calculating centralizer rings</span></a>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2.html#X823F06E685D5D655">2.1 <span class="Heading">Centralizer (commutant) of a representation</span></a>
+<p><a id="X7D9B253E794EF912" name="X7D9B253E794EF912"></a></p>
+<div class="ChapSects"><a href="chap2.html#X7D9B253E794EF912">2 <span class="Heading">Isomorphisms between representations</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2.html#X7AEE81C2809E0B98">2.1 <span class="Heading">Finding explicit isomorphisms</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X798AD78F858A73FF">2.1-1 RepresentationCentralizerBlocks</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X7F0D3CFB7800149A">2.1-1 LinearRepresentationIsomorphism</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X841DE7D08491325F">2.1-2 LinearRepresentationIsomorphismSlow</a></span>
 </div></div>
-<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2.html#X7E993D5E86E2047A">2.2 <span class="Heading">Useful convenience functions</span></a>
+<div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap2.html#X85DAC9E583D8EFB9">2.2 <span class="Heading">Testing isomorphisms</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X7DEC18DE7E169D9D">2.2-1 RepresentationCentralizer</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X87E5BAEB82DC00C3">2.2-2 ClassSumCentralizer</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X86EB9DD586958473">2.2-1 AreRepsIsomorphic</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap2.html#X81080E1B7917B361">2.2-2 IsLinearRepresentationIsomorphism</a></span>
 </div></div>
 </div>
 
-<h3>2 <span class="Heading">Calculating centralizer rings</span></h3>
+<h3>2 <span class="Heading">Isomorphisms between representations</span></h3>
 
-<p><a id="X823F06E685D5D655" name="X823F06E685D5D655"></a></p>
+<p><a id="X7AEE81C2809E0B98" name="X7AEE81C2809E0B98"></a></p>
 
-<h4>2.1 <span class="Heading">Centralizer (commutant) of a representation</span></h4>
+<h4>2.1 <span class="Heading">Finding explicit isomorphisms</span></h4>
 
-<p><a id="X798AD78F858A73FF" name="X798AD78F858A73FF"></a></p>
+<p><a id="X7F0D3CFB7800149A" name="X7F0D3CFB7800149A"></a></p>
 
-<h5>2.1-1 RepresentationCentralizerBlocks</h5>
+<h5>2.1-1 LinearRepresentationIsomorphism</h5>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; RepresentationCentralizerBlocks</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: List of standard generators (as a vector space) for the centralizer ring of <span class="Math">\rho(G)</span>, written in the basis given by <code class="func">BlockDiagonalBasis</code> (<span class="RefLink">???</span>). The matrices are given as a list of blocks.</p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinearRepresentationIsomorphism</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var>[, <var class="Arg">rho_cent_basis</var>, <var class="Arg">tau_cent_basis</var>] )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A matrix <span class="Math">A</span> or fail</p>
 
-<p>Let <span class="Math">G</span> have irreducible representations <span class="Math">\rho_i</span> with multiplicities <span class="Math">m_i</span>. The centralizer has dimension <span class="Math">\sum_i m_i^2</span> as a <span class="Math">\mathbb{C}</span>-vector space. This function gives the minimal number of generators required.</p>
+<p>Let <span class="Math">\rho : G \to GL(V)</span> and <span class="Math">\tau : G \to GL(W)</span>. If there exists a linear map <span class="Math">A : V \to W</span> such that for all <span class="Math">g \in G</span>, <span class="Math">\tau(g)A = A\rho(g)</span>, this function returns one such <span class="Math">A</span>. <span class="Math">A</span> is the isomorphism between the representations. If the representations are not isomorphic, then fail is returned.</p>
 
-<p><a id="X7E993D5E86E2047A" name="X7E993D5E86E2047A"></a></p>
+<p>There are three methods that we can use to compute an isomorphism of linear representations, you can select one by passing options to the function.</p>
 
-<h4>2.2 <span class="Heading">Useful convenience functions</span></h4>
 
-<p><a id="X7DEC18DE7E169D9D" name="X7DEC18DE7E169D9D"></a></p>
+<ul>
+<li><p>`use_kronecker`: Assumes the matrices are small enough that their Kronecker products can fit into memory. Uses <code class="func">GroupSumBSGS</code> (<a href="chap4.html#X85E8A5FC844DC09A"><span class="RefLink">4.2-1</span></a>) and `KroneckerProduct` to compute an element of the fixed subspace of <span class="Math">\rho \otimes \tau^*</span>.</p>
 
-<h5>2.2-1 RepresentationCentralizer</h5>
+</li>
+</ul>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; RepresentationCentralizer</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: List of standard generators (as a vector space) for the centralizer ring of <span class="Math">\rho(G)</span>.</p>
+<ul>
+<li><p>`use_orbit_sum`: Finds an isomorphism by summing orbits of the the action of <span class="Math">\rho \otimes \tau^*</span> on matrices. Note that orbits could be very large, so this could be as bad as summing over the whole group.</p>
 
-<p>This gives the same result as <code class="func">RepresentationCentralizerBlocks</code> (<a href="chap2.html#X798AD78F858A73FF"><span class="RefLink">2.1-1</span></a>), but with the matrices given in their entirety: not as lists of blocks, but as full matrices.</p>
+</li>
+</ul>
 
-<p><a id="X87E5BAEB82DC00C3" name="X87E5BAEB82DC00C3"></a></p>
+<ul>
+<li><p>The default, sums over the whole group to compute the projection onto the fixed subspace.</p>
 
-<h5>2.2-2 ClassSumCentralizer</h5>
+</li>
+</ul>
+<p><a id="X841DE7D08491325F" name="X841DE7D08491325F"></a></p>
 
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ClassSumCentralizer</code>( <var class="Arg">rho</var>, <var class="Arg">class</var>, <var class="Arg">cent_basis</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: <span class="Math">\sum_{s \in t^G} \rho(s)</span>, where <span class="Math">t</span> is a representative of the conjugacy class <var class="Arg">class</var> of <span class="Math">G</span>.</p>
+<h5>2.1-2 LinearRepresentationIsomorphismSlow</h5>
 
-<p>Uses the given orthonormal (very important and is not checked by this function) basis (with respect to the inner product <span class="Math">\langle A, B \rangle = \mbox{Trace}(AB^*)</span>) for the centralizer ring of <var class="Arg">rho</var> to calculate the sum of the conjugacy class <var class="Arg">class</var> quickly, i.e. without summing over the class.</p>
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LinearRepresentationIsomorphismSlow</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: A matrix <span class="Math">A</span> or fail</p>
+
+<p>Gives the same result as <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap2.html#X7F0D3CFB7800149A"><span class="RefLink">2.1-1</span></a>), but this function uses a simpler method which always involves summing over <span class="Math">G</span>, without using <code class="func">GroupSumBSGS</code> (<a href="chap4.html#X85E8A5FC844DC09A"><span class="RefLink">4.2-1</span></a>). This might be useful in some cases if computing a good BSGS is difficult. However, for all cases that have been tested, it is slow (as the name suggests).</p>
+
+<p><a id="X85DAC9E583D8EFB9" name="X85DAC9E583D8EFB9"></a></p>
+
+<h4>2.2 <span class="Heading">Testing isomorphisms</span></h4>
+
+<p>Since representations of finite groups over <span class="Math">\mathbb{C}</span> are determined by their characters, it is easy to check whether two representations are isomorphic by checking if they have the same character. We try to use characters wherever possible.</p>
+
+<p><a id="X86EB9DD586958473" name="X86EB9DD586958473"></a></p>
+
+<h5>2.2-1 AreRepsIsomorphic</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AreRepsIsomorphic</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as representations, false otherwise.</p>
+
+<p><a id="X81080E1B7917B361" name="X81080E1B7917B361"></a></p>
+
+<h5>2.2-2 IsLinearRepresentationIsomorphism</h5>
+
+<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsLinearRepresentationIsomorphism</code>( <var class="Arg">A</var>, <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
+<p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as as representations with the isomorphism given by the linear map <var class="Arg">A</var></p>
+
+<p>This function tests if, for all <span class="Math">g \in G</span>, <span class="Math">A \rho(g) = \tau(g) A</span>. That is, true is returned iff <span class="Math">A</span> is the intertwining operator taking <span class="Math">\rho</span> to <span class="Math">\tau</span>. Note that it is always the case that:</p>
+
+
+<div class="example"><pre>
+ gap&gt; IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
+ true
+</pre></div>
+
+<p>as long as an isomorphism between the given representations actually exists.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3.html">[Next Chapter]</a>&nbsp;  </div>
 
 
-<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chap7.html">7</a>  <a href="chapInd.html">Ind</a>  </div>
+<div class="chlinkbot"><span class="chlink1">Goto Chapter: </span><a href="chap0.html">Top</a>  <a href="chap1.html">1</a>  <a href="chap2.html">2</a>  <a href="chap3.html">3</a>  <a href="chap4.html">4</a>  <a href="chap5.html">5</a>  <a href="chap6.html">6</a>  <a href="chapInd.html">Ind</a>  </div>
 
 <hr />
 <p class="foot">generated by <a href="http://www.math.rwth-aachen.de/~Frank.Luebeck/GAPDoc">GAPDoc2HTML</a></p>
