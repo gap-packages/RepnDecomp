@@ -1,4 +1,4 @@
-#! @Chapter Decomposing representations into irreducibles
+#! @Chapter Computing decompositions of representations
 
 #! @Section Block diagonalizing
 

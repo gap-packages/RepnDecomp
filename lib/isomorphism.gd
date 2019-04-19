@@ -11,24 +11,23 @@
 #! G$, $\tau(g)A = A\rho(g)$, this function returns one such $A$. $A$
 #! is the isomorphism between the representations. If the
 #! representations are not isomorphic, then fail is returned.
-
+#!
 #! There are three methods that we can use to compute an isomorphism
 #! of linear representations, you can select one by passing options to
 #! the function.
-
+#!
 #! * `use_kronecker`: Assumes the matrices are small enough that their
 #!   Kronecker products can fit into memory. Uses <Ref
 #!   Func="GroupSumBSGS" /> and `KroneckerProduct` to compute an
 #!   element of the fixed subspace of $\rho \otimes \tau^*$.
-
+#!
 #! * `use_orbit_sum`: Finds an isomorphism by summing orbits of the
 #!   the action of $\rho \otimes \tau^*$ on matrices. Note that orbits
 #!   could be very large, so this could be as bad as summing over the
 #!   whole group.
-
+#!
 #! * The default, sums over the whole group to compute the projection
-#!   the fixed subspace.
-
+#!   onto the fixed subspace.
 DeclareGlobalFunction( "LinearRepresentationIsomorphism" );
 
 #! @Arguments rho, tau

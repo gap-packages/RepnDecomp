@@ -52,32 +52,31 @@ DeclareGlobalFunction( "IrreducibleDecompositionCollected", IsGroupHomomorphism 
 #! calculations at the same time ensures consistency when it comes to
 #! irrep ordering, block ordering and basis ordering. There is no
 #! canonical ordering of irreps, so this is crucial.
-
+#!
 #! <A>irreps</A> is the complete list of irreps involved in the direct
 #! sum decomposition of <A>rho</A>, this can be given in case the
 #! default (running Dixon's algorithm) is too expensive, or e.g. you
 #! don't want representations over Cyclotomics.
-
+#!
 #! The return value of this function is a record with fields:
-
+#!
 #! * `basis`: The basis that block diagonalises $\rho$, see <Ref
 #!   Func="BlockDiagonalBasisOfRepresentation" />.
-
+#!
 #! * `diagonal_rep`: $\rho$, block diagonalised with the basis
 #!   above. See <Ref Func="BlockDiagonalRepresentation" />
-
+#!
 #! * `decomposition`: The irreducible $G$-invariant subspaces,
 #!   collected according to isomorphism, see <Ref
 #!   Func="IrreducibleDecompositionCollected" />
-
+#!
 #! * `centralizer_basis`: An orthonormal basis for the centralizer
 #!   ring of $\rho$, written in block form. See <Ref
-#!   Func="RepresentationCentralizerBlocks" />
-
+#!   Func="CentralizerBlocksOfRepresentation" />
+#!
 #! Pass the option `parallel` for the computations per-irrep to be
 #! done in parallel.
-
+#!
 #! Pass the option `irreps` with the complete list of irreps of $\rho$
 #! to avoid recomputing this list (could be very expensive)
-
 DeclareAttribute( "REPN_ComputeUsingSerre", IsGroupHomomorphism );
