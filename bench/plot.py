@@ -34,9 +34,9 @@ def plot(fname):
     pts = np.array([[float(s) for s in line.split(" ")] for line in data])
     to_plot = pts.T
 
-    do_plot(to_plot, 0, 4, "group size", "time taken", f'{fname}: |G| vs t', f'{fname}.png')
-    do_plot(to_plot, 2, 4, "num classes", "time taken", f'{fname}: |cc(G)| vs t', f'{fname}.png')
-    do_plot(to_plot, 3, 4, "degree", "time taken", f'{fname}: deg vs t', f'{fname}.png')
+    do_plot(to_plot, 0, 4, "group size", "time taken", f'{fname}: |G| vs t', f'{fname}_size.png')
+    do_plot(to_plot, 2, 4, "num classes", "time taken", f'{fname}: |cc(G)| vs t', f'{fname}_classes.png')
+    do_plot(to_plot, 3, 4, "degree", "time taken", f'{fname}: deg vs t', f'{fname}_degree.png')
 
 def tolatex(data, header, output_file):
     output = ""

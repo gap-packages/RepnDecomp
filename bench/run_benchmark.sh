@@ -1,13 +1,23 @@
 #!/bin/bash
 
-bench_times=5
+# number of examples to benchmark (generated randomly)
+bench_times=30
 
 write_bench_file() {
     bench_str="$1"
     name="$2"
     cat <<EOF > ${name}.g
-LoadPackage("RepnDecomp");
-BenchMany@RepnDecomp(rep -> ${bench_str}, "${name}.csv", ${bench_times});
+LoadPackage("RepnDecomp");;
+# options for the random generator
+opt := rec(lo := 10,
+           hi := 100,
+           num_irreps := 2,
+           min_multiplicity := 1,
+           max_multiplicity := 2,
+           max_total_degree := 10,
+           restrict_small_degree := false,
+           small_degree := 10);;
+BenchMany@RepnDecomp(rep -> ${bench_str}, "${name}.csv", ${bench_times}, opt);
 EOF
 }
 
