@@ -3,8 +3,8 @@
 #! @Section Algorithms due to Serre
 
 #! Note: all computation in this section is actually done in the
-#! function <Ref Attr="REPN_ComputeUsingSerre" />, the other functions
-#! are wrappers around it.
+#! function <Ref Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />,
+#!the other functions are wrappers around it.
 
 #! @Arguments rho
 

@@ -79,18 +79,18 @@
 <h5>5.2-1 REPN_ComputeUsingMyMethod</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; REPN_ComputeUsingMyMethod</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
-<p>Returns: A record in the same format as <code class="func">REPN_ComputeUsingSerre</code> (<span class="RefLink">???</span>)</p>
+<p>Returns: A record in the same format as <code class="func">REPN_ComputeUsingSerre</code> (<a href="chap5.html#X7C1CF0547D72D354"><span class="RefLink">5.3-4</span></a>)</p>
 
-<p>Computes the same values as <code class="func">REPN_ComputeUsingSerre</code> (<span class="RefLink">???</span>), taking the same options. The heavy lifting of this method is done by <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap2.html#X7F0D3CFB7800149A"><span class="RefLink">2.1-1</span></a>), where there are some further options that can be passed to influence algorithms used.</p>
+<p>Computes the same values as <code class="func">REPN_ComputeUsingSerre</code> (<a href="chap5.html#X7C1CF0547D72D354"><span class="RefLink">5.3-4</span></a>), taking the same options. The heavy lifting of this method is done by <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap2.html#X7F0D3CFB7800149A"><span class="RefLink">2.1-1</span></a>), where there are some further options that can be passed to influence algorithms used.</p>
 
 <p><a id="X7DB659DB7E48D502" name="X7DB659DB7E48D502"></a></p>
 
 <h5>5.2-2 REPN_ComputeUsingMyMethodCanonical</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; REPN_ComputeUsingMyMethodCanonical</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;attribute&nbsp;)</td></tr></table></div>
-<p>Returns: A record in the same format as <code class="func">REPN_ComputeUsingMyMethod</code> (<span class="RefLink">???</span>).</p>
+<p>Returns: A record in the same format as <code class="func">REPN_ComputeUsingMyMethod</code> (<a href="chap5.html#X831574AD864C94A8"><span class="RefLink">5.2-1</span></a>).</p>
 
-<p>Performs the same computation as <code class="func">REPN_ComputeUsingMyMethod</code> (<span class="RefLink">???</span>), but first splits the representation into canonical summands using <code class="func">CanonicalDecomposition</code> (<a href="chap5.html#X7E95B0367992BEC4"><span class="RefLink">5.3-1</span></a>). This might reduce the size of the matrices we need to work with significantly, so could be much faster.</p>
+<p>Performs the same computation as <code class="func">REPN_ComputeUsingMyMethod</code> (<a href="chap5.html#X831574AD864C94A8"><span class="RefLink">5.2-1</span></a>), but first splits the representation into canonical summands using <code class="func">CanonicalDecomposition</code> (<a href="chap5.html#X7E95B0367992BEC4"><span class="RefLink">5.3-1</span></a>). This might reduce the size of the matrices we need to work with significantly, so could be much faster.</p>
 
 <p>If the option `parallel` is given, the decomposition of canonical summands into irreps is done in parallel, which could be much faster.</p>
 
@@ -98,7 +98,7 @@
 
 <h4>5.3 <span class="Heading">Algorithms due to Serre</span></h4>
 
-<p>Note: all computation in this section is actually done in the function <code class="func">REPN_ComputeUsingSerre</code> (<span class="RefLink">???</span>), the other functions are wrappers around it.</p>
+<p>Note: all computation in this section is actually done in the function <code class="func">REPN_ComputeUsingSerre</code> (<a href="chap5.html#X7C1CF0547D72D354"><span class="RefLink">5.3-4</span></a>), the other functions are wrappers around it.</p>
 
 <p><a id="X7E95B0367992BEC4" name="X7E95B0367992BEC4"></a></p>
 

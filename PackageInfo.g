@@ -11,7 +11,7 @@ SetPackageInfo( rec(
 PackageName := "RepnDecomp",
 Subtitle := "Decompose representations of finite groups into irreducibles",
 Version := "0.1",
-Date := "27/08/2018", # dd/mm/yyyy format
+Date := "20/04/2019", # dd/mm/yyyy format
 
 Persons := [
   rec(
@@ -21,6 +21,14 @@ Persons := [
     LastName := "Hymabaccus",
     WWWHome := "https://kaashif.co.uk",
     Email := "kaashif@kaashif.co.uk",
+    Place := "Oxford",
+    Institution := "University of Oxford",
+  ),
+  rec(
+    IsAuthor := false,
+    IsMaintainer := false,
+    FirstNames := "Dmitrii",
+    LastName := "Pasechnik",
     Place := "Oxford",
     Institution := "University of Oxford",
   ),
@@ -53,28 +61,25 @@ AbstractHTML   :=  "",
 
 PackageDoc := rec(
   BookName  := "RepnDecomp",
-  ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
-  PDFFile   := "doc/manual.pdf",
-  SixFile   := "doc/manual.six",
+  ArchiveURLSubset := ["public"],
+  HTMLStart := "public/chap0.html",
+  PDFFile   := "public/manual.pdf",
+  SixFile   := "public/manual.six",
   LongTitle := "Decompose representations of finite groups into irreducibles",
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.8",
-  NeededOtherPackages := [ [ "GAPDoc", ">= 1.6.1" ] ],
+  GAP := ">= 4.10",
+  NeededOtherPackages := [ [ "GAPDoc", ">= 1.6.1" ],
+                           [ "GRAPE", ">= 4.8.1" ] ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
 ),
 
-AvailabilityTest := function()
-        return true;
-    end,
+AvailabilityTest := function() return true; end,
 
 TestFile := "tst/testall.g",
 
 #Keywords := [ "TODO" ],
 
 ));
-
-
