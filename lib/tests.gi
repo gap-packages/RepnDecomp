@@ -301,13 +301,9 @@ BenchMany@ := function(f, out, n, opt)
     # clear file
     PrintTo(out);
 
-    # this set of options to the random representation generator is
-    # designed to avoid trivial cases
-
-
     # We deliberately avoid resetting the GlobalMersenneTwister since
-    # we want the same reps to come up when you bench. This doesn't
-    # really matter, but it's nicer.
+    # we want the same reps to come up when you benchmark, for
+    # fairness.
     repeat
         rep := RandomRepresentation@(opt);
         size := rep.G[1];
@@ -315,10 +311,11 @@ BenchMany@ := function(f, out, n, opt)
         num_classes := Length(ConjugacyClasses(Source(rep.rep)));
         degree := DegreeOfRepresentation(rep.rep);
 
-        # do the bench
-        t0 := Runtime();
+        # do the bench, using wallclock!! time
+        # this actually significantly affects results for parallel algorithms
+        t0 := NanosecondsSinceEpoch();
         f(rep);
-        t1 := Runtime();
+        t1 := NanosecondsSinceEpoch();
         time_taken := t1 - t0;
 
         AppendTo(out, size, " ", id, " ", num_classes, " ", degree, " ", time_taken, "\n");
