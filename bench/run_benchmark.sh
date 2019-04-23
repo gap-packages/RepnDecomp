@@ -6,17 +6,14 @@
 # * the regular representations of same
 # * some graph automorphism groups (Johnson, Hamming)
 
-# first we compute all of the IrreducibleRepresentations
-echo -n "irreps := [" > irreps.g
-for n in {2..6}; do
-    echo Generating irreps of S_$n
-    gap -q <<<"SetInfoLevel(InfoWarning, 0);; Display(IrreducibleRepresentations(SymmetricGroup($n)));" | sed -e 's/Pcgs/List/g' | tr -d '\r'| perl -pe 'chomp' >> irreps.g
-    if [[ $n != 6 ]]; then
-        echo "," >> irreps.g
-    fi;
-done
-echo "];;" >> irreps.g
-dos2unix irreps.g
+big_n=7
+small_n=4
+
+# first we compute all of the IrreducibleRepresentations, using sage
+# (implements specht representation, much faster than GAP)
+echo -n Computing irreps...
+./gen_irreps.sage $big_n > irreps.g
+echo done
 
 # we can test really big symmetric groups since the defining
 # representation is quite small
@@ -26,7 +23,7 @@ run_symmetric_test () {
     cat <<EOF > ${name}.g
 LoadPackage("RepnDecomp");;
 Read("irreps.g");;
-rhos := List([2..6], n -> ConvertRhoIfNeeded@RepnDecomp(IdentityMapping(SymmetricGroup(n))));;
+rhos := List([2..${big_n}], n -> ConvertRhoIfNeeded@RepnDecomp(IdentityMapping(SymmetricGroup(n))));;
 BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv", irreps);
 EOF
     echo Running ${name}.g
@@ -40,7 +37,7 @@ run_regular_test () {
     cat <<EOF > ${name}.g
 LoadPackage("RepnDecomp");;
 Read("irreps.g");;
-rhos := List([2..6], n -> ConvertRhoIfNeeded@RepnDecomp(RegularActionHomomorphism(SymmetricGroup(n))));;
+rhos := List([2..${small_n}], n -> ConvertRhoIfNeeded@RepnDecomp(RegularActionHomomorphism(SymmetricGroup(n))));;
 BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv", irreps);
 EOF
     echo Running ${name}.g
