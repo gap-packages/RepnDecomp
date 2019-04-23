@@ -107,3 +107,5 @@ run_all_tests() {
 run_all_tests run_symmetric_test "symmetric"
 run_all_tests run_regular_test "regular"
 run_all_tests run_random_test "random"
+
+rm *.g
