@@ -295,7 +295,8 @@ WrapRep@ := function(rho)
                isomorphism_type := fail,
                centralizer_basis := fail,
                candidate_nice_basis := fail,
-               irreps := fail,
+               # not benchmarking dixon's alg, so we save it here
+               irreps := IrreducibleRepresentations(Source(rho)),
                G := [0,0]);
 end;
 
@@ -308,6 +309,11 @@ end;
 BenchSingle@ := function(f, out, rep)
     local size, id, num_classes, degree, t0, t1, time_taken;
 
+    size := Size(Source(rep.rep));
+    id := rep.G[2];
+    num_classes := Length(ConjugacyClasses(Source(rep.rep)));
+    degree := DegreeOfRepresentation(rep.rep);
+
     # do the bench, using wallclock!! time
     # this actually significantly affects results for parallel algorithms
     t0 := NanosecondsSinceEpoch();
@@ -315,12 +321,7 @@ BenchSingle@ := function(f, out, rep)
     t1 := NanosecondsSinceEpoch();
     time_taken := t1 - t0;
 
-    size := Size(Source(rep.rep));
-    id := rep.G[2];
-    num_classes := Length(ConjugacyClasses(Source(rep.rep)));
-    degree := DegreeOfRepresentation(rep.rep);
-
-    AppendTo(out, size, " ", id, " ", num_classes, " ", degree, " ", time_taken, "\n");
+        AppendTo(out, size, " ", id, " ", num_classes, " ", degree, " ", time_taken, "\n");
 end;
 
 # benchmarks a list of representations. note for best results, these

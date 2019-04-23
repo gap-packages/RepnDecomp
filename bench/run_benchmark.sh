@@ -13,7 +13,7 @@ run_symmetric_test () {
     name="$2"
     cat <<EOF > ${name}.g
 LoadPackage("RepnDecomp");;
-rhos := List([1..10], n -> ConvertRhoIfNeeded@RepnDecomp(IdentityMapping(SymmetricGroup(n))));
+rhos := List([2..6], n -> ConvertRhoIfNeeded@RepnDecomp(IdentityMapping(SymmetricGroup(n))));;
 BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv");
 EOF
     echo Running ${name}.g
@@ -26,14 +26,12 @@ run_regular_test () {
     name="$2"
     cat <<EOF > ${name}.g
 LoadPackage("RepnDecomp");;
-rhos := List([1..6], n -> ConvertRhoIfNeeded@RepnDecomp(RegularActionHomomorphism(SymmetricGroup(n))));
+rhos := List([2..6], n -> ConvertRhoIfNeeded@RepnDecomp(RegularActionHomomorphism(SymmetricGroup(n))));;
 BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv");
 EOF
     echo Running ${name}.g
     gap -q < ${name}.g
 }
-
-# TODO: actually do the tests, decide which to test etc
 
 # next, we do the random tests
 
@@ -46,8 +44,8 @@ run_random_test() {
     cat <<EOF > ${name}.g
 LoadPackage("RepnDecomp");;
 # options for the random generator
-opt := rec(lo := 50,
-           hi := 200,
+opt := rec(lo := 10,
+           hi := 100,
            num_irreps := 2,
            min_multiplicity := 1,
            max_multiplicity := 2,
@@ -60,32 +58,41 @@ EOF
     gap -q < ${name}.g
 }
 
-# finding intertwining operators has 3 methods, based on how you
-# compute the image of the trivial projection: orbit sums, using
-# kronecker/BSGS or naive summing, this is the only variable in the
-# alternate method
-run_random_test "REPN_ComputeUsingMyMethod(rep.rep : irreps := rep.irreps)" "mymethod_naive"
-run_random_test "REPN_ComputeUsingMyMethod(rep.rep : irreps := rep.irreps, use_kronecker)" "mymethod_kronecker"
-run_random_test "REPN_ComputeUsingMyMethod(rep.rep : irreps := rep.irreps, use_orbit_sum)" "mymethod_orbit_sum"
+# runs scripts for all combinations we want to test, using the given generation script
+run_all_tests() {
+    fn=$1
+    tag=$2
+    # finding intertwining operators has 3 methods, based on how you
+    # compute the image of the trivial projection: orbit sums, using
+    # kronecker/BSGS or naive summing, this is the only variable in the
+    # alternate method
+    $fn "REPN_ComputeUsingMyMethod(rep.rep : irreps := rep.irreps)" "${tag}_mymethod_naive"
+    $fn "REPN_ComputeUsingMyMethod(rep.rep : irreps := rep.irreps, use_kronecker)" "${tag}_mymethod_kronecker"
+    $fn "REPN_ComputeUsingMyMethod(rep.rep : irreps := rep.irreps, use_orbit_sum)" "${tag}_mymethod_orbit_sum"
 
-# do the same for mymethodcanonical
-run_random_test "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps)" "mymethod_canonical_naive"
-run_random_test "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_kronecker)" "mymethod_canonical_kronecker"
-run_random_test "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_orbit_sum)" "mymethod_canonical_orbit_sum"
+    # do the same for mymethodcanonical
+    $fn "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps)" "${tag}_mymethod_canonical_naive"
+    $fn "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_kronecker)" "${tag}_mymethod_canonical_kronecker"
+    $fn "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_orbit_sum)" "${tag}_mymethod_canonical_orbit_sum"
 
-# and the same for mymethodcanonical in parallel, to see the
-# difference
-run_random_test "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, parallel)" "mymethod_parallel_naive"
-run_random_test "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_kronecker, parallel)" "mymethod_parallel_kronecker"
-run_random_test "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_orbit_sum, parallel)" "mymethod_parallel_orbit_sum"
+    # and the same for mymethodcanonical in parallel, to see the
+    # difference
+    $fn "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, parallel)" "${tag}_mymethod_parallel_naive"
+    $fn "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_kronecker, parallel)" "${tag}_mymethod_parallel_kronecker"
+    $fn "REPN_ComputeUsingMyMethodCanonical(rep.rep : irreps := rep.irreps, use_orbit_sum, parallel)" "${tag}_mymethod_parallel_orbit_sum"
 
-# serre's method has using kroneckers and not as the only variables we
-# can really test randomly. need to get unitary reps and orthonormal
-# centraliser bases to test cent_basis stuff, can't really do this
-# randomly
-run_random_test "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps)" "serre_naive"
-run_random_test "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker)" "serre_kronecker"
+    # serre's method has using kroneckers and not as the only variables we
+    # can really test randomly. need to get unitary reps and orthonormal
+    # centraliser bases to test cent_basis stuff, can't really do this
+    # randomly
+    $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps)" "${tag}_serre_naive"
+    $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker)" "${tag}_serre_kronecker"
 
-# the same but in parallel
-run_random_test "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, parallel)" "serre_parallel_naive"
-run_random_test "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker, parallel)" "serre_parallel_kronecker"
+    # the same but in parallel
+    $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, parallel)" "${tag}_serre_parallel_naive"
+    $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker, parallel)" "${tag}_serre_parallel_kronecker"
+}
+
+run_all_tests run_symmetric_test "symmetric"
+run_all_tests run_regular_test "regular"
+#run_all_tests run_random_test "random"
