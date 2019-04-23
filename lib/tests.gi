@@ -287,12 +287,57 @@ TestManyPerm@ := function(f, n)
 
 end;
 
-# benchmarks a function f : random representation -> anything for n
-# random representations, printing output in the format:
+# wraps a representation in a benchmarkable object, some of the info
+# is missing though, since we don't know it yet
+WrapRep@ := function(rho)
+    return rec(rep := rho,
+               diag_rep := fail,
+               isomorphism_type := fail,
+               centralizer_basis := fail,
+               candidate_nice_basis := fail,
+               irreps := fail,
+               G := [0,0]);
+end;
+
+# benchmarks a function f : representation -> anything, printing
+# results in the format:
 #
 # group size | group id | nr conjugacy classes | degree | time taken
 #
 # output is printed to the file with name out
+BenchSingle@ := function(f, out, rep)
+    local size, id, num_classes, degree, t0, t1, time_taken;
+
+    # do the bench, using wallclock!! time
+    # this actually significantly affects results for parallel algorithms
+    t0 := NanosecondsSinceEpoch();
+    f(rep);
+    t1 := NanosecondsSinceEpoch();
+    time_taken := t1 - t0;
+
+    size := Size(Source(rep.rep));
+    id := rep.G[2];
+    num_classes := Length(ConjugacyClasses(Source(rep.rep)));
+    degree := DegreeOfRepresentation(rep.rep);
+
+    AppendTo(out, size, " ", id, " ", num_classes, " ", degree, " ", time_taken, "\n");
+end;
+
+# benchmarks a list of representations. note for best results, these
+# objects should be fresh, i.e. have no attributes set
+BenchList@ := function(f, rhos, out)
+    local rho, tested;
+    PrintTo(out);
+
+    tested := 1;
+
+    for rho in rhos do
+        BenchSingle@(f, out, WrapRep@(rho));
+        Print("done ", tested, "\n");
+        tested := tested + 1;
+    od;
+end;
+
 BenchMany@ := function(f, out, n, opt)
     local rep, size, id, num_classes, degree, t0, t1, time_taken, tested;
 
@@ -306,20 +351,7 @@ BenchMany@ := function(f, out, n, opt)
     # fairness.
     repeat
         rep := RandomRepresentation@(opt);
-        size := rep.G[1];
-        id := rep.G[2];
-        num_classes := Length(ConjugacyClasses(Source(rep.rep)));
-        degree := DegreeOfRepresentation(rep.rep);
-
-        # do the bench, using wallclock!! time
-        # this actually significantly affects results for parallel algorithms
-        t0 := NanosecondsSinceEpoch();
-        f(rep);
-        t1 := NanosecondsSinceEpoch();
-        time_taken := t1 - t0;
-
-        AppendTo(out, size, " ", id, " ", num_classes, " ", degree, " ", time_taken, "\n");
-
+        BenchSingle@(f, out, rep);
         tested := tested + 1;
         Print("done ", tested, "\n");
     until tested = n;
