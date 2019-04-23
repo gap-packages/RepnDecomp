@@ -289,14 +289,13 @@ end;
 
 # wraps a representation in a benchmarkable object, some of the info
 # is missing though, since we don't know it yet
-WrapRep@ := function(rho)
+WrapRep@ := function(rho, irreps)
     return rec(rep := rho,
                diag_rep := fail,
                isomorphism_type := fail,
                centralizer_basis := fail,
                candidate_nice_basis := fail,
-               # not benchmarking dixon's alg, so we save it here
-               irreps := IrreducibleRepresentations(Source(rho)),
+               irreps := irreps,
                G := [0,0]);
 end;
 
@@ -326,14 +325,14 @@ end;
 
 # benchmarks a list of representations. note for best results, these
 # objects should be fresh, i.e. have no attributes set
-BenchList@ := function(f, rhos, out)
-    local rho, tested;
+BenchList@ := function(f, rhos, out, irreps)
+    local tested, i;
     PrintTo(out);
 
     tested := 1;
 
-    for rho in rhos do
-        BenchSingle@(f, out, WrapRep@(rho));
+    for i in [1..Length(rhos)] do
+        BenchSingle@(f, out, WrapRep@(rhos[i], irreps[i]));
         Print("done ", tested, "\n");
         tested := tested + 1;
     od;
