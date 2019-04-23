@@ -104,8 +104,12 @@ run_all_tests() {
     $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker, parallel)" "${tag}_serre_parallel_kronecker"
 }
 
-run_all_tests run_symmetric_test "symmetric"
-run_all_tests run_regular_test "regular"
-run_all_tests run_random_test "random"
+if [[ "$1" == "all" ]]; then
+    run_all_tests run_symmetric_test "symmetric"
+    run_all_tests run_regular_test "regular"
+    run_all_tests run_random_test "random"
+else
+    run_all_tests run_$1_test "$1"
+fi;
 
 rm *.g

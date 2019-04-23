@@ -4,6 +4,7 @@ import matplotlib, glob, sys, itertools
 
 matplotlib.rcParams['pgf.rcfonts'] = False
 matplotlib.rcParams['pgf.texsystem'] = 'pdflatex'
+matplotlib.rcParams['figure.figsize'] = 10,10
 
 import matplotlib.pyplot as plt
 
@@ -35,8 +36,8 @@ def do_plot_multiple(results_mult, xindex, yindex, xlabel, ylabel, title, fname,
         marker, color = next(marker_color)
         handle, = plt.plot(to_plot[xindex], to_plot[yindex], label=labels[i], marker=marker, linestyle="None", color=color)
         handles.append(handle)
-    plt.legend(handles=handles, loc='best')
-    plt.savefig(fname)
+    lgd = plt.legend(handles=handles, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+    plt.savefig(fname, bbox_extra_artists=[lgd], bbox_inches='tight')
     print(fname)
 
 def read_pts(fname):
