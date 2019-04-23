@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
-import matplotlib, glob
+import matplotlib, glob, sys, itertools
 
 matplotlib.rcParams['pgf.rcfonts'] = False
 matplotlib.rcParams['pgf.texsystem'] = 'pdflatex'
@@ -20,10 +20,26 @@ def do_plot(results, xindex, yindex, xlabel, ylabel, title, fname="graph.png"):
     plt.plot(to_plot[xindex], to_plot[yindex], "rx")
     plt.savefig(fname)
 
-# plots a file with cols:
-# group size | group id | nr conjugacy classes | degree | time taken
-def plot(fname):
+marker_color = itertools.cycle(itertools.product("xo+", "rgbcmyk"))
+
+def do_plot_multiple(results_mult, xindex, yindex, xlabel, ylabel, title, fname, labels):
     global NEXT_FIGURE
+    plt.figure(NEXT_FIGURE)
+    NEXT_FIGURE += 1
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    handles = []
+    for i in range(len(results_mult)):
+        to_plot = np.array(results_mult[i]).T
+        marker, color = next(marker_color)
+        handle, = plt.plot(to_plot[xindex], to_plot[yindex], label=labels[i], marker=marker, linestyle="None", color=color)
+        handles.append(handle)
+    plt.legend(handles=handles, loc='best')
+    plt.savefig(fname)
+    print(fname)
+
+def read_pts(fname):
     data = []
 
     try:
@@ -31,12 +47,23 @@ def plot(fname):
     except FileNotFoundError:
         return
 
-    pts = np.array([[float(s) for s in line.split(" ")] for line in data])
-    to_plot = pts.T
+    return np.array([[float(s) for s in line.split(" ")] for line in data])
 
+# plots a file with cols:
+# group size | group id | nr conjugacy classes | degree | time taken
+def plot(fname):
+    pts = read_pts(fname)
+    to_plot = pts.T
     do_plot(to_plot, 0, 4, "group size", "time taken", f'{fname}: |G| vs t', f'{fname}_size.png')
     do_plot(to_plot, 2, 4, "num classes", "time taken", f'{fname}: |cc(G)| vs t', f'{fname}_classes.png')
     do_plot(to_plot, 3, 4, "degree", "time taken", f'{fname}: deg vs t', f'{fname}_degree.png')
+
+# plots multiple files on the same graph, for comparison
+def plot_multiple(fnames, out_fname):
+    ptss = [read_pts(fname) for fname in fnames]
+    do_plot_multiple(ptss, 0, 4, "group size", "time taken", f'{out_fname}: |G| vs t', f'{out_fname}_size.png', fnames)
+    do_plot_multiple(ptss, 2, 4, "num classes", "time taken", f'{out_fname}: |cc(G)| vs t', f'{out_fname}_classes.png', fnames)
+    do_plot_multiple(ptss, 3, 4, "degree", "time taken", f'{out_fname}: deg vs t', f'{out_fname}_degree.png', fnames)
 
 def tolatex(data, header, output_file):
     output = ""
@@ -53,8 +80,14 @@ def tolatex(data, header, output_file):
 
 header = ["|G|", "id", "|cc(G)|", "degree", "time taken"]
 
-for result_csv in glob.glob("*.csv"):
-    plot(result_csv)
+fnames = sys.argv[2:]
+
+if len(fnames) > 1:
+    plot_multiple(fnames, sys.argv[1])
+else:
+    plot(fnames[0])
+
+for result_csv in fnames:
     with open(result_csv, "r") as result_file:
         lines = result_file.readlines()
         results = [[int(x) for x in row.split(" ")] for row in lines]
