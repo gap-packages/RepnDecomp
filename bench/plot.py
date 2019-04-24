@@ -4,9 +4,16 @@ import matplotlib, glob, sys, itertools
 
 matplotlib.rcParams['pgf.rcfonts'] = False
 matplotlib.rcParams['pgf.texsystem'] = 'pdflatex'
-matplotlib.rcParams['figure.figsize'] = 10,10
+matplotlib.rcParams['figure.figsize'] = 5,5
 
 import matplotlib.pyplot as plt
+
+# prettifies a file name for use in a legend
+def make_pretty_name(fname):
+    s = fname.split('.')[0] # remove .csv
+    words = s.split('_')[1:] # remove first word
+    ret = ' '.join([word.title() for word in words])
+    return ret
 
 NEXT_FIGURE = 1
 
@@ -62,9 +69,10 @@ def plot(fname):
 # plots multiple files on the same graph, for comparison
 def plot_multiple(fnames, out_fname):
     ptss = [read_pts(fname) for fname in fnames]
-    do_plot_multiple(ptss, 0, 4, "group size", "time taken", f'{out_fname}: |G| vs t', f'{out_fname}_size.png', fnames)
-    do_plot_multiple(ptss, 2, 4, "num classes", "time taken", f'{out_fname}: |cc(G)| vs t', f'{out_fname}_classes.png', fnames)
-    do_plot_multiple(ptss, 3, 4, "degree", "time taken", f'{out_fname}: deg vs t', f'{out_fname}_degree.png', fnames)
+    labels = [make_pretty_name(fname) for fname in fnames]
+    do_plot_multiple(ptss, 0, 4, "group size", "time taken", f'{out_fname}: |G| vs t', f'{out_fname}_size.png', labels)
+    do_plot_multiple(ptss, 2, 4, "num classes", "time taken", f'{out_fname}: |cc(G)| vs t', f'{out_fname}_classes.png', labels)
+    do_plot_multiple(ptss, 3, 4, "degree", "time taken", f'{out_fname}: deg vs t', f'{out_fname}_degree.png', labels)
 
 def tolatex(data, header, output_file):
     output = ""

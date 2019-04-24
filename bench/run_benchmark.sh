@@ -6,14 +6,17 @@
 # * the regular representations of same
 # * some graph automorphism groups (Johnson, Hamming)
 
-big_n=7
+big_n=9
 small_n=4
+cyclic_n=7
 
-# first we compute all of the IrreducibleRepresentations, using sage
-# (implements specht representation, much faster than GAP)
-echo -n Computing irreps...
-./gen_irreps.sage $big_n > irreps.g
-echo done
+if [[ $1 != cyclic ]]; then
+    # first we compute all of the IrreducibleRepresentations, using sage
+    # (implements specht representation, much faster than GAP)
+    echo -n Computing irreps...
+    ./gen_irreps.sage $big_n > irreps.g
+    echo done
+fi
 
 # we can test really big symmetric groups since the defining
 # representation is quite small
@@ -44,12 +47,32 @@ EOF
     gap -q < ${name}.g
 }
 
+run_cyclic_test () {
+    bench_str="$1"
+    name="$2"
+    cat <<EOF > ${name}.g
+LoadPackage("RepnDecomp");;
+groups := List([1..${cyclic_n}], CyclicGroup);;
+rhos := List([2..${cyclic_n}], function(n)
+  local regular;
+  regular := ConvertRhoIfNeeded@RepnDecomp(RegularActionHomomorphism(groups[n]));
+  return FuncToHom@RepnDecomp(Source(regular), g -> KroneckerProduct(Image(regular, g), Image(regular, g)));
+end);;
+
+irreps := List([2..${cyclic_n}], n -> IrreducibleRepresentations(groups[n]));;
+
+BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv", irreps);
+EOF
+    echo Running ${name}.g
+    gap -q < ${name}.g
+}
+
 # next, we do the random tests
 
 # number of examples to benchmark (generated randomly)
 bench_times=30
 
-run_random_test() {
+run_random_test () {
     bench_str="$1"
     name="$2"
     cat <<EOF > ${name}.g
@@ -105,6 +128,7 @@ run_all_tests() {
 }
 
 if [[ "$1" == "all" ]]; then
+    run_all_tests run_random_test "cyclic"
     run_all_tests run_symmetric_test "symmetric"
     run_all_tests run_regular_test "regular"
     run_all_tests run_random_test "random"
