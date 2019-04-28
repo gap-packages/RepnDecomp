@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./plot.py regular regular_*.csv
-./plot.py symmetric symmetric_*.csv
-./plot.py random random_*.csv
+./plot.py mymethod_symmetric symmetric_mymethod_{kronecker,naive,orbit_sum}.csv log
+./plot.py serre_symmetric symmetric_serre_{naive,kronecker}.csv log
+./plot.py random random_*.csv nolog

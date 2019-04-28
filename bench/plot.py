@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
-import matplotlib, glob, sys, itertools
+import matplotlib, glob, sys, itertools, math
 
 matplotlib.rcParams['pgf.rcfonts'] = False
 matplotlib.rcParams['pgf.texsystem'] = 'pdflatex'
@@ -16,8 +16,9 @@ def make_pretty_name(fname):
     return ret
 
 NEXT_FIGURE = 1
+log = False
 
-def do_plot(results, xindex, yindex, xlabel, ylabel, title, fname="graph.png"):
+def do_plot(results, xindex, yindex, xlabel, ylabel, title, fname="graph"):
     global NEXT_FIGURE
     to_plot = np.array(results).T
     plt.figure(NEXT_FIGURE)
@@ -26,12 +27,12 @@ def do_plot(results, xindex, yindex, xlabel, ylabel, title, fname="graph.png"):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.plot(to_plot[xindex], to_plot[yindex], "rx")
-    plt.savefig(fname)
-
-marker_color = itertools.cycle(itertools.product("xo+", "rgbcmyk"))
+    plt.savefig(fname+".png")
+    plt.savefig(fname+".pgf")
 
 def do_plot_multiple(results_mult, xindex, yindex, xlabel, ylabel, title, fname, labels):
-    global NEXT_FIGURE
+    global NEXT_FIGURE, log
+    marker_color = itertools.cycle(itertools.product("x+.", "rgbcmyk"))
     plt.figure(NEXT_FIGURE)
     NEXT_FIGURE += 1
     plt.title(title)
@@ -40,6 +41,9 @@ def do_plot_multiple(results_mult, xindex, yindex, xlabel, ylabel, title, fname,
     handles = []
     for i in range(len(results_mult)):
         to_plot = np.array(results_mult[i]).T
+        if log:
+            for j in range(len(to_plot[yindex])):
+                to_plot[yindex][j] = math.log10(to_plot[yindex][j])
         marker, color = next(marker_color)
         handle, = plt.plot(to_plot[xindex], to_plot[yindex], label=labels[i], marker=marker, linestyle="None", color=color)
         handles.append(handle)
@@ -62,17 +66,20 @@ def read_pts(fname):
 def plot(fname):
     pts = read_pts(fname)
     to_plot = pts.T
-    do_plot(to_plot, 0, 4, "group size", "time taken", f'{fname}: |G| vs t', f'{fname}_size.png')
-    do_plot(to_plot, 2, 4, "num classes", "time taken", f'{fname}: |cc(G)| vs t', f'{fname}_classes.png')
-    do_plot(to_plot, 3, 4, "degree", "time taken", f'{fname}: deg vs t', f'{fname}_degree.png')
+    do_plot(to_plot, 0, 4, "group size", "time taken", f'{fname}: |G| vs t', f'{fname}_size')
+    do_plot(to_plot, 2, 4, "num classes", "time taken", f'{fname}: |cc(G)| vs t', f'{fname}_classes')
+    do_plot(to_plot, 3, 4, "degree", "time taken", f'{fname}: deg vs t', f'{fname}_degree')
 
 # plots multiple files on the same graph, for comparison
 def plot_multiple(fnames, out_fname):
+    time_taken = "time taken (ns)"
+    if log:
+        time_taken = "log(time taken (ns))"
     ptss = [read_pts(fname) for fname in fnames]
     labels = [make_pretty_name(fname) for fname in fnames]
-    do_plot_multiple(ptss, 0, 4, "group size", "time taken", f'{out_fname}: |G| vs t', f'{out_fname}_size.png', labels)
-    do_plot_multiple(ptss, 2, 4, "num classes", "time taken", f'{out_fname}: |cc(G)| vs t', f'{out_fname}_classes.png', labels)
-    do_plot_multiple(ptss, 3, 4, "degree", "time taken", f'{out_fname}: deg vs t', f'{out_fname}_degree.png', labels)
+    do_plot_multiple(ptss, 0, 4, "group size", time_taken, f'{out_fname}: |G| vs t', f'{out_fname}_size', labels)
+    do_plot_multiple(ptss, 2, 4, "num classes", time_taken, f'{out_fname}: |cc(G)| vs t', f'{out_fname}_classes', labels)
+    do_plot_multiple(ptss, 3, 4, "degree", time_taken, f'{out_fname}: deg vs t', f'{out_fname}_degree', labels)
 
 def tolatex(data, header, output_file):
     output = ""
@@ -88,6 +95,8 @@ def tolatex(data, header, output_file):
     open(output_file, "w").write(output)
 
 header = ["|G|", "id", "|cc(G)|", "degree", "time taken"]
+
+log = sys.argv.pop() == "log"
 
 fnames = sys.argv[2:]
 
