@@ -8,9 +8,10 @@
 
 big_n=9
 small_n=4
-cyclic_n=7
+cyclic_n=8
+tensor_n=6
 
-if [[ $1 != cyclic ]]; then
+if [[ $1 == symmetric ]] || [[ $1 == regular ]]; then
     # first we compute all of the IrreducibleRepresentations, using sage
     # (implements specht representation, much faster than GAP)
     echo -n Computing irreps...
@@ -61,6 +62,21 @@ end);;
 
 irreps := List([2..${cyclic_n}], n -> IrreducibleRepresentations(groups[n]));;
 
+BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv", irreps);
+EOF
+    echo Running ${name}.g
+    gap -q < ${name}.g
+}
+
+run_tensor_test () {
+    bench_str="$1"
+    name="$2"
+    cat <<EOF > ${name}.g
+LoadPackage("RepnDecomp");;
+G := CyclicGroup(3);;
+irreps := List([1..${tensor_n}], i -> IrreducibleRepresentations(G));;
+regular := ConvertRhoIfNeeded@RepnDecomp(RegularActionHomomorphism(G));;
+rhos := List([1..${tensor_n}], n -> KroneckerList@RepnDecomp(List([1..n], i -> regular)));;
 BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv", irreps);
 EOF
     echo Running ${name}.g

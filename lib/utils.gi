@@ -274,3 +274,17 @@ InstallGlobalFunction( IsOrthonormalSet, function(S, prod)
                                      fi;
                                  end ));
 end );
+
+KroneckerList@ := function(reps)
+    local prod, G;
+    prod := function(mats)
+        local current, mat;
+        current := [[1]];
+        for mat in mats do
+            current := KroneckerProduct(current, mat);
+        od;
+        return current;
+    end;
+    G := Source(reps[1]);
+    return FuncToHom@(G, g -> prod(List(reps, rep -> Image(rep, g))));
+end;
