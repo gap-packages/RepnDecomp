@@ -80,13 +80,13 @@ rhos := List([1..${tensor_n}], n -> KroneckerList@RepnDecomp(List([1..n], i -> r
 BenchList@RepnDecomp(rep -> ${bench_str}, rhos, "${name}.csv", irreps);
 EOF
     echo Running ${name}.g
-    gap -q < ${name}.g
+    gap -q -o 8g < ${name}.g
 }
 
 # next, we do the random tests
 
 # number of examples to benchmark (generated randomly)
-bench_times=30
+bench_times=50
 
 run_random_test () {
     bench_str="$1"
@@ -95,7 +95,7 @@ run_random_test () {
 LoadPackage("RepnDecomp");;
 # options for the random generator
 opt := rec(lo := 10,
-           hi := 100,
+           hi := 200,
            num_irreps := 2,
            min_multiplicity := 1,
            max_multiplicity := 2,
@@ -135,11 +135,11 @@ run_all_tests() {
     # can really test randomly. need to get unitary reps and orthonormal
     # centraliser bases to test cent_basis stuff, can't really do this
     # randomly
+    $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, parallel)" "${tag}_serre_parallel_naive"
     $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps)" "${tag}_serre_naive"
     $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker)" "${tag}_serre_kronecker"
 
     # the same but in parallel
-    $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, parallel)" "${tag}_serre_parallel_naive"
     $fn "REPN_ComputeUsingSerre(rep.rep : irreps := rep.irreps, use_kronecker, parallel)" "${tag}_serre_parallel_kronecker"
 }
 
