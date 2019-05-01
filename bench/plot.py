@@ -4,14 +4,22 @@ import matplotlib, glob, sys, itertools, math
 
 matplotlib.rcParams['pgf.rcfonts'] = False
 matplotlib.rcParams['pgf.texsystem'] = 'pdflatex'
-matplotlib.rcParams['figure.figsize'] = 5,5
+matplotlib.rcParams['text.usetex'] = True
+matplotlib.rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+matplotlib.rcParams['figure.figsize'] = "4,4"
 
 import matplotlib.pyplot as plt
 
 # prettifies a file name for use in a legend
 def make_pretty_name(fname):
     s = fname.split('.')[0] # remove .csv
-    words = s.split('_')[1:] # remove first word
+    old_words = s.split('_')[1:] # remove first word
+    words = []
+    for word in old_words:
+        if word == 'mymethod':
+            words.append('our method')
+        else:
+            words.append(word)
     ret = ' '.join([word.title() for word in words])
     return ret
 
@@ -27,7 +35,6 @@ def do_plot(results, xindex, yindex, xlabel, ylabel, title, fname="graph"):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.plot(to_plot[xindex], to_plot[yindex], "rx")
-    plt.savefig(fname+".png")
     plt.savefig(fname+".pgf")
 
 def do_plot_multiple(results_mult, xindex, yindex, xlabel, ylabel, title, fname, labels):
@@ -48,7 +55,9 @@ def do_plot_multiple(results_mult, xindex, yindex, xlabel, ylabel, title, fname,
         handle, = plt.plot(to_plot[xindex], to_plot[yindex], label=labels[i], marker=marker, linestyle="None", color=color)
         handles.append(handle)
     lgd = plt.legend(handles=handles, bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    plt.savefig(fname, bbox_extra_artists=[lgd], bbox_inches='tight')
+    fig = plt.gcf()
+    fig.savefig(fname+".pgf", bbox_extra_artists=[lgd], bbox_inches='tight')
+    fig.savefig(fname+".png", bbox_extra_artists=[lgd], bbox_inches='tight')
     print(fname)
 
 def read_pts(fname):
@@ -77,9 +86,9 @@ def plot_multiple(fnames, out_fname):
         time_taken = "log(time taken (ns))"
     ptss = [read_pts(fname) for fname in fnames]
     labels = [make_pretty_name(fname) for fname in fnames]
-    do_plot_multiple(ptss, 0, 4, "group size", time_taken, f'{out_fname}: |G| vs t', f'{out_fname}_size', labels)
-    do_plot_multiple(ptss, 2, 4, "num classes", time_taken, f'{out_fname}: |cc(G)| vs t', f'{out_fname}_classes', labels)
-    do_plot_multiple(ptss, 3, 4, "degree", time_taken, f'{out_fname}: deg vs t', f'{out_fname}_degree', labels)
+    do_plot_multiple(ptss, 0, 4, "$|G|$", time_taken, f'', f'{out_fname}_size', labels)
+    do_plot_multiple(ptss, 2, 4, "num classes", time_taken, f'', f'{out_fname}_classes', labels)
+    do_plot_multiple(ptss, 3, 4, "degree", time_taken, f'', f'{out_fname}_degree', labels)
 
 def tolatex(data, header, output_file):
     output = ""
