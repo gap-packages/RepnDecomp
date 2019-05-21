@@ -105,7 +105,10 @@ end;
 # Uses the irreps of S_m x S_2 to calculate the parameters for the SDP
 # we need to solve
 CalculateSDP := function(m, irreps)
-    local block_diag_info, nice_basis, centralizer_basis, norm_cent_basis, d, centralizer, mult_param, param_matrices, i, j, k, nice_cent_basis, action_hom, cent_basis, action_perm, pairs, product, failmat, c, nice_change, nice_change_inv, H, TN, norms;
+    local action_perm, H, TN, centralizer_basis, norms, action_hom,
+          all_chars, action_decomp, pretty_decomp, i, nice_basis,
+          nice_change, nice_change_inv, pairs, d, norm_cent_basis,
+          nice_cent_basis, mult_param, j, param_matrices, k;
 
     Print("Computing group action: ");
     action_perm := ActionPermRep(m);
@@ -124,12 +127,26 @@ CalculateSDP := function(m, irreps)
 
     action_hom := PermToLinearRep(action_perm);
 
+    # We also compute the decomposition of the character of
+    # action_hom, just for illustration
+    all_chars := List(irreps, CharacterOfRepresentation@RepnDecomp);
+    action_decomp := IrrVectorOfRepresentation@RepnDecomp(action_hom, all_chars);
+
+    # for each character that appears with nonzero multiplicity, we
+    # store the degree and multiplicity
+    pretty_decomp := [];
+    for i in [1..Length(all_chars)] do
+        if action_decomp[i] > 0 then
+            Add(pretty_decomp, rec(degree := all_chars[i][1], multiplicity := action_decomp[i]));
+        fi;
+    od;
+    #return pretty_decomp;
+
     # See https://homepages.cwi.nl/~lex/files/symm.pdf for the method we
     # now apply to get a smaller semidefinite program.
 
     # First, we block diagonalize action_hom
     Print("Decomposing group action: ");
-    #nice_basis := BlockDiagonalBasis(action_hom);
 
     #block_diag_info := BlockDiagonalRepresentationFast(action_hom, irreps);
     #nice_basis := block_diag_info.basis;

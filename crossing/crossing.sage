@@ -114,6 +114,10 @@ def compute_alpha(m, print_irreps=False, status=True):
     libgap.eval("sdp := CalculateSDP({}, irreps_G);".format(m))
     t1 = time.time()
 
+    # this is for when we are just looking at characters
+    #print(libgap.eval("sdp"))
+    #return
+
     if status:
         print(t1-t0)
 
@@ -259,6 +263,7 @@ def compute_alpha(m, print_irreps=False, status=True):
 # Make sure your gap_cmd etc are set up properly so that my package is
 # available
 libgap.eval('LoadPackage("RepnDecomp");')
+libgap.eval('LoadPackage("IO");')
 
 # read the file that computes action_hom, the regular
 # representation of the group action of G on the m cycles
