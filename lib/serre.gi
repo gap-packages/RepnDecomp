@@ -300,7 +300,7 @@ InstallGlobalFunction( IrreducibleDecompositionCollected, function(rho)
 end );
 
 InstallGlobalFunction( IrreducibleDecomposition, function(rho)
-    return List(Flat(IrreducibleDecompositionCollected(rho)), r -> r.space);
+    return Flat(IrreducibleDecompositionCollected(rho));
 end );
 
 # Uses REPN_ComputeUsingMyMethod to decompose a canonical
