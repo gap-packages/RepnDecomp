@@ -74,7 +74,8 @@ end;
 
 # Gives the canonical summand corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
-    local G, degree, V, cent_basis, p, projection, character, cc, H, T, orbitals, serre_class_contribution, summand, canonical_summand, opt;
+    local G, degree, V, cent_basis, opt, p, projection, character,
+          cc, summand, canonical_summand;
 
     G := Source(rho);
 
@@ -111,33 +112,6 @@ IrrepCanonicalSummand@ := function(rho, irrep)
         cc := ConjugacyClasses(G);
         projection := (degree/Order(G)) * Sum(cc,
           cl -> ComplexConjugate(character(Representative(cl))) * ClassSumCentralizerNC(rho, cl, cent_basis));
-    elif opt and IsPermGroup(Range(rho)) and IsInjective(rho) then
-        # If we are given an injective perm rep, but not a basis for
-        # the centralizer, can calculate a basis for C from from
-        # scratch
-        character := h -> Trace(Image(irrep, PreImagesRepresentative(rho, h)));
-        H := ImagesSource(rho); # is perm group
-        T := CohCfgFromPermGroup@(H); # computes conjugacy classes and orbitals
-        cc := ConjugacyClasses(H);
-
-        # the orbital matrices give a basis for the centralizer
-        orbitals := RepresentationCentralizerPermRep@(rho);
-
-        # normalize (cent_basis = fail before this, so we don't
-        # overwrite anything useful)
-        cent_basis := List(orbitals, m -> 1/Sqrt(InnerProduct@(m, m)) * m);
-
-        serre_class_contribution := function(class)
-            local rep, v, A;
-            rep := Representative(class);
-
-            v := ClassSum@(T, class);
-            A := Sum([1..Length(v)], i -> v[i] * orbitals[i]);
-
-            return ComplexConjugate(character(rep)) * A;
-        end;
-
-        projection := (degree/Order(G)) * Sum(cc, serre_class_contribution);
     else
         # Lastly, given no special info at all we just have to sum over G
         character := g -> Trace(Image(irrep, g));
