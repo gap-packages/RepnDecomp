@@ -191,17 +191,13 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
 
     G := Source(irrep);
 
-    # This is the general linear group of some space, we don't really
-    # know or care what the space actually is
+    # This is a subgroup of Aut(some space), we don't really know or
+    # care what the space actually is
     H := Range(irrep);
 
-    # This gives the dimension of the space of which W is the general
-    # linear group (the size of the matrices representing the maps),
-    # is also the degree.
+    # This gives the dimension of the space, degree of irrep
     n := Length(H.1);
-
     F := Cyclotomics;
-    V := F^n;
 
     # if the V_i is a record, then this means we have been given the
     # matrix with the blocks p_\alpha\beta
@@ -213,7 +209,11 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
         myspace := V_i;
     fi;
 
-    myspace := VectorSpace(F, myspace, Zero(V));
+    # it is possible that V_i (or V_i.space) was given as a list of
+    # basis vectors, so we might need to convert it to a space
+    if not IsVectorSpace(myspace) then
+        myspace := VectorSpace(F, myspace, List([1..n], x -> 0));
+    fi;
 
     # First compute the projections p_ab. We only actually use
     # projections with a=1..n and b=1, so we can just compute
@@ -257,7 +257,8 @@ DecomposeCanonicalSummand@ := function(rho, irrep, V_i)
     return List(basis, function(x)
                    local b;
                    b := step_c(x);
-                   # can recover the space from the basis, also can't be pickled
+                   # we don't need the actual space since we can
+                   # recover it from the basis
                    return rec(#space := VectorSpace(F, b, Zero(V)),
                               basis := b);
                end);
