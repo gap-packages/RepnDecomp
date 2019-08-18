@@ -214,13 +214,15 @@ InstallGlobalFunction( PermToLinearRep, function(rho)
 end );
 
 # Check a subspace is really G-invariant (action given by rho)
-IsGInvariant@ := function(rho, space)
-    local G, v, g;
+IsGInvariant@ := function(rho, in_space)
+    local G, v, g, space;
+
+    space := in_space;
 
     G := Source(rho);
 
     if not IsVectorSpace(space) then
-        return fail;
+        space := VectorSpace(Cyclotomics, space);
     fi;
 
     for v in Basis(space) do
