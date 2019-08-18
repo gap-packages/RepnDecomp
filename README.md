@@ -29,24 +29,11 @@ To run the tests, make sure you have all needed packages installed (GRAPE).
 
 This will run all tests and (hopefully) pass.
 
-## Benchmarking
-
-Change to the `bench/` directory and run:
-
-    $ ./run_benchmark.sh
-
-This will benchmarks on some interesting function and output results
-in files ending in `.txt`. To view the results in scatter plot form,
-run:
-
-    $ ./plot.py
-
-which will use matplotlib to open a lot of windows with scatter plots
-of the data.
-
 ## Documentation
 
 There's a GAPDoc documentation book hosted
 [here](https://kaashif.gitlab.io/decomp/chap0.html). This is generated
 from the source files and comments in the `lib/` directory of this
 repo, so you can also look there for the same information.
+
+There are also some examples in the `examples` directory.
