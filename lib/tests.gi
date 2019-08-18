@@ -135,7 +135,14 @@ TestInvariantDecomposition@ := function(rep, decomp, args...)
     rho := rep.rep;
     G := Source(rho);
 
-    return ForAll(decomp, V -> IsGInvariant@(rho, V));
+    return ForAll(decomp, function(V)
+                     if IsVectorSpace(V) then
+                         return IsGInvariant@(rho, V);
+                     else
+                         return IsGInvariant@(rho,
+                                              VectorSpace(Cyclotomics, V.basis));
+                     fi;
+                 end );
 end;
 
 # checks some necessary conditions for decomp to be the full
