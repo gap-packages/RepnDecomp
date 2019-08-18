@@ -147,8 +147,15 @@ end;
 
 # checks some necessary conditions for decomp to be the full
 # irreducible (collected) decomposition of rho
-TestIrreducibleDecomposition@ := function(rep, decomp, args...)
-    local rho, G, conds;
+TestIrreducibleDecomposition@ := function(rep, in_decomp, args...)
+    local rho, G, conds, decomp;
+
+    decomp := in_decomp;
+
+    # might need to convert from bases to vector spaces
+    if Length(Flat(decomp)) > 0 and not IsVectorSpace(Flat(decomp)[1]) then
+        decomp := List(decomp, list -> List(list, r -> VectorSpace(Cyclotomics, r.basis)));
+    fi;
 
     rho := rep.rep;
 
