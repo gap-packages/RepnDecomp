@@ -72,7 +72,7 @@ PMatrix@ := function(rho, irrep)
     return p;
 end;
 
-# Gives the canonical summand corresponding to irrep
+# Gives the canonical summand (basis) corresponding to irrep
 IrrepCanonicalSummand@ := function(rho, irrep)
     local G, degree, V, cent_basis, opt, p, projection, character,
           cc, summand, canonical_summand;
@@ -179,7 +179,10 @@ InstallGlobalFunction( CanonicalDecomposition, function(rho)
 
     # if given a basis for centralizer, it lives in the option stack
     # and gets used
-    return List(irreps, irrep -> IrrepCanonicalSummand@(rho, irrep));
+    return List(irreps,
+                irrep -> VectorSpace(Cyclotomics,
+                                     IrrepCanonicalSummand@(rho, irrep),
+                                     List([1..DegreeOfRepresentation(rho)], x -> 0)));
 end );
 
 # Decomposes the representation V_i into a direct sum of some number
