@@ -295,6 +295,12 @@ DecomposeCanonicalSummandAlternate@ := function(rho, irrep, V_i)
         basis := V_i;
     fi;
 
+    # TODO: make this less confusing
+    # V_i might be a vector space, we want a basis
+    if IsVectorSpace(basis) then
+        basis := Basis(basis);
+    fi;
+
     restricted_rho := RestrictRep@(rho, basis);
 
     # we know in advance that restricted_rho only consists of direct
