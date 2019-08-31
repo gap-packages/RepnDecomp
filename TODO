@@ -1,3 +1,0 @@
-* Some bug with the RestrictRep@ thing
-* Avoid normalising basis until late - coefficients blow up
-* Reduce memory usage (sparse matrices etc)
