@@ -37,3 +37,9 @@ from the source files and comments in the `lib/` directory of this
 repo, so you can also look there for the same information.
 
 There are also some examples in the `examples` directory.
+
+## Paper
+
+This package has been submitted as a paper to the
+[Journal of Open Source Software](https://joss.theoj.org/), the paper
+can be found at `paper.md`.
