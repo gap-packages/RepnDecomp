@@ -1,0 +1,61 @@
+\GAPDocLabFile{repndecomp}
+\makelabel{repndecomp:Title page}{}{X7D2C85EC87DD46E5}
+\makelabel{repndecomp:Table of Contents}{}{X8537FEB07AF2BEC8}
+\makelabel{repndecomp:Introduction}{1}{X7DFB63A97E67C0A1}
+\makelabel{repndecomp:Getting started with RepnDecomp}{1.1}{X789233A47A277072}
+\makelabel{repndecomp:Isomorphisms between representations}{2}{X7D9B253E794EF912}
+\makelabel{repndecomp:Finding explicit isomorphisms}{2.1}{X7AEE81C2809E0B98}
+\makelabel{repndecomp:Testing isomorphisms}{2.2}{X85DAC9E583D8EFB9}
+\makelabel{repndecomp:Algorithms for unitary representations}{3}{X83B4D1DB7F92BD3A}
+\makelabel{repndecomp:Unitarising representations}{3.1}{X870B3D0D80CFADB1}
+\makelabel{repndecomp:Decomposing unitary representations}{3.2}{X7974D0C580C833D1}
+\makelabel{repndecomp:Miscellaneous useful functions}{4}{X8346542B8387968B}
+\makelabel{repndecomp:Predicates for representations}{4.1}{X87196FDB78749ECA}
+\makelabel{repndecomp:Efficient summing over groups}{4.2}{X8271F7A386CFEA63}
+\makelabel{repndecomp:Space-efficient representation of tensors of matrices}{4.3}{X86F42D257CFB192D}
+\makelabel{repndecomp:Matrices and homomorphisms}{4.4}{X83F160967ED7EE14}
+\makelabel{repndecomp:Representation theoretic functions}{4.5}{X7C3EDA5E7A24196C}
+\makelabel{repndecomp:Computing decompositions of representations}{5}{X7F968DF987DE4A6E}
+\makelabel{repndecomp:Block diagonalizing}{5.1}{X7E29883984400D2C}
+\makelabel{repndecomp:Algorithms due to the authors}{5.2}{X863A16A179A7486B}
+\makelabel{repndecomp:Algorithms due to Serre}{5.3}{X7C22F13E80A74438}
+\makelabel{repndecomp:Centralizer (commutant) rings}{6}{X7A0EF2C67E2DB726}
+\makelabel{repndecomp:Finding a basis for the centralizer}{6.1}{X7E70A3D881CD5FFA}
+\makelabel{repndecomp:Using the centralizer for computations}{6.2}{X83C4F8C17DA976EE}
+\makelabel{repndecomp:Index}{Ind}{X83A0356F839C696F}
+\makelabel{repndecomp:LinearRepresentationIsomorphism}{2.1.1}{X7F0D3CFB7800149A}
+\makelabel{repndecomp:LinearRepresentationIsomorphismSlow}{2.1.2}{X841DE7D08491325F}
+\makelabel{repndecomp:AreRepsIsomorphic}{2.2.1}{X86EB9DD586958473}
+\makelabel{repndecomp:IsLinearRepresentationIsomorphism}{2.2.2}{X81080E1B7917B361}
+\makelabel{repndecomp:UnitaryRepresentation}{3.1.1}{X86B2367A79BE5B9F}
+\makelabel{repndecomp:IsUnitaryRepresentation}{3.1.2}{X87D121227C027253}
+\makelabel{repndecomp:LDLDecomposition}{3.1.3}{X78F7DFD186A4E7CA}
+\makelabel{repndecomp:IrreducibleDecompositionDixon}{3.2.1}{X8175C1167A31C3D6}
+\makelabel{repndecomp:IsFiniteGroupLinearRepresentation for isgrouphomomorphism}{4.1.1}{X8631A1417C3C1D88}
+\makelabel{repndecomp:IsFiniteGroupPermutationRepresentation for isgrouphomomorphism}{4.1.2}{X826D5ADF7FA87782}
+\makelabel{repndecomp:GroupSumBSGS}{4.2.1}{X85E8A5FC844DC09A}
+\makelabel{repndecomp:IsTensorProductOfMatricesObj for ismultiplicativeelementwithinverse}{4.3.1}{X84335C447DE377B0}
+\makelabel{repndecomp:IsTensorProductPairRep for ispositionalobjectrep}{4.3.2}{X868B9CB1873C93AC}
+\makelabel{repndecomp:IsTensorProductKroneckerRep for ispositionalobjectrep}{4.3.3}{X85AD76DB7D5F8B12}
+\makelabel{repndecomp:TensorProductOfMatrices}{4.3.4}{X86671AD582FF77E2}
+\makelabel{repndecomp:CharacterOfTensorProductOfRepresentations}{4.3.5}{X79D0379D79F5DF9B}
+\makelabel{repndecomp:BlockDiagonalMatrix}{4.4.1}{X8668A3897972C08E}
+\makelabel{repndecomp:ComposeHomFunction}{4.4.2}{X7D17785482F143B0}
+\makelabel{repndecomp:Replicate}{4.4.3}{X79D2F263840ED625}
+\makelabel{repndecomp:TensorProductRepLists}{4.5.1}{X841424DF824E258B}
+\makelabel{repndecomp:DirectSumOfRepresentations}{4.5.2}{X84EAE3DB7FA8102C}
+\makelabel{repndecomp:DegreeOfRepresentation}{4.5.3}{X85147CF97B912CC3}
+\makelabel{repndecomp:PermToLinearRep}{4.5.4}{X7B14287E7BFC548D}
+\makelabel{repndecomp:IsOrthonormalSet}{4.5.5}{X7E67A4817A5E4879}
+\makelabel{repndecomp:BlockDiagonalBasisOfRepresentation}{5.1.1}{X8361AD057AD282AC}
+\makelabel{repndecomp:BlockDiagonalRepresentation}{5.1.2}{X86EB837579C1416D}
+\makelabel{repndecomp:REPNComputeUsingMyMethod for isgrouphomomorphism}{5.2.1}{X831574AD864C94A8}
+\makelabel{repndecomp:REPNComputeUsingMyMethodCanonical for isgrouphomomorphism}{5.2.2}{X7DB659DB7E48D502}
+\makelabel{repndecomp:CanonicalDecomposition}{5.3.1}{X7E95B0367992BEC4}
+\makelabel{repndecomp:IrreducibleDecomposition}{5.3.2}{X795C63F386C45308}
+\makelabel{repndecomp:IrreducibleDecompositionCollected}{5.3.3}{X87E91CBE7992D126}
+\makelabel{repndecomp:REPNComputeUsingSerre for isgrouphomomorphism}{5.3.4}{X7C1CF0547D72D354}
+\makelabel{repndecomp:CentralizerBlocksOfRepresentation}{6.1.1}{X7901B6A7860D35C3}
+\makelabel{repndecomp:CentralizerOfRepresentation}{6.1.2}{X86B19E2B877121E9}
+\makelabel{repndecomp:ClassSumCentralizer}{6.2.1}{X87E5BAEB82DC00C3}
+\makelabel{repndecomp:ClassSumCentralizerNC}{6.2.2}{X78719DC8868B0744}

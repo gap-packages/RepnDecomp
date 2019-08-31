@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<TitlePage>
+  <Title>
+    RepnDecomp
+  </Title>
+  <Subtitle>
+    Decompose representations of finite groups into irreducibles
+  </Subtitle>
+  <Version>
+    0.1
+  </Version>
+  <Author>
+    Kaashif Hymabaccus<Alt Only="LaTeX"><Br/></Alt>
+<Email>kaashif@kaashif.co.uk</Email>
+<Homepage>https://kaashif.co.uk</Homepage>
+
+  </Author>
+  <Date>
+    20 April 2019
+  </Date>
+  </TitlePage>

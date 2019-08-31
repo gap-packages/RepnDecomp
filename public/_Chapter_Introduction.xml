@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_Introduction">
+<Heading>Introduction</Heading>
+
+<Section Label="Chapter_Introduction_Section_Getting_started_with_RepnDecomp">
+<Heading>Getting started with RepnDecomp</Heading>
+
+This package allows computations of various decompositions of a
+representation <Math>\rho : G \to GL(V)</Math> where <Math>G</Math> is finite and <Math>V</Math> is
+a finite-dimensional <Math>\mathbb{C}</Math>-vector space.
+The algorithms implemented can be divided into two groups: methods
+due to Serre from his book Linear Representations of Finite Groups,
+and original methods due to the authors of this package.
+<P/>
+The default is to use the algorithms due to Serre. If you pass the
+option <Code>method := "alternate"</Code> to a function, it will use the
+alternate method. Passing the option <Code>parallel</Code> will try to compute
+in parallel as much as possible. See the individual functions for
+options you can pass.
+<P/>
+The main functions implemented in this package are:
+<P/>
+For decomposing representations into canonical and irreducible
+direct summands:
+<P/>
+<List>
+<Item>
+<Ref Func="CanonicalDecomposition" />
+</Item>
+<Item>
+<Ref Func="IrreducibleDecomposition" />
+</Item>
+<Item>
+<Ref Func="IrreducibleDecompositionCollected" />
+</Item>
+</List>
+<P/>
+For block diagonalising representations:
+<P/>
+<List>
+<Item>
+<Ref Func="BlockDiagonalBasisOfRepresentation" />
+</Item>
+<Item>
+<Ref Func="BlockDiagonalRepresentation" />
+</Item>
+</List>
+<P/>
+For computing centraliser rings:
+<P/>
+<List>
+<Item>
+<Ref Func="CentralizerBlocksOfRepresentation" />
+</Item>
+<Item>
+<Ref Func="CentralizerOfRepresentation" />
+</Item>
+</List>
+<P/>
+For testing isomorphism and computing isomorphisms (intertwining
+operators) between representations:
+<P/>
+<List>
+<Item>
+<Ref Func="LinearRepresentationIsomorphism" />
+</Item>
+<Item>
+<Ref Func="AreRepsIsomorphic" />
+</Item>
+<Item>
+<Ref Func="IsLinearRepresentationIsomorphism" />
+</Item>
+</List>
+<P/>
+For testing unitarity of representations and the unitarisation of
+representations:
+<P/>
+<List>
+<Item>
+<Ref Func="UnitaryRepresentation" />
+</Item>
+<Item>
+<Ref Func="IsUnitaryRepresentation" />
+</Item>
+</List>
+</Section>
+
+
+</Chapter>
+

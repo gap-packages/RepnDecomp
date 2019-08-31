@@ -1,0 +1,87 @@
+  
+  
+                                  [1X RepnDecomp [101X
+  
+  
+         [1X Decompose representations of finite groups into irreducibles [101X
+  
+  
+                                      0.1
+  
+  
+                                 20 April 2019
+  
+  
+                               Kaashif Hymabaccus
+  
+  
+  
+  Kaashif Hymabaccus
+      Email:    [7Xmailto:kaashif@kaashif.co.uk[107X
+      Homepage: [7Xhttps://kaashif.co.uk[107X
+  
+  -------------------------------------------------------
+  
+  
+  [1XContents (RepnDecomp)[101X
+  
+  1 [33X[0;0YIntroduction[133X
+    1.1 [33X[0;0YGetting started with RepnDecomp[133X
+  2 [33X[0;0YIsomorphisms between representations[133X
+    2.1 [33X[0;0YFinding explicit isomorphisms[133X
+      2.1-1 LinearRepresentationIsomorphism
+      2.1-2 LinearRepresentationIsomorphismSlow
+    2.2 [33X[0;0YTesting isomorphisms[133X
+      2.2-1 AreRepsIsomorphic
+      2.2-2 IsLinearRepresentationIsomorphism
+  3 [33X[0;0YAlgorithms for unitary representations[133X
+    3.1 [33X[0;0YUnitarising representations[133X
+      3.1-1 UnitaryRepresentation
+      3.1-2 IsUnitaryRepresentation
+      3.1-3 LDLDecomposition
+    3.2 [33X[0;0YDecomposing unitary representations[133X
+      3.2-1 IrreducibleDecompositionDixon
+  4 [33X[0;0YMiscellaneous useful functions[133X
+    4.1 [33X[0;0YPredicates for representations[133X
+      4.1-1 IsFiniteGroupLinearRepresentation
+      4.1-2 IsFiniteGroupPermutationRepresentation
+    4.2 [33X[0;0YEfficient summing over groups[133X
+      4.2-1 GroupSumBSGS
+    4.3 [33X[0;0YSpace-efficient representation of tensors of matrices[133X
+      4.3-1 IsTensorProductOfMatricesObj
+      4.3-2 IsTensorProductPairRep
+      4.3-3 IsTensorProductKroneckerRep
+      4.3-4 TensorProductOfMatrices
+      4.3-5 CharacterOfTensorProductOfRepresentations
+    4.4 [33X[0;0YMatrices and homomorphisms[133X
+      4.4-1 BlockDiagonalMatrix
+      4.4-2 ComposeHomFunction
+      4.4-3 Replicate
+    4.5 [33X[0;0YRepresentation theoretic functions[133X
+      4.5-1 TensorProductRepLists
+      4.5-2 DirectSumOfRepresentations
+      4.5-3 DegreeOfRepresentation
+      4.5-4 PermToLinearRep
+      4.5-5 IsOrthonormalSet
+  5 [33X[0;0YComputing decompositions of representations[133X
+    5.1 [33X[0;0YBlock diagonalizing[133X
+      5.1-1 BlockDiagonalBasisOfRepresentation
+      5.1-2 BlockDiagonalRepresentation
+    5.2 [33X[0;0YAlgorithms due to the authors[133X
+      5.2-1 REPN_ComputeUsingMyMethod
+      5.2-2 REPN_ComputeUsingMyMethodCanonical
+    5.3 [33X[0;0YAlgorithms due to Serre[133X
+      5.3-1 CanonicalDecomposition
+      5.3-2 IrreducibleDecomposition
+      5.3-3 IrreducibleDecompositionCollected
+      5.3-4 REPN_ComputeUsingSerre
+  6 [33X[0;0YCentralizer (commutant) rings[133X
+    6.1 [33X[0;0YFinding a basis for the centralizer[133X
+      6.1-1 CentralizerBlocksOfRepresentation
+      6.1-2 CentralizerOfRepresentation
+    6.2 [33X[0;0YUsing the centralizer for computations[133X
+      6.2-1 ClassSumCentralizer
+      6.2-2 ClassSumCentralizerNC
+  
+  
+  [32X

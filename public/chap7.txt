@@ -1,0 +1,64 @@
+  
+  [1X7 [33X[0;0YComputing decompositions of representations[133X[101X
+  
+  
+  [1X7.1 [33X[0;0YAlgorithms due to the authors[133X[101X
+  
+  [1X7.1-1 REPN_ComputeUsingMyMethodCanonical[101X
+  
+  [33X[1;0Y[29X[2XREPN_ComputeUsingMyMethodCanonical[102X( [3Xrho[103X ) [32X attribute[133X
+  [6XReturns:[106X  [33X[0;10YA   record   in   the   same   format   as  [2XREPN_ComputeUsingSerre[102X
+            ([14X???REPN_ComputeUsingSerre???[114X)  A  record  in  the  same format as
+            [2XREPN_ComputeUsingMyMethod[102X ([14X???REPN_ComputeUsingMyMethod???[114X).[133X
+  
+  [33X[0;0YComputes       the      same      values      as      [2XREPN_ComputeUsingSerre[102X
+  ([14X???REPN_ComputeUsingSerre???[114X),  taking  the same options. The heavy lifting
+  of     this    method    is    done    by    [2XLinearRepresentationIsomorphism[102X
+  ([14X???LinearRepresentationIsomorphism???[114X),   where   there  are  some  further
+  options  that  can be passed to influence algorithms used. Performs the same
+  computation  as [2XREPN_ComputeUsingMyMethod[102X ([14X???REPN_ComputeUsingMyMethod???[114X),
+  but   first   splits   the  representation  into  canonical  summands  using
+  [2XCanonicalDecomposition[102X  ([14X7.2-1[114X).  This might reduce the size of the matrices
+  we  need  to work with significantly, so could be much faster. If the option
+  `parallel`  is given, the decomposition of canonical summands into irreps is
+  done in parallel, which could be much faster.[133X
+  
+  
+  [1X7.2 [33X[0;0YAlgorithms due to Serre[133X[101X
+  
+  [33X[0;0YNote:  all  computation  in  this  section  is actually done in the function
+  [2XREPN_ComputeUsingSerre[102X  ([14X???REPN_ComputeUsingSerre???[114X),  the other functions
+  are wrappers around it.[133X
+  
+  [1X7.2-1 CanonicalDecomposition[101X
+  
+  [33X[1;0Y[29X[2XCanonicalDecomposition[102X( [3Xrho[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YList  of  vector  spaces [23XV_i[123X, each [23XG[123X-invariant and a direct sum of
+            isomorphic  irreducibles.  That is, for each [23Xi[123X, [23XV_i \cong \oplus_j
+            W_i[123X  (as  representations) where [23XW_i[123X is an irreducible [23XG[123X-invariant
+            vector space.[133X
+  
+  [33X[0;0YComputes  the  canonical  decomposition  of  [23XV[123X  into [23X\oplus_i\;V_i[123X using the
+  formulas  for projections [23XV \to V_i[123X due to Serre. You can pass in the option
+  `irreps`  with  a  list  of  irreps  of  [23XG[123X, and this will be used instead of
+  computing  a  complete list ourselves. If you already know which irreps will
+  appear in [23X\rho[123X, for instance, this will save time.[133X
+  
+  [1X7.2-2 IrreducibleDecomposition[101X
+  
+  [33X[1;0Y[29X[2XIrreducibleDecomposition[102X( [3Xrho[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YList  of vector spaces [23XW_j[123X such that [23XV = \oplus_j W_j[123X and each [23XW_j[123X
+            is an irreducible [23XG[123X-invariant vector space.[133X
+  
+  [33X[0;0YComputes the decomposition of [23XV[123X into irreducible subprepresentations.[133X
+  
+  [1X7.2-3 IrreducibleDecompositionCollected[101X
+  
+  [33X[1;0Y[29X[2XIrreducibleDecompositionCollected[102X( [3Xrho[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YList  of  lists [23XV_i[123X of vector spaces [23XV_{ij}[123X such that [23XV = \oplus_i
+            \oplus_j  V_{ij}[123X  and  [23XV_{ik}  \cong V_{il}[123X for all [23Xi[123X, [23Xk[123X and [23Xl[123X (as
+            representations).[133X
+  
+  [33X[0;0YComputes   the  decomposition  of  [23XV[123X  into  irreducible  subrepresentations,
+  grouping together the isomorphic subrepresentations.[133X
+  

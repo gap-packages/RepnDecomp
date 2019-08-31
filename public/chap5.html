@@ -92,7 +92,7 @@
 
 <p>Performs the same computation as <code class="func">REPN_ComputeUsingMyMethod</code> (<a href="chap5.html#X831574AD864C94A8"><span class="RefLink">5.2-1</span></a>), but first splits the representation into canonical summands using <code class="func">CanonicalDecomposition</code> (<a href="chap5.html#X7E95B0367992BEC4"><span class="RefLink">5.3-1</span></a>). This might reduce the size of the matrices we need to work with significantly, so could be much faster.</p>
 
-<p>If the option `parallel` is given, the decomposition of canonical summands into irreps is done in parallel, which could be much faster.</p>
+<p>If the option <code class="code">parallel</code> is given, the decomposition of canonical summands into irreps is done in parallel, which could be much faster.</p>
 
 <p><a id="X7C22F13E80A74438" name="X7C22F13E80A74438"></a></p>
 
@@ -107,7 +107,7 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; CanonicalDecomposition</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: List of vector spaces <span class="Math">V_i</span>, each <span class="Math">G</span>-invariant and a direct sum of isomorphic irreducibles. That is, for each <span class="Math">i</span>, <span class="Math">V_i \cong \oplus_j W_i</span> (as representations) where <span class="Math">W_i</span> is an irreducible <span class="Math">G</span>-invariant vector space.</p>
 
-<p>Computes the canonical decomposition of <span class="Math">V</span> into <span class="Math">\oplus_i\;V_i</span> using the formulas for projections <span class="Math">V \to V_i</span> due to Serre. You can pass in the option `irreps` with a list of irreps of <span class="Math">G</span>, and this will be used instead of computing a complete list ourselves. If you already know which irreps will appear in <span class="Math">\rho</span>, for instance, this will save time.</p>
+<p>Computes the canonical decomposition of <span class="Math">V</span> into <span class="Math">\oplus_i\;V_i</span> using the formulas for projections <span class="Math">V \to V_i</span> due to Serre. You can pass in the option <code class="code">irreps</code> with a list of irreps of <span class="Math">G</span>, and this will be used instead of computing a complete list ourselves. If you already know which irreps will appear in <span class="Math">\rho</span>, for instance, this will save time.</p>
 
 <p><a id="X795C63F386C45308" name="X795C63F386C45308"></a></p>
 
@@ -142,31 +142,31 @@
 
 
 <ul>
-<li><p>`basis`: The basis that block diagonalises <span class="Math">\rho</span>, see <code class="func">BlockDiagonalBasisOfRepresentation</code> (<a href="chap5.html#X8361AD057AD282AC"><span class="RefLink">5.1-1</span></a>).</p>
+<li><p><code class="code">basis</code>: The basis that block diagonalises <span class="Math">\rho</span>, see <code class="func">BlockDiagonalBasisOfRepresentation</code> (<a href="chap5.html#X8361AD057AD282AC"><span class="RefLink">5.1-1</span></a>).</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>`diagonal_rep`: <span class="Math">\rho</span>, block diagonalised with the basis above. See <code class="func">BlockDiagonalRepresentation</code> (<a href="chap5.html#X86EB837579C1416D"><span class="RefLink">5.1-2</span></a>)</p>
+<li><p><code class="code">diagonal_rep</code>: <span class="Math">\rho</span>, block diagonalised with the basis above. See <code class="func">BlockDiagonalRepresentation</code> (<a href="chap5.html#X86EB837579C1416D"><span class="RefLink">5.1-2</span></a>)</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>`decomposition`: The irreducible <span class="Math">G</span>-invariant subspaces, collected according to isomorphism, see <code class="func">IrreducibleDecompositionCollected</code> (<a href="chap5.html#X87E91CBE7992D126"><span class="RefLink">5.3-3</span></a>)</p>
+<li><p><code class="code">decomposition</code>: The irreducible <span class="Math">G</span>-invariant subspaces, collected according to isomorphism, see <code class="func">IrreducibleDecompositionCollected</code> (<a href="chap5.html#X87E91CBE7992D126"><span class="RefLink">5.3-3</span></a>)</p>
 
 </li>
 </ul>
 
 <ul>
-<li><p>`centralizer_basis`: An orthonormal basis for the centralizer ring of <span class="Math">\rho</span>, written in block form. See <code class="func">CentralizerBlocksOfRepresentation</code> (<a href="chap6.html#X7901B6A7860D35C3"><span class="RefLink">6.1-1</span></a>)</p>
+<li><p><code class="code">centralizer_basis</code>: An orthonormal basis for the centralizer ring of <span class="Math">\rho</span>, written in block form. See <code class="func">CentralizerBlocksOfRepresentation</code> (<a href="chap6.html#X7901B6A7860D35C3"><span class="RefLink">6.1-1</span></a>)</p>
 
 </li>
 </ul>
-<p>Pass the option `parallel` for the computations per-irrep to be done in parallel.</p>
+<p>Pass the option <code class="code">parallel</code> for the computations per-irrep to be done in parallel.</p>
 
-<p>Pass the option `irreps` with the complete list of irreps of <span class="Math">\rho</span> to avoid recomputing this list (could be very expensive)</p>
+<p>Pass the option <code class="code">irreps</code> with the complete list of irreps of <span class="Math">\rho</span> to avoid recomputing this list (could be very expensive)</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap4.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap6.html">[Next Chapter]</a>&nbsp;  </div>

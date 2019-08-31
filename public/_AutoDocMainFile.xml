@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<#Include SYSTEM "_Chapter_Introduction.xml">
+<#Include SYSTEM "_Chapter_Isomorphisms_between_representations.xml">
+<#Include SYSTEM "_Chapter_Algorithms_for_unitary_representations.xml">
+<#Include SYSTEM "_Chapter_Miscellaneous_useful_functions.xml">
+<#Include SYSTEM "_Chapter_Computing_decompositions_of_representations.xml">
+<#Include SYSTEM "_Chapter_Centralizer_commutant_rings.xml">

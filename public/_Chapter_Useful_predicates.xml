@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_Useful_predicates">
+<Heading>Useful predicates</Heading>
+
+<Section Label="Chapter_Useful_predicates_Section_Types_of_group_representations">
+<Heading>Types of group representations</Heading>
+
+<ManSection>
+  <Attr Arg="rho" Name="IsFiniteGroupLinearRepresentation" Label="for IsGroupHomomorphism"/>
+ <Returns>true or false
+</Returns>
+ <Description>
+Tells you if <A>rho</A> is a linear representation of
+a finite group. The algorithms implemented in this package work on
+these homomorphisms only.
+ </Description>
+</ManSection>
+
+
+<ManSection>
+  <Attr Arg="rho" Name="IsFiniteGroupPermutationRepresentation" Label="for IsGroupHomomorphism"/>
+ <Returns>true or false
+</Returns>
+ <Description>
+Tells you if <A>rho</A> is a homomorphism from a
+finite group to a permutation group.
+ </Description>
+</ManSection>
+
+
+</Section>
+
+
+</Chapter>
+

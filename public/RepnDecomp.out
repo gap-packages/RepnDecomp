@@ -1,0 +1,22 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Getting started with RepnDecomp}{chapter.1}% 2
+\BOOKMARK [0][-]{chapter.2}{Isomorphisms between representations}{}% 3
+\BOOKMARK [1][-]{section.2.1}{Finding explicit isomorphisms}{chapter.2}% 4
+\BOOKMARK [1][-]{section.2.2}{Testing isomorphisms}{chapter.2}% 5
+\BOOKMARK [0][-]{chapter.3}{Algorithms for unitary representations}{}% 6
+\BOOKMARK [1][-]{section.3.1}{Unitarising representations}{chapter.3}% 7
+\BOOKMARK [1][-]{section.3.2}{Decomposing unitary representations}{chapter.3}% 8
+\BOOKMARK [0][-]{chapter.4}{Miscellaneous useful functions}{}% 9
+\BOOKMARK [1][-]{section.4.1}{Predicates for representations}{chapter.4}% 10
+\BOOKMARK [1][-]{section.4.2}{Efficient summing over groups}{chapter.4}% 11
+\BOOKMARK [1][-]{section.4.3}{Space-efficient representation of tensors of matrices}{chapter.4}% 12
+\BOOKMARK [1][-]{section.4.4}{Matrices and homomorphisms}{chapter.4}% 13
+\BOOKMARK [1][-]{section.4.5}{Representation theoretic functions}{chapter.4}% 14
+\BOOKMARK [0][-]{chapter.5}{Computing decompositions of representations}{}% 15
+\BOOKMARK [1][-]{section.5.1}{Block diagonalizing}{chapter.5}% 16
+\BOOKMARK [1][-]{section.5.2}{Algorithms due to the authors}{chapter.5}% 17
+\BOOKMARK [1][-]{section.5.3}{Algorithms due to Serre}{chapter.5}% 18
+\BOOKMARK [0][-]{chapter.6}{Centralizer \(commutant\) rings}{}% 19
+\BOOKMARK [1][-]{section.6.1}{Finding a basis for the centralizer}{chapter.6}% 20
+\BOOKMARK [1][-]{section.6.2}{Using the centralizer for computations}{chapter.6}% 21
+\BOOKMARK [0][-]{section*.2}{Index}{}% 22

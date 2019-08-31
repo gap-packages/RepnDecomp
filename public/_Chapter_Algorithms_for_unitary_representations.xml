@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an automatically generated file. -->
+<Chapter Label="Chapter_Algorithms_for_unitary_representations">
+<Heading>Algorithms for unitary representations</Heading>
+
+<Section Label="Chapter_Algorithms_for_unitary_representations_Section_Unitarising_representations">
+<Heading>Unitarising representations</Heading>
+
+<ManSection>
+  <Func Arg="rho" Name="UnitaryRepresentation" />
+ <Returns>A record with fields L and unitary_rep such that <A>rho</A> is isomorphic to unitary_rep, differing by a change of basis L.
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+
+<ManSection>
+  <Func Arg="rho" Name="IsUnitaryRepresentation" />
+ <Returns>Whether <A>rho</A> is unitary, i.e. for all <Math>g \in G</Math>, <Math>\rho(g^{-1}) = \rho(g)^*</Math> (where <Math>^*</Math> denotes the conjugate transpose).
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+
+<ManSection>
+  <Func Arg="A" Name="LDLDecomposition" />
+ <Returns>a record with two fields, L and D such that <Math>A = L\mbox{diag}(D)L^*</Math>. <Math>D</Math> is the <Math>1 \times n</Math> vector which gives the diagonal matrix <Math>\mbox{diag}(D)</Math> (where <A>A</A> is an <Math>n \times n</Math> matrix).
+</Returns>
+ <Description>
+<P/>
+ </Description>
+</ManSection>
+
+
+</Section>
+
+
+<Section Label="Chapter_Algorithms_for_unitary_representations_Section_Decomposing_unitary_representations">
+<Heading>Decomposing unitary representations</Heading>
+
+<ManSection>
+  <Func Arg="rho" Name="IrreducibleDecompositionDixon" />
+ <Returns>a list of irreps in the decomposition of <A>rho</A>
+</Returns>
+ <Description>
+NOTE: this is not implemented yet. Assumes that
+<A>rho</A> is unitary and uses an algorithm due to Dixon to
+decompose it into unitary irreps.
+ </Description>
+</ManSection>
+
+
+</Section>
+
+
+</Chapter>
+

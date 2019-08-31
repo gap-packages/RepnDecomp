@@ -1,0 +1,79 @@
+\begin{theindex}
+
+  \item \texttt  {AreRepsIsomorphic}, \hyperpage{6}
+
+  \indexspace
+
+  \item \texttt  {BlockDiagonalBasisOfRepresentation}, \hyperpage{11}
+  \item \texttt  {BlockDiagonalMatrix}, \hyperpage{9}
+  \item \texttt  {BlockDiagonalRepresentation}, \hyperpage{11}
+
+  \indexspace
+
+  \item \texttt  {CanonicalDecomposition}, \hyperpage{12}
+  \item \texttt  {CentralizerBlocksOfRepresentation}, \hyperpage{14}
+  \item \texttt  {CentralizerOfRepresentation}, \hyperpage{14}
+  \item \texttt  {Character}\-\texttt  {Of}\-\texttt  {Tensor}\-\texttt  {Product}\-\texttt  {Of}\-\texttt  {Representations}, 
+		\hyperpage{9}
+  \item \texttt  {ClassSumCentralizer}, \hyperpage{14}
+  \item \texttt  {ClassSumCentralizerNC}, \hyperpage{14}
+  \item \texttt  {ComposeHomFunction}, \hyperpage{10}
+
+  \indexspace
+
+  \item \texttt  {DegreeOfRepresentation}, \hyperpage{10}
+  \item \texttt  {DirectSumOfRepresentations}, \hyperpage{10}
+
+  \indexspace
+
+  \item \texttt  {GroupSumBSGS}, \hyperpage{8}
+
+  \indexspace
+
+  \item \texttt  {IrreducibleDecomposition}, \hyperpage{12}
+  \item \texttt  {IrreducibleDecompositionCollected}, \hyperpage{12}
+  \item \texttt  {IrreducibleDecompositionDixon}, \hyperpage{7}
+  \item \texttt  {IsFiniteGroupLinearRepresentation}
+    \subitem for IsGroupHomomorphism, \hyperpage{8}
+  \item \texttt  {IsFinite}\-\texttt  {Group}\-\texttt  {Permutation}\-\texttt  {Representation}
+    \subitem for IsGroupHomomorphism, \hyperpage{8}
+  \item \texttt  {IsLinearRepresentationIsomorphism}, \hyperpage{6}
+  \item \texttt  {IsOrthonormalSet}, \hyperpage{10}
+  \item \texttt  {IsTensorProductKroneckerRep}
+    \subitem for IsPositionalObjectRep, \hyperpage{9}
+  \item \texttt  {IsTensorProductOfMatricesObj}
+    \subitem for IsMultiplicativeElementWithInverse, \hyperpage{9}
+  \item \texttt  {IsTensorProductPairRep}
+    \subitem for IsPositionalObjectRep, \hyperpage{9}
+  \item \texttt  {IsUnitaryRepresentation}, \hyperpage{7}
+
+  \indexspace
+
+  \item \texttt  {LDLDecomposition}, \hyperpage{7}
+  \item \texttt  {LinearRepresentationIsomorphism}, \hyperpage{5}
+  \item \texttt  {LinearRepresentationIsomorphismSlow}, \hyperpage{5}
+
+  \indexspace
+
+  \item \texttt  {PermToLinearRep}, \hyperpage{10}
+
+  \indexspace
+
+  \item \texttt  {Replicate}, \hyperpage{10}
+  \item \texttt  {REP}\-\texttt  {N{\textunderscore }}\-\texttt  {Compute}\-\texttt  {Using}\-\texttt  {My}\-\texttt  {Method}
+    \subitem for IsGroupHomomorphism, \hyperpage{11}
+  \item \texttt  {REP}\-\texttt  {N{\textunderscore }}\-\texttt  {Compute}\-\texttt  {Using}\-\texttt  {My}\-\texttt  {Method}\-\texttt  {Canonical}
+    \subitem for IsGroupHomomorphism, \hyperpage{12}
+  \item \texttt  {REP}\-\texttt  {N{\textunderscore }}\-\texttt  {Compute}\-\texttt  {Using}\-\texttt  {Serre}
+    \subitem for IsGroupHomomorphism, \hyperpage{12}
+
+  \indexspace
+
+  \item \texttt  {TensorProductOfMatrices}, \hyperpage{9}
+  \item \texttt  {TensorProductRepLists}, \hyperpage{10}
+
+  \indexspace
+
+  \item \texttt  {UnitaryRepresentation}, \hyperpage{7}
+
+\end{theindex}

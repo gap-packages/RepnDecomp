@@ -1,0 +1,58 @@
+  
+  [1X8 [33X[0;0YUtility functions[133X[101X
+  
+  
+  [1X8.1 [33X[0;0YMiscellaneous[133X[101X
+  
+  [1X8.1-1 BlockDiagonalMatrix[101X
+  
+  [33X[1;0Y[29X[2XBlockDiagonalMatrix[102X( [3Xblocks[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YMatrix given by putting the given matrix [3Xblocks[103X on the diagonal[133X
+  
+  [1X8.1-2 ComposeHomFunction[101X
+  
+  [33X[1;0Y[29X[2XComposeHomFunction[102X( [3Xhom[103X, [3Xfunc[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YHomomorphism g given by g(x) = func(hom(x)).[133X
+  
+  [33X[0;0YThis  is  mainly for convenience, since it handles all GAP accounting issues
+  regarding the range, ByImages vs ByFunction, etc.[133X
+  
+  [1X8.1-3 Replicate[101X
+  
+  [33X[1;0Y[29X[2XReplicate[102X( [3Xelem[103X, [3Xn[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YList of [3Xn[103X copies of [3Xelem[103X[133X
+  
+  
+  [1X8.2 [33X[0;0YRepresentation theoretic functions[133X[101X
+  
+  [1X8.2-1 TensorProductRepLists[101X
+  
+  [33X[1;0Y[29X[2XTensorProductRepLists[102X( [3Xlist1[103X, [3Xlist2[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YAll possible tensor products given by [23X\rho \otimes \tau[123X where [23X\rho
+            :  G  \to  \mbox{GL}(V)[123X  is  taken  from  [3Xlist1[103X  and  [23X\tau : H \to
+            \mbox{GL}(W)[123X  is  taken  from  [3Xlist2[103X. The result is then a list of
+            representations of [23XG \times H[123X.[133X
+  
+  [1X8.2-2 DirectSumOfRepresentations[101X
+  
+  [33X[1;0Y[29X[2XDirectSumOfRepresentations[102X( [3Xlist[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YDirect sum of the list of representations [3Xlist[103X[133X
+  
+  [1X8.2-3 DegreeOfRepresentation[101X
+  
+  [33X[1;0Y[29X[2XDegreeOfRepresentation[102X( [3Xrho[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YDegree  of  the representation [3Xrho[103X. That is, [23X\mbox{Tr}(\rho(e_G))[123X,
+            where [23Xe_G[123X is the identity of the group [23XG[123X that [3Xrho[103X has as domain.[133X
+  
+  [1X8.2-4 PermToLinearRep[101X
+  
+  [33X[1;0Y[29X[2XPermToLinearRep[102X( [3Xrho[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YLinear   representation   [23X\rho[123X   isomorphic   to  the  permutation
+            representation [3Xrho[103X.[133X
+  
+  [1X8.2-5 IsOrthonormalSet[101X
+  
+  [33X[1;0Y[29X[2XIsOrthonormalSet[102X( [3XS[103X, [3Xprod[103X ) [32X function[133X
+  [6XReturns:[106X  [33X[0;10YWhether  [3XS[103X is an orthonormal set with respect to the inner product
+            [3Xprod[103X.[133X
+  
