@@ -6,7 +6,7 @@ This project aims to investigate and record algorithmic details and to
 produce a program (using GAP and/or Sagemath) for computing the
 decomposition of a representation ρ, of a finite group G over the
 complex numbers into irreducibles, as well as the corresponding
-decomposition of the centraliser of R.  Currently, while methods for
+decomposition of the centraliser of R. Currently, while methods for
 doing this are known (cf.  Serre's book "Linear Representations of
 Finite Groups"), there are no open-source computer programs that
 implement these methods, nor are details on how to achieve good
@@ -20,6 +20,52 @@ applications). Specifically, it allows to achieve substantial
 reductions in the dimension of these problems; potentially known
 results, e.g. on upper bounds on sizes of nonlinear codes, could be
 improved with the help of the program.
+
+## Installation
+
+First, install GAP following the instructions
+[here](https://www.gap-system.org/Download/index.html). Then, create a
+directory `~/.gap/pkg`, which will contain your local packages and
+clone this into it. Commands to run:
+
+    $ mkdir -p ~/.gap/pkg
+    $ cd ~/.gap/pkg
+    $ git clone https://gitlab.com/kaashif/decomp.git RepnDecomp
+
+Make sure that, when you installed GAP, you installed all of the
+packages! Our package uses GRAPE and IO for some functions.
+
+Now, you can run GAP however you like, load the package and use the
+functions provided:
+
+```
+$ gap
+<some output>
+gap> gap> LoadPackage("RepnDecomp");
+───────────────────────────────────────────────────────────────────────────────
+Loading  GRAPE 4.8.2 (GRaph Algorithms using PErmutation groups)
+by Leonard H. Soicher (http://www.maths.qmul.ac.uk/~lsoicher/).
+Homepage: https://gap-packages.github.io/grape
+Report issues at https://github.com/gap-packages/grape/issues
+───────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────
+Loading  RepnDecomp 0.1 (Decompose representations of finite groups into irreducibles)
+by Kaashif Hymabaccus (https://kaashif.co.uk).
+with contributions by:
+   Dmitrii Pasechnik.
+Homepage: http://gitlab.com/kaashif/decomp/
+───────────────────────────────────────────────────────────────────────────────
+true
+gap> A := IdentityMat(5);
+[ [ 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0 ], [ 0, 0, 1, 0, 0 ], [ 0, 0, 0, 1, 0 ],
+  [ 0, 0, 0, 0, 1 ] ]
+gap> B := LDLDecomposition(A);
+rec( D := [ 1, 1, 1, 1, 1 ],
+  L := [ [ 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0 ], [ 0, 0, 1, 0, 0 ],
+      [ 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1 ] ] )
+```
+
+Where `LDLDecomposition` is a function provided by this package.
 
 ## Testing
 
@@ -36,7 +82,9 @@ There's a GAPDoc documentation book hosted
 from the source files and comments in the `lib/` directory of this
 repo, so you can also look there for the same information.
 
-There are also some examples in the `examples` directory.
+There are also some examples in the `examples` directory, but the most
+complete set of examples are in the `tst` directory - the unit tests
+themselves.
 
 ## Paper
 
