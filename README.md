@@ -69,7 +69,8 @@ Where `LDLDecomposition` is a function provided by this package.
 
 ## Testing
 
-To run the tests, make sure you have all needed packages installed (GRAPE).
+To run the tests, make sure you have all needed packages installed
+(GRAPE and also IO if you want to compute in parallel).
 
     $ gap tst/testall.g
 
