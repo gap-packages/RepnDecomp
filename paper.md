@@ -36,6 +36,11 @@ representation optimally, i.e. with the smallest possible blocks. In
 cases where there are many small blocks, this can greatly improve the
 efficiency of computations done with the matrices.
 
+Currently, while methods for doing these decompositions are known (and
+are described in @serre:1977), there are no open-source computer
+programs that implement these methods, nor are details on how to
+achieve good performance of such an implementation published.
+
 Our package provides functions to:
 
 * Decompose a representation into irreducibles
