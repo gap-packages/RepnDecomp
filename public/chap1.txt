@@ -6,10 +6,15 @@
   
   [33X[0;0YThis   package   allows   computations   of   various  decompositions  of  a
   representation   [23X\rho  :  G  \to  GL(V)[123X  where  [23XG[123X  is  finite  and  [23XV[123X  is  a
-  finite-dimensional  [23X\mathbb{C}[123X-vector  space. The algorithms implemented can
-  be  divided  into  two  groups:  methods  due  to Serre from his book Linear
-  Representations of Finite Groups, and original methods due to the authors of
-  this package.[133X
+  finite-dimensional [23X\mathbb{C}[123X-vector space.[133X
+  
+  [33X[0;0YTo  install  this  package,  refer  to  the installation instructions in the
+  README    file    in    the    source    code.    It    is   located   here:
+  [7Xhttps://gitlab.com/kaashif/decomp/blob/master/README.md[107X.[133X
+  
+  [33X[0;0YThe  algorithms  implemented  can be divided into two groups: methods due to
+  Serre  from  his  book Linear Representations of Finite Groups, and original
+  methods due to the authors of this package.[133X
   
   [33X[0;0YThe  default  is  to use the algorithms due to Serre. If you pass the option
   [10Xmethod  :=  "alternate"[110X  to  a  function,  it will use the alternate method.

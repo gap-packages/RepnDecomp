@@ -9,7 +9,8 @@
 
 <ManSection>
   <Func Arg="rho" Name="UnitaryRepresentation" />
- <Returns>A record with fields L and unitary_rep such that <A>rho</A> is isomorphic to unitary_rep, differing by a change of basis L.
+ <Returns>A record with fields L and unitary_rep such that  <A>rho</A> is isomorphic to unitary_rep, differing by a change of
+  basis L.
 </Returns>
  <Description>
 <P/>
@@ -19,7 +20,8 @@
 
 <ManSection>
   <Func Arg="rho" Name="IsUnitaryRepresentation" />
- <Returns>Whether <A>rho</A> is unitary, i.e. for all <Math>g \in G</Math>, <Math>\rho(g^{-1}) = \rho(g)^*</Math> (where <Math>^*</Math> denotes the conjugate transpose).
+ <Returns>Whether <A>rho</A> is unitary, i.e. for all <Math>g \in G</Math>,  <Math>\rho(g^{-1}) = \rho(g)^*</Math> (where <Math>^*</Math> denotes the conjugate
+  transpose).
 </Returns>
  <Description>
 <P/>
@@ -29,7 +31,9 @@
 
 <ManSection>
   <Func Arg="A" Name="LDLDecomposition" />
- <Returns>a record with two fields, L and D such that <Math>A = L\mbox{diag}(D)L^*</Math>. <Math>D</Math> is the <Math>1 \times n</Math> vector which gives the diagonal matrix <Math>\mbox{diag}(D)</Math> (where <A>A</A> is an <Math>n \times n</Math> matrix).
+ <Returns>a record with two fields, L and D such that <Math>A =  L\mbox{diag}(D)L^*</Math>. <Math>D</Math> is the <Math>1 \times n</Math> vector which gives the
+  diagonal matrix <Math>\mbox{diag}(D)</Math> (where <A>A</A> is an <Math>n \times n</Math>
+  matrix).
 </Returns>
  <Description>
 <P/>
@@ -49,8 +53,8 @@
 </Returns>
  <Description>
 NOTE: this is not implemented yet. Assumes that
-<A>rho</A> is unitary and uses an algorithm due to Dixon to
-decompose it into unitary irreps.
+ <A>rho</A> is unitary and uses an algorithm due to Dixon to
+ decompose it into unitary irreps.
  </Description>
 </ManSection>
 

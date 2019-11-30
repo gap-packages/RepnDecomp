@@ -103,7 +103,15 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsLinearRepresentationIsomorphism</code>( <var class="Arg">A</var>, <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as as representations with the isomorphism given by the linear map <var class="Arg">A</var></p>
 
-<p>This function tests if, for all <span class="SimpleMath">\(g \in G\)</span>, <span class="SimpleMath">\(A \rho(g) = \tau(g) A\)</span>. That is, true is returned iff <span class="SimpleMath">\(A\)</span> is the intertwining operator taking <span class="SimpleMath">\(\rho\)</span> to <span class="SimpleMath">\(\tau\)</span>. Note that it is always the case that: as long as an isomorphism between the given representations actually exists.</p>
+<p>This function tests if, for all <span class="SimpleMath">\(g \in G\)</span>, <span class="SimpleMath">\(A \rho(g) = \tau(g) A\)</span>. That is, true is returned iff <span class="SimpleMath">\(A\)</span> is the intertwining operator taking <span class="SimpleMath">\(\rho\)</span> to <span class="SimpleMath">\(\tau\)</span>. Note that it is always the case that:</p>
+
+
+<div class="example"><pre>
+ gap&gt; IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
+ true
+</pre></div>
+
+<p>as long as an isomorphism between the given representations actually exists.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3_mj.html">[Next Chapter]</a>&nbsp;  </div>

@@ -62,6 +62,12 @@
   
   [33X[0;0YThis  function  tests  if,  for all [23Xg \in G[123X, [23XA \rho(g) = \tau(g) A[123X. That is,
   true  is  returned  iff  [23XA[123X is the intertwining operator taking [23X\rho[123X to [23X\tau[123X.
-  Note  that it is always the case that: as long as an isomorphism between the
-  given representations actually exists.[133X
+  Note that it is always the case that:[133X
+  
+  [4X[32X  Code  [32X[104X
+    [4X gap> IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);[104X
+    [4X true[104X
+  [4X[32X[104X
+  
+  [33X[0;0Yas long as an isomorphism between the given representations actually exists.[133X
   

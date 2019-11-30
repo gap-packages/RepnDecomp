@@ -7,32 +7,32 @@
 <Section Label="Chapter_Computing_decompositions_of_representations_Section_Block_diagonalizing">
 <Heading>Block diagonalizing</Heading>
 
-Given a representation <Math>\rho : G \to GL(V)</Math>, it is often desirable
-to find a basis for <Math>V</Math> that block diagonalizes each <Math>\rho(g)</Math> with
-the block sizes being as small as possible. This speeds up matrix
-algebra operations, since they can now be done block-wise.
+ Given a representation <Math>\rho : G \to GL(V)</Math>, it is often desirable
+ to find a basis for <Math>V</Math> that block diagonalizes each <Math>\rho(g)</Math> with
+ the block sizes being as small as possible. This speeds up matrix
+ algebra operations, since they can now be done block-wise.
 <ManSection>
   <Func Arg="rho" Name="BlockDiagonalBasisOfRepresentation" />
  <Returns>Basis for <Math>V</Math> that block diagonalizes <Math>\rho</Math>.
 </Returns>
  <Description>
 Let <Math>G</Math> have irreducible representations <Math>\rho_i</Math>,
-with dimension <Math>d_i</Math> and multiplicity <Math>m_i</Math>. The basis returned by
-this operation gives each <Math>\rho(g)</Math> as a block diagonal matrix
-which has <Math>m_i</Math> blocks of size <Math>d_i \times d_i</Math> for each <Math>i</Math>.
+ with dimension <Math>d_i</Math> and multiplicity <Math>m_i</Math>. The basis returned by
+ this operation gives each <Math>\rho(g)</Math> as a block diagonal matrix
+ which has <Math>m_i</Math> blocks of size <Math>d_i \times d_i</Math> for each <Math>i</Math>.
  </Description>
 </ManSection>
 
 
 <ManSection>
   <Func Arg="rho" Name="BlockDiagonalRepresentation" />
- <Returns>Representation of <Math>G</Math> isomorphic to <Math>\rho</Math> where the images <Math>\rho(g)</Math> are block diagonalized.
+ <Returns>Representation of <Math>G</Math> isomorphic to <Math>\rho</Math> where the  images <Math>\rho(g)</Math> are block diagonalized.
 </Returns>
  <Description>
 This is just a convenience operation that uses <Ref
-Attr="BlockDiagonalBasisOfRepresentation" /> to calculate the basis
-change matrix and applies it to put <Math>\rho</Math> into the block
-diagonalised form.
+ Attr="BlockDiagonalBasisOfRepresentation" /> to calculate the basis
+ change matrix and applies it to put <Math>\rho</Math> into the block
+ diagonalised form.
  </Description>
 </ManSection>
 
@@ -45,36 +45,39 @@ diagonalised form.
 
 <ManSection>
   <Attr Arg="rho" Name="REPN_ComputeUsingMyMethod" Label="for IsGroupHomomorphism"/>
- <Returns>A record in the same format as <Ref Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />
+ <Returns>A record in the same format as <Ref  Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />
+ 
 </Returns>
  <Description>
 <P/>
 Computes the same values as <Ref
-Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />,
-taking the same options. The heavy lifting of this method is done
-by <Ref Func="LinearRepresentationIsomorphism" />, where there are
-some further options that can be passed to influence algorithms
-used.
+ Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />,
+ taking the same options. The heavy lifting of this method is done
+ by <Ref Func="LinearRepresentationIsomorphism" />, where there are
+ some further options that can be passed to influence algorithms
+ used.
  </Description>
 </ManSection>
 
 
 <ManSection>
   <Attr Arg="rho" Name="REPN_ComputeUsingMyMethodCanonical" Label="for IsGroupHomomorphism"/>
- <Returns>A record in the same format as <Ref Attr="REPN_ComputeUsingMyMethod" Label="for IsGroupHomomorphism" />.
+ <Returns>A record in the same format as <Ref  Attr="REPN_ComputeUsingMyMethod" Label="for IsGroupHomomorphism"
+  />.
+ 
 </Returns>
  <Description>
 <P/>
 Performs the same computation as <Ref
-Attr="REPN_ComputeUsingMyMethod" Label="for IsGroupHomomorphism"
-/>, but first splits the representation into canonical summands
-using <Ref Func="CanonicalDecomposition" />. This might reduce the
-size of the matrices we need to work with significantly, so could
-be much faster.
+ Attr="REPN_ComputeUsingMyMethod" Label="for IsGroupHomomorphism"
+ />, but first splits the representation into canonical summands
+ using <Ref Func="CanonicalDecomposition" />. This might reduce the
+ size of the matrices we need to work with significantly, so could
+ be much faster.
 <P/>
-If the option <Code>parallel</Code> is given, the decomposition of canonical
-summands into irreps is done in parallel, which could be much
-faster.
+ If the option <Code>parallel</Code> is given, the decomposition of canonical
+ summands into irreps is done in parallel, which could be much
+ faster.
  </Description>
 </ManSection>
 
@@ -85,44 +88,47 @@ faster.
 <Section Label="Chapter_Computing_decompositions_of_representations_Section_Algorithms_due_to_Serre">
 <Heading>Algorithms due to Serre</Heading>
 
-Note: all computation in this section is actually done in the
-function <Ref Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />,
+ Note: all computation in this section is actually done in the
+ function <Ref Attr="REPN_ComputeUsingSerre" Label="for IsGroupHomomorphism" />,
 the other functions are wrappers around it.
 <ManSection>
   <Func Arg="rho" Name="CanonicalDecomposition" />
- <Returns>List of vector spaces <Math>V_i</Math>, each <Math>G</Math>-invariant and a direct sum of isomorphic irreducibles. That is, for each <Math>i</Math>, <Math>V_i \cong \oplus_j W_i</Math> (as representations) where <Math>W_i</Math> is an irreducible <Math>G</Math>-invariant vector space.
+ <Returns>List of vector spaces <Math>V_i</Math>, each <Math>G</Math>-invariant and a  direct sum of isomorphic irreducibles. That is, for each <Math>i</Math>, <Math>V_i
+  \cong \oplus_j W_i</Math> (as representations) where <Math>W_i</Math> is an
+  irreducible <Math>G</Math>-invariant vector space.
 </Returns>
  <Description>
 Computes the canonical decomposition of <Math>V</Math> into
-<Math>\oplus_i\;V_i</Math> using the formulas for projections <Math>V \to V_i</Math> due
-to Serre.
-You can pass in the option <Code>irreps</Code> with a list of irreps of <Math>G</Math>,
-and this will be used instead of computing a complete list
-ourselves. If you already know which irreps will appear in <Math>\rho</Math>,
-for instance, this will save time.
+ <Math>\oplus_i\;V_i</Math> using the formulas for projections <Math>V \to V_i</Math> due
+ to Serre.
+ You can pass in the option <Code>irreps</Code> with a list of irreps of <Math>G</Math>,
+ and this will be used instead of computing a complete list
+ ourselves. If you already know which irreps will appear in <Math>\rho</Math>,
+ for instance, this will save time.
  </Description>
 </ManSection>
 
 
 <ManSection>
   <Func Arg="rho" Name="IrreducibleDecomposition" />
- <Returns>List of vector spaces <Math>W_j</Math> such that <Math>V = \oplus_j W_j</Math> and each <Math>W_j</Math> is an irreducible <Math>G</Math>-invariant vector space.
+ <Returns>List of vector spaces <Math>W_j</Math> such that <Math>V = \oplus_j W_j</Math>  and each <Math>W_j</Math> is an irreducible <Math>G</Math>-invariant vector space.
 </Returns>
  <Description>
 Computes the decomposition of <Math>V</Math> into irreducible
-subprepresentations.
+ subprepresentations.
  </Description>
 </ManSection>
 
 
 <ManSection>
   <Func Arg="rho" Name="IrreducibleDecompositionCollected" />
- <Returns>List of lists <Math>V_i</Math> of vector spaces <Math>V_{ij}</Math> such that <Math>V = \oplus_i \oplus_j V_{ij}</Math> and <Math>V_{ik} \cong V_{il}</Math> for all <Math>i</Math>, <Math>k</Math> and <Math>l</Math> (as representations).
+ <Returns>List of lists <Math>V_i</Math> of vector spaces <Math>V_{ij}</Math> such that <Math>V  = \oplus_i \oplus_j V_{ij}</Math> and <Math>V_{ik} \cong V_{il}</Math> for all <Math>i</Math>,
+  <Math>k</Math> and <Math>l</Math> (as representations).
 </Returns>
  <Description>
 Computes the decomposition of <Math>V</Math> into irreducible
-subrepresentations, grouping together the isomorphic
-subrepresentations.
+ subrepresentations, grouping together the isomorphic
+ subrepresentations.
  </Description>
 </ManSection>
 
@@ -133,53 +139,53 @@ subrepresentations.
 </Returns>
  <Description>
 This function does all of the computation and (since
-it is an attribute) saves the results. Doing all of the
-calculations at the same time ensures consistency when it comes to
-irrep ordering, block ordering and basis ordering. There is no
-canonical ordering of irreps, so this is crucial.
+ it is an attribute) saves the results. Doing all of the
+ calculations at the same time ensures consistency when it comes to
+ irrep ordering, block ordering and basis ordering. There is no
+ canonical ordering of irreps, so this is crucial.
 <P/>
-<A>irreps</A> is the complete list of irreps involved in the direct
-sum decomposition of <A>rho</A>, this can be given in case the
-default (running Dixon's algorithm) is too expensive, or e.g. you
-don't want representations over Cyclotomics.
+ <A>irreps</A> is the complete list of irreps involved in the direct
+ sum decomposition of <A>rho</A>, this can be given in case the
+ default (running Dixon's algorithm) is too expensive, or e.g. you
+ don't want representations over Cyclotomics.
 <P/>
-The return value of this function is a record with fields:
+ The return value of this function is a record with fields:
 <P/>
 <List>
 <Item>
 <Code>basis</Code>: The basis that block diagonalises <Math>\rho</Math>, see <Ref
-Func="BlockDiagonalBasisOfRepresentation" />.
+   Func="BlockDiagonalBasisOfRepresentation" />.
 </Item>
 </List>
 <P/>
 <List>
 <Item>
 <Code>diagonal_rep</Code>: <Math>\rho</Math>, block diagonalised with the basis
-above. See <Ref Func="BlockDiagonalRepresentation" />
+   above. See <Ref Func="BlockDiagonalRepresentation" />
 </Item>
 </List>
 <P/>
 <List>
 <Item>
 <Code>decomposition</Code>: The irreducible <Math>G</Math>-invariant subspaces,
-collected according to isomorphism, see <Ref
-Func="IrreducibleDecompositionCollected" />
+   collected according to isomorphism, see <Ref
+   Func="IrreducibleDecompositionCollected" />
 </Item>
 </List>
 <P/>
 <List>
 <Item>
 <Code>centralizer_basis</Code>: An orthonormal basis for the centralizer
-ring of <Math>\rho</Math>, written in block form. See <Ref
-Func="CentralizerBlocksOfRepresentation" />
+   ring of <Math>\rho</Math>, written in block form. See <Ref
+   Func="CentralizerBlocksOfRepresentation" />
 </Item>
 </List>
 <P/>
-Pass the option <Code>parallel</Code> for the computations per-irrep to be
-done in parallel.
+ Pass the option <Code>parallel</Code> for the computations per-irrep to be
+ done in parallel.
 <P/>
-Pass the option <Code>irreps</Code> with the complete list of irreps of <Math>\rho</Math>
-to avoid recomputing this list (could be very expensive)
+ Pass the option <Code>irreps</Code> with the complete list of irreps of <Math>\rho</Math>
+ to avoid recomputing this list (could be very expensive)
  </Description>
 </ManSection>
 

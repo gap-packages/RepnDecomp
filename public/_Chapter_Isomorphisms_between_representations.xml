@@ -13,37 +13,37 @@
 </Returns>
  <Description>
 Let <Math>\rho : G \to GL(V)</Math> and <Math>\tau : G \to GL(W)</Math>. If
-there exists a linear map <Math>A : V \to W</Math> such that for all <Math>g \in
-G</Math>, <Math>\tau(g)A = A\rho(g)</Math>, this function returns one such <Math>A</Math>. <Math>A</Math>
-is the isomorphism between the representations. If the
-representations are not isomorphic, then fail is returned.
+ there exists a linear map <Math>A : V \to W</Math> such that for all <Math>g \in
+ G</Math>, <Math>\tau(g)A = A\rho(g)</Math>, this function returns one such <Math>A</Math>. <Math>A</Math>
+ is the isomorphism between the representations. If the
+ representations are not isomorphic, then fail is returned.
 <P/>
-There are three methods that we can use to compute an isomorphism
-of linear representations, you can select one by passing options to
-the function.
+ There are three methods that we can use to compute an isomorphism
+ of linear representations, you can select one by passing options to
+ the function.
 <P/>
 <List>
 <Item>
 <Code>use_kronecker</Code>: Assumes the matrices are small enough that their
-Kronecker products can fit into memory. Uses <Ref
-Func="GroupSumBSGS" /> and <Code>KroneckerProduct</Code> to compute an
-element of the fixed subspace of <Math>\rho \otimes \tau^*</Math>.
+   Kronecker products can fit into memory. Uses <Ref
+   Func="GroupSumBSGS" /> and <Code>KroneckerProduct</Code> to compute an
+   element of the fixed subspace of <Math>\rho \otimes \tau^*</Math>.
 </Item>
 </List>
 <P/>
 <List>
 <Item>
 <Code>use_orbit_sum</Code>: Finds an isomorphism by summing orbits of the
-the action of <Math>\rho \otimes \tau^*</Math> on matrices. Note that orbits
-could be very large, so this could be as bad as summing over the
-whole group.
+   the action of <Math>\rho \otimes \tau^*</Math> on matrices. Note that orbits
+   could be very large, so this could be as bad as summing over the
+   whole group.
 </Item>
 </List>
 <P/>
 <List>
 <Item>
 The default, sums over the whole group to compute the projection
-onto the fixed subspace.
+   onto the fixed subspace.
 </Item>
 </List>
  </Description>
@@ -56,11 +56,11 @@ onto the fixed subspace.
 </Returns>
  <Description>
 Gives the same result as <Ref
-Func="LinearRepresentationIsomorphism" />, but this function uses a
-simpler method which always involves summing over <Math>G</Math>, without
-using <Ref Func="GroupSumBSGS" />. This might be useful in some
-cases if computing a good BSGS is difficult. However, for all cases
-that have been tested, it is slow (as the name suggests).
+ Func="LinearRepresentationIsomorphism" />, but this function uses a
+ simpler method which always involves summing over <Math>G</Math>, without
+ using <Ref Func="GroupSumBSGS" />. This might be useful in some
+ cases if computing a good BSGS is difficult. However, for all cases
+ that have been tested, it is slow (as the name suggests).
  </Description>
 </ManSection>
 
@@ -71,13 +71,13 @@ that have been tested, it is slow (as the name suggests).
 <Section Label="Chapter_Isomorphisms_between_representations_Section_Testing_isomorphisms">
 <Heading>Testing isomorphisms</Heading>
 
-Since representations of finite groups over <Math>\mathbb{C}</Math> are
-determined by their characters, it is easy to check whether two
-representations are isomorphic by checking if they have the same
-character. We try to use characters wherever possible.
+ Since representations of finite groups over <Math>\mathbb{C}</Math> are
+ determined by their characters, it is easy to check whether two
+ representations are isomorphic by checking if they have the same
+ character. We try to use characters wherever possible.
 <ManSection>
   <Func Arg="rho, tau" Name="AreRepsIsomorphic" />
- <Returns>true if <A>rho</A> and <A>tau</A> are isomorphic as representations, false otherwise.
+ <Returns>true if <A>rho</A> and <A>tau</A> are isomorphic as  representations, false otherwise.
 </Returns>
  <Description>
 <P/>
@@ -87,17 +87,18 @@ character. We try to use characters wherever possible.
 
 <ManSection>
   <Func Arg="A, rho, tau" Name="IsLinearRepresentationIsomorphism" />
- <Returns>true if <A>rho</A> and <A>tau</A> are isomorphic as as representations with the isomorphism given by the linear map <A>A</A>
+ <Returns>true if <A>rho</A> and <A>tau</A> are isomorphic as as  representations with the isomorphism given by the linear map
+  <A>A</A>
 </Returns>
  <Description>
 This function tests if, for all <Math>g \in G</Math>, <Math>A \rho(g)
-= \tau(g) A</Math>. That is, true is returned iff <Math>A</Math> is the intertwining
-operator taking <Math>\rho</Math> to <Math>\tau</Math>. Note that it is always the case
-that:
+ = \tau(g) A</Math>. That is, true is returned iff <Math>A</Math> is the intertwining
+ operator taking <Math>\rho</Math> to <Math>\tau</Math>. Note that it is always the case
+ that:
 <#Include Label="iso">
 
-as long as an isomorphism between the given representations
-actually exists.
+ as long as an isomorphism between the given representations
+ actually exists.
  </Description>
 </ManSection>
 

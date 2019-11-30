@@ -1,3 +1,7 @@
 <#GAPDoc Label="iso">
+<Listing Type="Code"><![CDATA[
+ gap> IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
+ true
+]]></Listing>
 
 <#/GAPDoc>

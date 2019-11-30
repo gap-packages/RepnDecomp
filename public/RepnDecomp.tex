@@ -132,9 +132,14 @@
 \logpage{[ 1, 1, 0 ]}
 \hyperdef{L}{X789233A47A277072}{}
 {
-  This package allows computations of various decompositions of a representation $\rho : G \to GL(V)$ where $G$ is finite and $V$ is a finite-dimensional $\mathbb{C}$-vector space. The algorithms implemented can be divided into two groups:
-methods due to Serre from his book Linear Representations of Finite Groups,
-and original methods due to the authors of this package. 
+  This package allows computations of various decompositions of a representation $\rho : G \to GL(V)$ where $G$ is finite and $V$ is a finite-dimensional $\mathbb{C}$-vector space. 
+
+ To install this package, refer to the installation instructions in the README
+file in the source code. It is located here: \href{https://gitlab.com/kaashif/decomp/blob/master/README.md} {\texttt{https://gitlab.com/kaashif/decomp/blob/master/README.md}}. 
+
+ The algorithms implemented can be divided into two groups: methods due to
+Serre from his book Linear Representations of Finite Groups, and original
+methods due to the authors of this package. 
 
  The default is to use the algorithms due to Serre. If you pass the option \texttt{method := "alternate"} to a function, it will use the alternate method. Passing the option \texttt{parallel} will try to compute in parallel as much as possible. See the individual
 functions for options you can pass. 
@@ -300,8 +305,12 @@ map \mbox{\texttt{\mdseries\slshape A}}
 
 
 
- This function tests if, for all $g \in G$, $A \rho(g) = \tau(g) A$. That is, true is returned iff $A$ is the intertwining operator taking $\rho$ to $\tau$. Note that it is always the case that: as long as an isomorphism between the
-given representations actually exists. }
+ This function tests if, for all $g \in G$, $A \rho(g) = \tau(g) A$. That is, true is returned iff $A$ is the intertwining operator taking $\rho$ to $\tau$. Note that it is always the case that: 
+\begin{Verbatim}[fontsize=\small,frame=single,label=Code]
+   gap> IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
+   true
+\end{Verbatim}
+ as long as an isomorphism between the given representations actually exists. }
 
  }
 

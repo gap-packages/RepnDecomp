@@ -13,8 +13,8 @@
 </Returns>
  <Description>
 Tells you if <A>rho</A> is a linear representation of
-a finite group. The algorithms implemented in this package work on
-these homomorphisms only.
+ a finite group. The algorithms implemented in this package work on
+ these homomorphisms only.
  </Description>
 </ManSection>
 
@@ -25,7 +25,7 @@ these homomorphisms only.
 </Returns>
  <Description>
 Tells you if <A>rho</A> is a homomorphism from a
-finite group to a permutation group.
+ finite group to a permutation group.
  </Description>
 </ManSection>
 
@@ -42,20 +42,20 @@ finite group to a permutation group.
 </Returns>
  <Description>
 Uses a basic stabiliser chain for <Math>G</Math> to compute the
-sum described above. This trick requires <A>summand</A> to be a
-function (in the GAP sense) that defines a monoid homomorphism (in
-the mathematical sense). The computation of the stabiliser chain
-assumes <A>G</A> is a group.
-More precisely, if we have the basic stabiliser chain:
-<Display>\{1\} = G_1 \leq \ldots \leq G_n = G</Display>
-We traverse the chain from <Math>G_1</Math> to <Math>G_n</Math>, using the previous sum
-<Math>G_{i-1}</Math> to build the sum <Math>G_i</Math>. We do this by using the fact
-that (writing <Math>f</Math> for <A>summand</A>)
-<Display>\sum_{g \in G_i} f(g) = \sum_{r_j} \left(\sum_{h \in G_{i-1}} f(h)\right) f(r_j)</Display>
-where the <Math>r_j</Math> are right coset representatives of <Math>G_{i-1}</Math> in
-<Math>G_i</Math>.
-The condition on <A>summand</A> is satisfied if, for example, it is
-a linear representation of a group <A>G</A>.
+ sum described above. This trick requires <A>summand</A> to be a
+ function (in the GAP sense) that defines a monoid homomorphism (in
+ the mathematical sense). The computation of the stabiliser chain
+ assumes <A>G</A> is a group.
+ More precisely, if we have the basic stabiliser chain:
+ <Display>\{1\} = G_1 \leq \ldots \leq G_n = G</Display>
+ We traverse the chain from <Math>G_1</Math> to <Math>G_n</Math>, using the previous sum
+ <Math>G_{i-1}</Math> to build the sum <Math>G_i</Math>. We do this by using the fact
+ that (writing <Math>f</Math> for <A>summand</A>)
+ <Display>\sum_{g \in G_i} f(g) = \sum_{r_j} \left(\sum_{h \in G_{i-1}} f(h)\right) f(r_j)</Display>
+ where the <Math>r_j</Math> are right coset representatives of <Math>G_{i-1}</Math> in
+ <Math>G_i</Math>.
+ The condition on <A>summand</A> is satisfied if, for example, it is
+ a linear representation of a group <A>G</A>.
  </Description>
 </ManSection>
 
@@ -66,20 +66,20 @@ a linear representation of a group <A>G</A>.
 <Section Label="Chapter_Miscellaneous_useful_functions_Section_Space-efficient_representation_of_tensors_of_matrices">
 <Heading>Space-efficient representation of tensors of matrices</Heading>
 
-Suppose we have representations of <Math>G</Math>, <Math>\rho</Math> and <Math>\tau</Math>, with
-degree <Math>n</Math> and <Math>m</Math>. If we would like to construct the tensor
-product representation of <Math>G</Math>, <Math>\rho \otimes \tau</Math>, the usual way
-to do it would be to take the Kronecker product of the
-matrices. This means we now have to store very large <Math>nm \times nm</Math>
-matrices for each generator of <Math>G</Math>.
-This can be avoided by storing the tensor of matrices as pairs,
-essentially storing <Math>A \otimes B</Math> as a pair <Math>(A,B)</Math> and
-implementing group operations on top of these, along with some
-representation-theoretic functions.
-It is only possible to guarantee an economical representation for
-pure tensors, i.e. matrices of the form <Math>A \otimes B</Math>. These are
-closed under group operations, so it is natural to define a group
-structure.
+ Suppose we have representations of <Math>G</Math>, <Math>\rho</Math> and <Math>\tau</Math>, with
+ degree <Math>n</Math> and <Math>m</Math>. If we would like to construct the tensor
+ product representation of <Math>G</Math>, <Math>\rho \otimes \tau</Math>, the usual way
+ to do it would be to take the Kronecker product of the
+ matrices. This means we now have to store very large <Math>nm \times nm</Math>
+ matrices for each generator of <Math>G</Math>.
+ This can be avoided by storing the tensor of matrices as pairs,
+ essentially storing <Math>A \otimes B</Math> as a pair <Math>(A,B)</Math> and
+ implementing group operations on top of these, along with some
+ representation-theoretic functions.
+ It is only possible to guarantee an economical representation for
+ pure tensors, i.e. matrices of the form <Math>A \otimes B</Math>. These are
+ closed under group operations, so it is natural to define a group
+ structure.
 <ManSection>
   <Filt Arg="arg" Name="IsTensorProductOfMatricesObj" Label="for IsMultiplicativeElementWithInverse"/>
  <Returns><C>true</C> or <C>false</C>
@@ -90,8 +90,8 @@ structure.
 </ManSection>
 
 
-Position <Math>i</Math> in this representation stores the matrix <Math>A_i</Math> in the
-tensor product <Math>A_1 \otimes A_2</Math>.
+ Position <Math>i</Math> in this representation stores the matrix <Math>A_i</Math> in the
+ tensor product <Math>A_1 \otimes A_2</Math>.
 <ManSection>
   <Filt Arg="arg" Name="IsTensorProductPairRep" Label="for IsPositionalObjectRep"/>
  <Returns><C>true</C> or <C>false</C>
@@ -102,8 +102,8 @@ tensor product <Math>A_1 \otimes A_2</Math>.
 </ManSection>
 
 
-Position 1 stores the full Kronecker product of the matrices, this
-is very space inefficient and supposed to be used as a last resort.
+ Position 1 stores the full Kronecker product of the matrices, this
+ is very space inefficient and supposed to be used as a last resort.
 <ManSection>
   <Filt Arg="arg" Name="IsTensorProductKroneckerRep" Label="for IsPositionalObjectRep"/>
  <Returns><C>true</C> or <C>false</C>
@@ -114,8 +114,8 @@ is very space inefficient and supposed to be used as a last resort.
 </ManSection>
 
 
-More convenient constructor for a tensor product (automatically
-handles family)
+ More convenient constructor for a tensor product (automatically
+ handles family)
 <ManSection>
   <Func Arg="arg" Name="TensorProductOfMatrices" />
  <Description>
@@ -124,8 +124,8 @@ handles family)
 </ManSection>
 
 
-This uses the multiplicativity of characters when taking tensor
-products to avoid having to compute the trace of a big matrix.
+ This uses the multiplicativity of characters when taking tensor
+ products to avoid having to compute the trace of a big matrix.
 <ManSection>
   <Func Arg="arg" Name="CharacterOfTensorProductOfRepresentations" />
  <Description>
@@ -142,7 +142,7 @@ products to avoid having to compute the trace of a big matrix.
 
 <ManSection>
   <Func Arg="blocks" Name="BlockDiagonalMatrix" />
- <Returns>Matrix given by putting the given matrix <A>blocks</A> on the diagonal
+ <Returns>Matrix given by putting the given matrix <A>blocks</A> on  the diagonal
 </Returns>
  <Description>
 <P/>
@@ -156,8 +156,8 @@ products to avoid having to compute the trace of a big matrix.
 </Returns>
  <Description>
 This is mainly for convenience, since it handles all
-GAP accounting issues regarding the range, ByImages vs ByFunction,
-etc.
+ GAP accounting issues regarding the range, ByImages vs ByFunction,
+ etc.
  </Description>
 </ManSection>
 
@@ -180,7 +180,9 @@ etc.
 
 <ManSection>
   <Func Arg="list1, list2" Name="TensorProductRepLists" />
- <Returns>All possible tensor products given by <Math>\rho \otimes \tau</Math> where <Math>\rho : G \to \mbox{GL}(V)</Math> is taken from <A>list1</A> and <Math>\tau : H \to \mbox{GL}(W)</Math> is taken from <A>list2</A>. The result is then a list of representations of <Math>G \times H</Math>.
+ <Returns>All possible tensor products given by <Math>\rho \otimes \tau</Math>  where <Math>\rho : G \to \mbox{GL}(V)</Math> is taken from <A>list1</A> and
+  <Math>\tau : H \to \mbox{GL}(W)</Math> is taken from <A>list2</A>. The result
+  is then a list of representations of <Math>G \times H</Math>.
 </Returns>
  <Description>
 <P/>
@@ -200,7 +202,8 @@ etc.
 
 <ManSection>
   <Func Arg="rho" Name="DegreeOfRepresentation" />
- <Returns>Degree of the representation <A>rho</A>. That is, <Math>\mbox{Tr}(\rho(e_G))</Math>, where <Math>e_G</Math> is the identity of the group <Math>G</Math> that <A>rho</A> has as domain.
+ <Returns>Degree of the representation <A>rho</A>. That is,  <Math>\mbox{Tr}(\rho(e_G))</Math>, where <Math>e_G</Math> is the identity of the group
+  <Math>G</Math> that <A>rho</A> has as domain.
 </Returns>
  <Description>
 <P/>
@@ -210,7 +213,7 @@ etc.
 
 <ManSection>
   <Func Arg="rho" Name="PermToLinearRep" />
- <Returns>Linear representation <Math>\rho</Math> isomorphic to the permutation representation <A>rho</A>.
+ <Returns>Linear representation <Math>\rho</Math> isomorphic to the permutation  representation <A>rho</A>.
 </Returns>
  <Description>
 <P/>
@@ -220,7 +223,7 @@ etc.
 
 <ManSection>
   <Func Arg="S, prod" Name="IsOrthonormalSet" />
- <Returns>Whether <A>S</A> is an orthonormal set with respect to the inner product <A>prod</A>.
+ <Returns>Whether <A>S</A> is an orthonormal set with respect to the  inner product <A>prod</A>.
 </Returns>
  <Description>
 <P/>
