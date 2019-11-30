@@ -6,9 +6,46 @@
 #! representation $\rho : G \to GL(V)$ where $G$ is finite and $V$ is
 #! a finite-dimensional $\mathbb{C}$-vector space.
 #!
+#! @Subsection Installation
+#!
 #! To install this package, refer to the installation instructions in
 #! the README file in the source code. It is located here:
 #! <URL>https://gitlab.com/kaashif/decomp/blob/master/README.md</URL>.
+
+#! @Subsection Note on what is meant by a representation
+
+#! Throughout this documentation, mathematical terminology is used
+#! e.g. representation. It is clear what is meant mathematically, but
+#! it is not entirely clear what is meant in terms of GAP types - what
+#! are you supposed to pass in when I say "pass in a representation".
+#! Occasionally I will not even mention what we are passing in and
+#! assume the reader knows that <A>rho</A> or $\rho$ refers to a
+#! representation.
+
+#! A representation we can use is, in GAP, a homomorphism from a
+#! finite group to a matrix group where all matrices have coefficients
+#! in a cyclotomic field (`Cyclotomics` is the union of all such
+#! fields in GAP). You can check whether something you want to pass is
+#! suitable with the function <Ref
+#! Attr="IsFiniteGroupLinearRepresentation" Label="for IsGroupHomomorphism"/>.
+#!
+
+#! Here's an example of a representation <A>rho</A> in GAP:
+#!
+
+#! <Example>
+#! gap> G := SymmetricGroup(3);
+#! Sym( [ 1 .. 3 ] )
+#! gap> images := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));
+#! [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+#!   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+#! gap> rho := GroupHomomorphismByImages(G, Group(images));
+#! [ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+#!   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+#! </Example>
+
+#!
+#! @Subsection API Overview
 #!
 #! The algorithms implemented can be divided into two groups: methods
 #! due to Serre from his book Linear Representations of Finite Groups,
