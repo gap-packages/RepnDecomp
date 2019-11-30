@@ -74,7 +74,14 @@ To run the tests, make sure you have all needed packages installed
 
     $ gap tst/testall.g
 
-This will run all tests and (hopefully) pass.
+This will run all tests and (hopefully) pass. In order for the tests
+to be as useful as possible to me i.e. catch as many bugs as possible,
+there is a lot of randomness in them. This means that sometimes the
+tests pick a pathologically bad example to decompose which causes the
+tests to hang forever.
+
+The best way to fix it would be to send a PR to make the performance
+better :)
 
 ## Documentation
 
@@ -92,3 +99,8 @@ themselves.
 This package has been submitted as a paper to the
 [Journal of Open Source Software](https://joss.theoj.org/), the paper
 can be found at `paper.md`.
+
+## Contributing
+
+Open a pull request or issue in this repository. You can also email me
+directly, I'll be more likely to notice an email.
