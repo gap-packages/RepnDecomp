@@ -134,8 +134,54 @@
 {
   This package allows computations of various decompositions of a representation $\rho : G \to GL(V)$ where $G$ is finite and $V$ is a finite-dimensional $\mathbb{C}$-vector space. 
 
+ 
+\subsection{\textcolor{Chapter }{Installation}}\label{Chapter_Introduction_Section_Getting_started_with_RepnDecomp_Subsection_Installation}
+\logpage{[ 1, 1, 1 ]}
+\hyperdef{L}{X8360C04082558A12}{}
+{
+  
+
  To install this package, refer to the installation instructions in the README
-file in the source code. It is located here: \href{https://gitlab.com/kaashif/decomp/blob/master/README.md} {\texttt{https://gitlab.com/kaashif/decomp/blob/master/README.md}}. 
+file in the source code. It is located here: \href{https://gitlab.com/kaashif/decomp/blob/master/README.md} {\texttt{https://gitlab.com/kaashif/decomp/blob/master/README.md}}. }
+
+ 
+\subsection{\textcolor{Chapter }{Note on what is meant by a representation}}\label{Chapter_Introduction_Section_Getting_started_with_RepnDecomp_Subsection_Note_on_what_is_meant_by_a_representation}
+\logpage{[ 1, 1, 2 ]}
+\hyperdef{L}{X792C0F507B4A3B89}{}
+{
+  Throughout this documentation, mathematical terminology is used e.g.
+representation. It is clear what is meant mathematically, but it is not
+entirely clear what is meant in terms of GAP types - what are you supposed to
+pass in when I say "pass in a representation". Occasionally I will not even
+mention what we are passing in and assume the reader knows that \mbox{\texttt{\mdseries\slshape rho}} or $\rho$ refers to a representation. A representation we can use is, in GAP, a
+homomorphism from a finite group to a matrix group where all matrices have
+coefficients in a cyclotomic field (\texttt{Cyclotomics} is the union of all such fields in GAP). You can check whether something you
+want to pass is suitable with the function \texttt{IsFiniteGroupLinearRepresentation} (\ref{IsFiniteGroupLinearRepresentation:for IsGroupHomomorphism}). 
+
+ Here's an example of a representation \mbox{\texttt{\mdseries\slshape rho}} in GAP: 
+
+ 
+\begin{Verbatim}[commandchars=!@|,fontsize=\small,frame=single,label=Example]
+   gap> G := SymmetricGroup(3);
+   Sym( [ 1 .. 3 ] )
+   gap> images := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));
+   [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+     [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+   gap> rho := GroupHomomorphismByImages(G, Group(images));
+   [ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+     [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+   
+\end{Verbatim}
+ 
+
+ }
+
+ 
+\subsection{\textcolor{Chapter }{API Overview}}\label{Chapter_Introduction_Section_Getting_started_with_RepnDecomp_Subsection_API_Overview}
+\logpage{[ 1, 1, 3 ]}
+\hyperdef{L}{X8315479878D25E37}{}
+{
+  
 
  The algorithms implemented can be divided into two groups: methods due to
 Serre from his book Linear Representations of Finite Groups, and original
@@ -194,6 +240,8 @@ representations:
 \item  \texttt{UnitaryRepresentation} (\ref{UnitaryRepresentation}) 
 \item  \texttt{IsUnitaryRepresentation} (\ref{IsUnitaryRepresentation}) 
 \end{itemize}
+ }
+
  }
 
  }

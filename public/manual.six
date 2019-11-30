@@ -11,6 +11,14 @@ entries :=
   [ "\033[1X\033[33X\033[0;-2YGetting started with RepnDecomp\033[133X\033[101X"
         , "1.1", [ 1, 1, 0 ], 4,, "getting started with repndecomp", 
       "X789233A47A277072" ], 
+  [ "\033[1X\033[33X\033[0;-2YInstallation\033[133X\033[101X", "1.1-1", 
+      [ 1, 1, 1 ], 11,, "installation", "X8360C04082558A12" ], 
+  [ 
+      "\033[1X\033[33X\033[0;-2YNote on what is meant by a representation\033[133X\\
+033[101X", "1.1-2", [ 1, 1, 2 ], 18,, 
+      "note on what is meant by a representation", "X792C0F507B4A3B89" ], 
+  [ "\033[1X\033[33X\033[0;-2YAPI Overview\033[133X\033[101X", "1.1-3", 
+      [ 1, 1, 3 ], 46,, "api overview", "X8315479878D25E37" ], 
   [ 
       "\033[1X\033[33X\033[0;-2YIsomorphisms between representations\033[133X\033[1\
 01X", "2", [ 2, 0, 0 ], 1,, "isomorphisms between representations", 

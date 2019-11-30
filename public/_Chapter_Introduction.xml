@@ -11,9 +11,52 @@
  representation <Math>\rho : G \to GL(V)</Math> where <Math>G</Math> is finite and <Math>V</Math> is
  a finite-dimensional <Math>\mathbb{C}</Math>-vector space.
 <P/>
+<Subsection Label="Chapter_Introduction_Section_Getting_started_with_RepnDecomp_Subsection_Installation">
+<Heading>Installation</Heading>
+
+<P/>
  To install this package, refer to the installation instructions in
  the README file in the source code. It is located here:
  <URL>https://gitlab.com/kaashif/decomp/blob/master/README.md</URL>.
+</Subsection>
+
+
+<Subsection Label="Chapter_Introduction_Section_Getting_started_with_RepnDecomp_Subsection_Note_on_what_is_meant_by_a_representation">
+<Heading>Note on what is meant by a representation</Heading>
+
+ Throughout this documentation, mathematical terminology is used
+ e.g. representation. It is clear what is meant mathematically, but
+ it is not entirely clear what is meant in terms of GAP types - what
+ are you supposed to pass in when I say "pass in a representation".
+ Occasionally I will not even mention what we are passing in and
+ assume the reader knows that <A>rho</A> or <Math>\rho</Math> refers to a
+ representation.
+ A representation we can use is, in GAP, a homomorphism from a
+ finite group to a matrix group where all matrices have coefficients
+ in a cyclotomic field (<Code>Cyclotomics</Code> is the union of all such
+ fields in GAP). You can check whether something you want to pass is
+ suitable with the function <Ref
+ Attr="IsFiniteGroupLinearRepresentation" Label="for IsGroupHomomorphism"/>.
+<P/>
+ Here's an example of a representation <A>rho</A> in GAP:
+<P/>
+ <Example>
+ gap> G := SymmetricGroup(3);
+ Sym( [ 1 .. 3 ] )
+ gap> images := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));
+ [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+ gap> rho := GroupHomomorphismByImages(G, Group(images));
+ [ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+ </Example>
+<P/>
+</Subsection>
+
+
+<Subsection Label="Chapter_Introduction_Section_Getting_started_with_RepnDecomp_Subsection_API_Overview">
+<Heading>API Overview</Heading>
+
 <P/>
  The algorithms implemented can be divided into two groups: methods
  due to Serre from his book Linear Representations of Finite Groups,
@@ -90,6 +133,9 @@
 <Ref Func="IsUnitaryRepresentation" />
 </Item>
 </List>
+</Subsection>
+
+
 </Section>
 
 
