@@ -5,7 +5,11 @@
 #! This package allows computations of various decompositions of a
 #! representation $\rho : G \to GL(V)$ where $G$ is finite and $V$ is
 #! a finite-dimensional $\mathbb{C}$-vector space.
-
+#!
+#! To install this package, refer to the installation instructions in
+#! the README file in the source code. It is located here:
+#! <URL>https://gitlab.com/kaashif/decomp/blob/master/README.md</URL>.
+#!
 #! The algorithms implemented can be divided into two groups: methods
 #! due to Serre from his book Linear Representations of Finite Groups,
 #! and original methods due to the authors of this package.
