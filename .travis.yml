@@ -15,15 +15,6 @@ addons:
 matrix:
   include:
     - env: GAPBRANCH=master
-    - env: GAPBRANCH=stable-4.10
-    - env: GAPBRANCH=master ABI=32
-      addons:
-        apt_packages:
-          - libgmp-dev:i386
-          - libreadline-dev:i386
-          - zlib1g-dev:i386
-          - gcc-multilib
-          - g++-multilib
 
 branches:
   only:
