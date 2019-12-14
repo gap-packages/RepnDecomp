@@ -10,7 +10,7 @@
 #!
 #! To install this package, refer to the installation instructions in
 #! the README file in the source code. It is located here:
-#! <URL>https://gitlab.com/kaashif/decomp/blob/master/README.md</URL>.
+#! <URL>https://github.com/gap-packages/RepnDecomp/blob/master/README.md</URL>.
 
 #! @Subsection Note on what is meant by a representation
 

@@ -30,7 +30,7 @@ clone this into it. Commands to run:
 
     $ mkdir -p ~/.gap/pkg
     $ cd ~/.gap/pkg
-    $ git clone https://gitlab.com/kaashif/decomp.git RepnDecomp
+    $ git clone https://github.com/gap-packages/RepnDecomp.git
 
 Make sure that, when you installed GAP, you installed all of the
 packages! Our package uses GRAPE and IO for some functions.
