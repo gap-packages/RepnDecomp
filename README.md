@@ -1,267 +1,106 @@
-# GitHubPagesForGAP
+# Computing decompositions of representations
+
+## Project Description
+
+This project aims to investigate and record algorithmic details and to
+produce a program (using GAP and/or Sagemath) for computing the
+decomposition of a representation ρ, of a finite group G over the
+complex numbers into irreducibles, as well as the corresponding
+decomposition of the centraliser of R. Currently, while methods for
+doing this are known (cf.  Serre's book "Linear Representations of
+Finite Groups"), there are no open-source computer programs that
+implement these methods, nor are details on how to achieve good
+performance of such an implementation published.
+
+This program will be useful in, for example, semidefinite programming
+and optimisation/feasibility problems involving coding theory, graph
+theory, algebraic geometry, combinatorics and more (see
+https://arxiv.org/abs/1007.2905 for more examples of possible
+applications). Specifically, it allows to achieve substantial
+reductions in the dimension of these problems; potentially known
+results, e.g. on upper bounds on sizes of nonlinear codes, could be
+improved with the help of the program.
+
+## Installation
+
+First, install GAP following the instructions
+[here](https://www.gap-system.org/Download/index.html). Then, create a
+directory `~/.gap/pkg`, which will contain your local packages and
+clone this into it. Commands to run:
+
+    $ mkdir -p ~/.gap/pkg
+    $ cd ~/.gap/pkg
+    $ git clone https://github.com/gap-packages/RepnDecomp.git
+
+Make sure that, when you installed GAP, you installed all of the
+packages! Our package uses GRAPE and IO for some functions.
+
+Now, you can run GAP however you like, load the package and use the
+functions provided:
+
+```
+$ gap
+<some output>
+gap> gap> LoadPackage("RepnDecomp");
+───────────────────────────────────────────────────────────────────────────────
+Loading  GRAPE 4.8.2 (GRaph Algorithms using PErmutation groups)
+by Leonard H. Soicher (http://www.maths.qmul.ac.uk/~lsoicher/).
+Homepage: https://gap-packages.github.io/grape
+Report issues at https://github.com/gap-packages/grape/issues
+───────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────
+Loading  RepnDecomp 0.1 (Decompose representations of finite groups into irreducibles)
+by Kaashif Hymabaccus (https://kaashif.co.uk).
+with contributions by:
+   Dmitrii Pasechnik.
+Homepage: http://gitlab.com/kaashif/decomp/
+───────────────────────────────────────────────────────────────────────────────
+true
+gap> A := IdentityMat(5);
+[ [ 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0 ], [ 0, 0, 1, 0, 0 ], [ 0, 0, 0, 1, 0 ],
+  [ 0, 0, 0, 0, 1 ] ]
+gap> B := LDLDecomposition(A);
+rec( D := [ 1, 1, 1, 1, 1 ],
+  L := [ [ 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0 ], [ 0, 0, 1, 0, 0 ],
+      [ 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1 ] ] )
+```
+
+Where `LDLDecomposition` is a function provided by this package.
+
+## Testing
+
+To run the tests, make sure you have all needed packages installed
+(GRAPE and also IO if you want to compute in parallel).
+
+    $ gap tst/testall.g
+
+This will run all tests and (hopefully) pass. In order for the tests
+to be as useful as possible to me i.e. catch as many bugs as possible,
+there is a lot of randomness in them. This means that sometimes the
+tests pick a pathologically bad example to decompose which causes the
+tests to hang forever.
+
+The best way to fix it would be to send a PR to make the performance
+better :)
+
+## Documentation
+
+There's a GAPDoc documentation book hosted
+[here](https://kaashif.gitlab.io/decomp/chap0.html). This is generated
+from the source files and comments in the `lib/` directory of this
+repo, so you can also look there for the same information.
+
+There are also some examples in the `examples` directory, but the most
+complete set of examples are in the `tst` directory - the unit tests
+themselves.
+
+## Paper
+
+This package has been submitted as a paper to the
+[Journal of Open Source Software](https://joss.theoj.org/), the paper
+can be found at `paper.md`.
 
-This repository can be used to quickly set up a website hosted by
-[GitHub](https://github.com/) for GAP packages using a GitHub repository.
-Specifically, this uses [GitHub pages](https://pages.github.com/)
-by adding a `gh-pages` branch to your package repository which
-contains data generated from the `PackageInfo.g` file of your package.
+## Contributing
 
-## Initial setup
-
-The easiest way to do this is to run the `setup-gh-pages` shell script
-provided in the [GitHubPagesForGAP]() from within a git clone of your
-package's GitHub repository.
-
-In case this does not work, or if you want to really know what's going
-on, you can also follow the manual instructions described after the fold.
-
-------
-
-The following instructions assume you do not already have a `gh-pages`
-branch in your repository. If you do have one, you should delete it before
-following these instructions.
-
-1. Go into your clone of your package repository.
-
-2. Setup a `gh-pages` branch in a `gh-pages` subdirectory.
-
-   Users with a recent enough git version (recommended is >= 2.7.0)
-   can do this using a "worktree", via the following commands:
-
-   ```sh
-   # Add a new remote pointing to the GitHubPagesForGAP repository
-   git remote add -f gh-gap https://github.com/gap-system/GitHubPagesForGAP
-
-   # Create a fresh gh-pages branch from the new remote
-   git branch gh-pages gh-gap/gh-pages --no-track
-
-   # Create a new worktree and change into it
-   git worktree add gh-pages gh-pages
-   cd gh-pages
-   ```
-
-   Everybody else should instead do the following, with the URL
-   in the initial clone command suitably adjusted:
-
-   ```sh
-   # Create a fresh clone of your repository, and change into it
-   git clone https://github.com/USERNAME/REPOSITORY gh-pages
-   cd gh-pages
-
-   # Add a new remote pointing to the GitHubPagesForGAP repository
-   git remote add gh-gap https://github.com/gap-system/GitHubPagesForGAP
-   git fetch gh-gap
-
-   # Create a fresh gh-pages branch from the new remote
-   git checkout -b gh-pages gh-gap/gh-pages --no-track
-   ```
-
-5. Add in copies of your `PackageInfo.g`, `README` (or `README.md`) and manual:
-
-   ```
-   cp -f ../PackageInfo.g ../README* .
-   cp -f ../doc/*.{css,html,js,txt} doc/
-   ```
-
-6. Now run the `update.g` GAP script. This extracts data from your
-   `PackageInfo.g` file and puts that data into `_data/package.yml`.
-   From this, the website template can populate the web pages with
-   some sensible default values.
-
-   ```
-   gap update.g
-   ```
-
-7. Commit and push everything.
-
-   ```
-   git add PackageInfo.g README* doc/ _data/package.yml
-   git commit -m "Setup gh-pages based on GitHubPagesForGAP"
-   git push --set-upstream origin gh-pages
-   ```
-
-That's it. You can now see your new package website under
-https://USERNAME.github.io/REPOSITORY/ (of course after
-adjusting USERNAME and REPOSITORY suitably).
-
-
-## Using an existing gh-pages branch
-
-If you previously set up [GitHubPagesForGAP]() and thus already have a `gh-pages`
-branch, you may on occasion have need to make a fresh clone of your package
-repository, and then also would like to recreate the `gh-pages` directory.
-
-The easiest way to do this is to run the `setup-gh-pages` shell script
-provided in the [GitHubPagesForGAP]() from within a git clone of your
-package's GitHub repository.
-
-In case this does not work, or if you want to really know what's going
-on, you can also follow the manual instructions described after the fold.
-
-------
-
-Users with a recent enough git version (recommended is >= 2.7)
-can do this using a "worktree", via the following commands:
-
-   ```sh
-   git branch gh-pages origin/gh-pages
-   git worktree add gh-pages gh-pages
-   ```
-
-If you are using an older version of git, you can instead use a second clone
-of your repository instead:
-
-   ```sh
-   git clone -b gh-pages https://github.com/USERNAME/REPOSITORY gh-pages
-   ```
-
-
-## Adjusting the content and layout
-
-[GitHubPagesForGAP]() tries to automatically provide good defaults for
-most packages. However, you can tweak everything about it:
-
-* To adjust the page layout, edit the files `stylesheets/styles.css`
-and `_layouts/default.html`.
-
-* To adjust the content of the front page, edit `index.md` (resp.
-  for the content of the sidebar, edit `_layouts/default.html`
-
-* You can also add additional pages, in various formats (HTML,
-Markdown, Textile, ...).
-
-For details, please consult the [Jekyll](http://jekyllrb.com/)
-manual.
-
-
-## Testing the site locally
-
-If you would like to test your site on your own machine, without
-uploading it to GitHub (where it is visible to the public), you can do
-so by installing [Jekyll](http://jekyllrb.com/), the static web site
-generator used by GitHub to power GitHub Pages.
-
-Once you have installed Jekyll as described on its homepage, you can
-test the website locally as follows:
-
-1. Go to the `gh-pages` directory we created above.
-
-2. Run jekyll (this launches a tiny web server on your machine):
-
-   ```
-   jekyll serve -w
-   ```
-
-3. Visit the URL http://localhost:4000 in a web browser.
-
-
-## Updating after you made a release
-
-Whenever you make a release of your package (and perhaps more often than
-that), you will want to update your website. The easiest way is to use
-the `release` script from the [ReleaseTools][], which performs all
-the necessary steps for you, except for the very last of actually
-publishing the package (and it can do even that for you, if you
-pass the `-p` option to it).
-
-However, you can also do it manually. The steps for doing it are quite
-similar to the above:
-
-1. Go to the `gh-pages` directory we created above.
-
-2. Add in copies of your `PackageInfo.g`, `README` (or `README.md`) and manual:
-
-   ```
-   cp -f ../PackageInfo.g ../README* .
-   cp -f ../doc/*.{css,html,js,txt} doc/
-   ```
-
-3. Now run the `update.g` GAP script.
-
-4. Commit and push the work we have just done.
-
-   ```
-   git add PackageInfo.g README* doc/ _data/package.yml
-   git commit -m "Update web pages"
-   git push
-   ```
-
-A few seconds after you have done this, your changes will be online
-under https://USERNAME.github.io/REPOSITORY/ .
-
-
-## Updating to a newer version of GitHubPagesForGAP
-
-Normally you should not have to ever do this. However, if you really want to,
-you can attempt to update to the most recent version of [GitHubPagesForGAP]() via
-the following instructions. The difficulty of such an update depends on how
-much you tweaked the site after initially cloning [GitHubPagesForGAP]().
-
-1. Go to the `gh-pages` directory we created above.
-   Make sure that there are no uncommitted changes, as they will be lost
-   when following these instructions.
-
-2. Make sure the `gh-gap` remote exists and has the correct URL. If in doubt,
-   just re-add it:
-   ```
-   git remote remove gh-gap
-   git remote add gh-gap https://github.com/gap-system/GitHubPagesForGAP
-   ```
-
-3. Attempt to merge the latest GitHubPagesForGAP.
-   ```
-   git pull gh-gap gh-pages
-   ```
-
-4. If this produced no errors and just worked, skip to the next step.
-   But it is quite likely that you will have conflicts in the file
-   `_data/package.yml`, or in your `README` or `PackageInfo.g` files.
-   These can usually be resolved by entering this:
-   ```
-   cp ../PackageInfo.g ../README* .
-   gap update.g
-   git add PackageInfo.g README* _data/package.yml
-   ```
-   If you are lucky, these were the only conflicts (check with `git status`).
-   If no merge conflicts remain, finish with this command:
-   ```
-   git commit -m "Merge gh-gap/gh-pages"
-   ```
-   If you still have merge conflicts, and don't know how to resolve them, or
-   get stuck some other way, you can abort the merge process and revert to the
-   original state by issuing this command:
-   ```
-   git merge --abort
-   ```
-
-5. You should be done now. Don't forget to push your changes if you want them
-   to become public.
-
-
-## Packages using GitHubPagesForGAP
-
-The majority of packages listed on <https://gap-packages.github.io> use
-[GitHubPagesForGAP](). If you want some specific examples, here are some:
-
-* <https://gap-packages.github.io/anupq>
-* <https://gap-packages.github.io/cvec>
-* <https://gap-packages.github.io/genss>
-* <https://gap-packages.github.io/io>
-* <https://gap-packages.github.io/NormalizInterface>
-* <https://gap-packages.github.io/nq>
-* <https://gap-packages.github.io/orb>
-* <https://gap-packages.github.io/polenta>
-* <https://gap-packages.github.io/recog>
-
-
-## Contact
-
-Please submit bug reports, suggestions for improvements and patches via
-the [issue tracker](https://github.com/gap-system/GitHubPagesForGAP/issues).
-
-You can also contact me directly via [email](max@quendi.de).
-
-Copyright (c) 2013-2019 Max Horn
-
-[GitHubPagesForGAP]: https://github.com/gap-system/GitHubPagesForGAP
-[ReleaseTools]: https://github.com/gap-system/ReleaseTools
+Open a pull request or issue in this repository. You can also email me
+directly, I'll be more likely to notice an email.
