@@ -6,7 +6,7 @@
          [1X Decompose representations of finite groups into irreducibles [101X
   
   
-                                     1.0.0
+                                     1.0.1
   
   
                                 14 December 2019

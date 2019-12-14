@@ -1,5 +1,5 @@
 name: RepnDecomp
-version: "1.0.0"
+version: "1.0.1"
 license: "GPL-3.0"
 date: 2019-12-14
 description: |
@@ -37,9 +37,9 @@ packageinfo: https://gap-packages.github.io/RepnDecomp/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.0.0/RepnDecomp-1.0.0.tar.gz
+      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.0.1/RepnDecomp-1.0.1.tar.gz
     - name: .tar.bz2
-      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.0.0/RepnDecomp-1.0.0.tar.bz2
+      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.0.1/RepnDecomp-1.0.1.tar.bz2
 
 abstract: |
     The <span class='pkgname'>RepnDecomp</span> package provides functions implementing various algorithms for decomposing linear representations of finite groups.
@@ -53,7 +53,7 @@ citeas: |
     <p class='BibEntry'>
     [<span class='BibKey'>Hym19</span>]   <b class='BibAuthor'>Hymabaccus, K.</b>,
      <i class='BibTitle'>RepnDecomp, Decompose representations of finite groups into irreducibles,
-             Version 1.0.0</i>
+             Version 1.0.1</i>
      (<span class='BibYear'>2019</span>)<br />
     (<span class='BibNote'>GAP package</span>),
     <span class='BibHowpublished'><a href="https://gap-packages.github.io/RepnDecomp">https://gap-packages.github.io/RepnDecomp</a></span>.
@@ -61,14 +61,14 @@ citeas: |
     
 
 bibtex: |
-    @misc{ RepnDecomp1.0.0,
+    @misc{ RepnDecomp1.0.1,
       author =           {Hymabaccus, K.},
-      title =            {{RepnDecomp},   Decompose  representations  of  finite  groups  into
-                          irreducibles, {V}ersion 1.0.0},
+      title =            {{RepnDecomp},   Decompose  representations  of  finite
+                          groups into irreducibles, {V}ersion 1.0.1},
       month =            {Dec},
       year =             {2019},
       note =             {GAP package},
-      howpublished =     {\href                    {https://gap-packages.github.io/RepnDecomp}
+      howpublished =     {\href      {https://gap-packages.github.io/RepnDecomp}
                           {\texttt{https://gap-packages.github.io/}\discretionary
                           {}{}{}\texttt{RepnDecomp}}},
       keywords =         {representations; groups},
