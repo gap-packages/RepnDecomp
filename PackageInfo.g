@@ -27,9 +27,11 @@ Persons := [
   ),
   rec(
     IsAuthor := false,
-    IsMaintainer := false,
+    IsMaintainer := true,
     FirstNames := "Dmitrii",
     LastName := "Pasechnik",
+    WWWHome := "http://pasechnik.info",
+    Email := "dima@e.email",
     Place := "Oxford",
     Institution := "University of Oxford",
   ),
