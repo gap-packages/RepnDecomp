@@ -1,5 +1,7 @@
 # Computing decompositions of representations
 
+![CI build](https://api.travis-ci.com/gap-packages/RepnDecomp.svg?branch=master)
+
 ## Project Description
 
 This project aims to investigate and record algorithmic details and to
