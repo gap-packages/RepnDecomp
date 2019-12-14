@@ -10,7 +10,7 @@ SetPackageInfo( rec(
 
 PackageName := "RepnDecomp",
 Subtitle := "Decompose representations of finite groups into irreducibles",
-Version := "1.0.0",
+Version := "1.0.1",
 Date := "14/12/2019", # dd/mm/yyyy format
 License := "GPL-3.0",
 
@@ -59,7 +59,6 @@ ArchiveFormats  := ".tar.gz .tar.bz2",
 Status := "dev",
 
 AbstractHTML := "The <span class='pkgname'>RepnDecomp</span> package provides functions implementing various algorithms for decomposing linear representations of finite groups.",
-
 
 PackageDoc := rec(
   BookName  := "RepnDecomp",
