@@ -58,10 +58,8 @@ ArchiveFormats  := ".tar.gz .tar.bz2",
 ##
 Status := "dev",
 
-AbstractHTML := "The <span class='pkgname'>RepnDecomp</span> package provides\
-                functions implementing various algorithms for decomposing\ 
-                linear representations of finite groups.\
-                ",
+AbstractHTML := "The <span class='pkgname'>RepnDecomp</span> package provides functions implementing various algorithms for decomposing linear representations of finite groups.",
+
 
 PackageDoc := rec(
   BookName  := "RepnDecomp",
