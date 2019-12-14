@@ -86,9 +86,10 @@ better :)
 ## Documentation
 
 There's a GAPDoc documentation book hosted
-[here](https://kaashif.gitlab.io/decomp/chap0.html). This is generated
-from the source files and comments in the `lib/` directory of this
-repo, so you can also look there for the same information.
+[here](https://gap-packages.github.io/RepnDecomp/doc/chap0.html). This
+is generated from the source files and comments in the `lib/`
+directory of this repo, so you can also look there for the same
+information.
 
 There are also some examples in the `examples` directory, but the most
 complete set of examples are in the `tst` directory - the unit tests
