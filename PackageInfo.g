@@ -10,8 +10,9 @@ SetPackageInfo( rec(
 
 PackageName := "RepnDecomp",
 Subtitle := "Decompose representations of finite groups into irreducibles",
-Version := "0.1",
-Date := "20/04/2019", # dd/mm/yyyy format
+Version := "1.0.0",
+Date := "14/12/2019", # dd/mm/yyyy format
+License := "GPL-3.0",
 
 Persons := [
   rec(
@@ -34,18 +35,18 @@ Persons := [
   ),
 ],
 
-#SourceRepository := rec( Type := "TODO", URL := "URL" ),
-#IssueTrackerURL := "TODO",
-#SupportEmail := "TODO",
+SourceRepository := rec( Type := "git",
+                         URL := Concatenation( "https://github.com/gap-packages/", ~.PackageName ),
+                       ),
 
-PackageWWWHome := "http://gitlab.com/kaashif/decomp/",
-
-PackageInfoURL := Concatenation( ~.PackageWWWHome, "PackageInfo.g" ),
-README_URL     := Concatenation( ~.PackageWWWHome, "README.md" ),
-ArchiveURL     := Concatenation( ~.PackageWWWHome,
+IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
+PackageWWWHome  := Concatenation( "https://gap-packages.github.io/", ~.PackageName ),
+README_URL      := Concatenation( ~.PackageWWWHome, "/README.md" ),
+PackageInfoURL  := Concatenation( ~.PackageWWWHome, "/PackageInfo.g" ),
+ArchiveURL      := Concatenation( ~.SourceRepository.URL,
+                                 "/releases/download/v", ~.Version,
                                  "/", ~.PackageName, "-", ~.Version ),
-
-ArchiveFormats := ".tar.gz",
+ArchiveFormats  := ".tar.gz .tar.bz2",
 
 ##  Status information. Currently the following cases are recognized:
 ##    "accepted"      for successfully refereed packages
@@ -57,14 +58,17 @@ ArchiveFormats := ".tar.gz",
 ##
 Status := "dev",
 
-AbstractHTML   :=  "",
+AbstractHTML := "The <span class='pkgname'>RepnDecomp</span> package provides\
+                functions implementing various algorithms for decomposing\ 
+                linear representations of finite groups.\
+                ",
 
 PackageDoc := rec(
   BookName  := "RepnDecomp",
-  ArchiveURLSubset := ["public"],
-  HTMLStart := "public/chap0.html",
-  PDFFile   := "public/manual.pdf",
-  SixFile   := "public/manual.six",
+  ArchiveURLSubset := ["doc"],
+  HTMLStart := "doc/chap0.html",
+  PDFFile   := "doc/manual.pdf",
+  SixFile   := "doc/manual.six",
   LongTitle := "Decompose representations of finite groups into irreducibles",
 ),
 
@@ -72,7 +76,7 @@ Dependencies := rec(
   GAP := ">= 4.10",
   NeededOtherPackages := [ [ "GAPDoc", ">= 1.6.1" ],
                            [ "GRAPE", ">= 4.8.1" ] ],
-  SuggestedOtherPackages := [ ],
+  SuggestedOtherPackages := [ [ "IO", ">= 4.7.0" ] ],
   ExternalConditions := [ ],
 ),
 
@@ -80,6 +84,6 @@ AvailabilityTest := function() return true; end,
 
 TestFile := "tst/testall.g",
 
-#Keywords := [ "TODO" ],
+Keywords := [ "representations", "groups", ],
 
 ));
