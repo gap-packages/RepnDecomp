@@ -79,7 +79,7 @@ Dependencies := rec(
   ExternalConditions := [ ],
 ),
 
-AvailabilityTest := function() return true; end,
+AvailabilityTest := ReturnTrue,
 
 TestFile := "tst/testall.g",
 
