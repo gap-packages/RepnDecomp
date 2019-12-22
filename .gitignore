@@ -9,5 +9,6 @@ decomp.tex
 doc/
 public/
 tst/repndecomp*.tst
+old_tst/repndecomp*.tst
 tmp/
 gh-pages

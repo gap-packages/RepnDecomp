@@ -2,10 +2,6 @@
 
 #! @Section Finding explicit isomorphisms
 
-#! @Arguments rho, tau[, rho_cent_basis, tau_cent_basis]
-
-#! @Returns A matrix $A$ or fail
-
 #! @Description Let $\rho : G \to GL(V)$ and $\tau : G \to GL(W)$. If
 #! there exists a linear map $A : V \to W$ such that for all $g \in
 #! G$, $\tau(g)A = A\rho(g)$, this function returns one such $A$. $A$
@@ -28,11 +24,14 @@
 #!
 #! * The default, sums over the whole group to compute the projection
 #!   onto the fixed subspace.
+#!
+#! <P/>
+#! @InsertChunk Example_LinearRepresentationIsomorphism
+#! <P/>
+#! @Arguments rho, tau[, rho_cent_basis, tau_cent_basis]
+#! @Returns A matrix $A$ or fail
 DeclareGlobalFunction( "LinearRepresentationIsomorphism" );
 
-#! @Arguments rho, tau
-
-#! @Returns A matrix $A$ or fail
 
 #! @Description Gives the same result as <Ref
 #! Func="LinearRepresentationIsomorphism" />, but this function uses a
@@ -40,7 +39,14 @@ DeclareGlobalFunction( "LinearRepresentationIsomorphism" );
 #! using <Ref Func="GroupSumBSGS" />. This might be useful in some
 #! cases if computing a good BSGS is difficult. However, for all cases
 #! that have been tested, it is slow (as the name suggests).
+#!
+#! <P/>
+#! @InsertChunk Example_LinearRepresentationIsomorphismSlow
+#! <P/>
+#! @Arguments rho, tau
+#! @Returns A matrix $A$ or fail
 DeclareGlobalFunction( "LinearRepresentationIsomorphismSlow" );
+
 
 #! @Section Testing isomorphisms
 

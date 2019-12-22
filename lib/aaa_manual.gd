@@ -33,16 +33,16 @@
 #! Here's an example of a representation <A>rho</A> in GAP:
 #!
 
-#! <Example>
-#! gap> G := SymmetricGroup(3);
-#! Sym( [ 1 .. 3 ] )
-#! gap> images := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));
-#! [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
-#!   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
-#! gap> rho := GroupHomomorphismByImages(G, Group(images));
-#! [ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
-#!   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
-#! </Example>
+#!<Example>
+#!gap> G := SymmetricGroup(3);
+#!Sym( [ 1 .. 3 ] )
+#!gap> images := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));
+#![ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+#!  [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+#!gap> rho := GroupHomomorphismByImages(G, Group(images));
+#![ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],
+#!  [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ]
+#!</Example>
 
 #!
 #! @Subsection API Overview

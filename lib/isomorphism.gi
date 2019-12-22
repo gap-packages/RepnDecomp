@@ -221,11 +221,7 @@ InstallGlobalFunction( LinearRepresentationIsomorphismSlow, function(rho, tau, a
         candidate := RandomInvertibleMat(n);
         candidate := Sum(G, g -> Image(tau, g) * candidate * Image(rho, g^-1));
         tries := tries + 1;
-    until LinearRepresentationIsomorphism(candidate, rho, tau);
-
-    if Length(args) > 0 and args[1] = "print tries" then
-        Print(tries, " tries\n");
-    fi;
+    until IsLinearRepresentationIsomorphism(candidate, rho, tau);
 
     return candidate;
 end );
