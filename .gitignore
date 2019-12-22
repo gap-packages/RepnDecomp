@@ -8,3 +8,6 @@ decomp.pdf
 decomp.tex
 doc/
 public/
+tst/repndecomp*.tst
+tmp/
+gh-pages
