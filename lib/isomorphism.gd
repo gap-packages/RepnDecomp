@@ -50,33 +50,31 @@ DeclareGlobalFunction( "LinearRepresentationIsomorphismSlow" );
 
 #! @Section Testing isomorphisms
 
-#! Since representations of finite groups over $\mathbb{C}$ are
+#! @Description Since representations of finite groups over $\mathbb{C}$ are
 #! determined by their characters, it is easy to check whether two
 #! representations are isomorphic by checking if they have the same
 #! character. We try to use characters wherever possible.
 
+#! <P/>
+#! @InsertChunk Example_AreRepsIsomorphic
+#! <P/>
 #! @Arguments rho, tau
 
 #! @Returns true if <A>rho</A> and <A>tau</A> are isomorphic as
 #! representations, false otherwise.
 DeclareGlobalFunction( "AreRepsIsomorphic" );
 
-#! @Arguments A, rho, tau
+#! @Description This function tests if, for all $g \in G$, $A \rho(g)
+#! = \tau(g) A$. That is, true is returned iff $A$ is the intertwining
+#! operator taking $\rho$ to $\tau$.
+#! that:
 
+#! <P/>
+#! @InsertChunk Example_IsLinearRepresentationIsomorphism
+#! <P/>
+
+#! @Arguments A, rho, tau
 #! @Returns true if <A>rho</A> and <A>tau</A> are isomorphic as as
 #! representations with the isomorphism given by the linear map
 #! <A>A</A>
-
-#! @Description This function tests if, for all $g \in G$, $A \rho(g)
-#! = \tau(g) A$. That is, true is returned iff $A$ is the intertwining
-#! operator taking $\rho$ to $\tau$. Note that it is always the case
-#! that:
-#! @BeginCode iso
-#! gap> IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
-#! true
-#! @EndCode
-#! @InsertCode iso
-
-#! as long as an isomorphism between the given representations
-#! actually exists.
 DeclareGlobalFunction( "IsLinearRepresentationIsomorphism" );
