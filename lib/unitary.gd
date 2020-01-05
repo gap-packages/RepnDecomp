@@ -2,12 +2,27 @@
 
 #! @Section Unitarising representations
 
+#! @Description Unitarises the given representation quickly,
+#! summing over the group using a base and strong generating set
+#! and unitarising with <Ref Func="LDLDecomposition" />.
+
+#! <P/>
+#! @InsertChunk Example_UnitaryRepresentation
+#! <P/>
+
 #! @Arguments rho
 
-#! @Returns A record with fields L and unitary_rep such that
+#! @Returns A record with fields basis_change and unitary_rep such that
 #! <A>rho</A> is isomorphic to unitary_rep, differing by a change of
-#! basis L.
+#! basis basis_change. Meaning if $L$ is basis_change and $\rho_u$ is the unitarised <A>rho</A>,
+#! then $\forall g \in G: \; L \rho_u(g) L^{-1} = \rho(g)$.
 DeclareGlobalFunction( "UnitaryRepresentation" );
+
+#! @Description
+
+#! <P/>
+#! @InsertChunk Example_IsUnitaryRepresentation
+#! <P/>
 
 #! @Arguments rho
 
@@ -15,6 +30,12 @@ DeclareGlobalFunction( "UnitaryRepresentation" );
 #! $\rho(g^{-1}) = \rho(g)^*$ (where $^*$ denotes the conjugate
 #! transpose).
 DeclareGlobalFunction( "IsUnitaryRepresentation" );
+
+#! @Description
+
+#! <P/>
+#! @InsertChunk Example_LDLDecomposition
+#! <P/>
 
 #! @Arguments A
 
