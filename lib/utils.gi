@@ -19,7 +19,7 @@ end;
 
 # Takes a list of blocks (possibly different sizes) and constructs a
 # block diagonal matrix with those blocks.
-InstallGlobalFunction( BlockDiagonalMatrix, function(blocks)
+BlockDiagonalMatrix@ := function(blocks)
     local combine_blocks, result, block;
 
     # Combines two blocks into a block diagonal matrix
@@ -44,7 +44,7 @@ InstallGlobalFunction( BlockDiagonalMatrix, function(blocks)
     od;
 
     return result;
-end );
+end;
 
 # Takes 2 lists of reps of G and H and gives a full list of reps of
 # GxH you can get from tensor products of them
@@ -89,7 +89,7 @@ end;
 InstallGlobalFunction( DirectSumOfRepresentations, function(reps)
     local G, gens, imgs, H;
     G := Source(reps[1]);
-    return FuncToHom@(G, g -> BlockDiagonalMatrix(List(reps, rep -> Image(rep, g))));
+    return FuncToHom@(G, g -> BlockDiagonalMatrix@(List(reps, rep -> Image(rep, g))));
 end );
 
 # Takes the inner product of two characters, given as rows of the

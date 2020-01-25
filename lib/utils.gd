@@ -2,12 +2,6 @@
 
 #! @Section Matrices and homomorphisms
 
-#! @Arguments blocks
-
-#! @Returns Matrix given by putting the given matrix <A>blocks</A> on
-#! the diagonal
-DeclareGlobalFunction( "BlockDiagonalMatrix" );
-
 #! @Arguments hom, func
 
 #! @Returns Homomorphism g given by g(x) = func(hom(x)).
@@ -16,11 +10,6 @@ DeclareGlobalFunction( "BlockDiagonalMatrix" );
 #! GAP accounting issues regarding the range, ByImages vs ByFunction,
 #! etc.
 DeclareGlobalFunction( "ComposeHomFunction" );
-
-#! @Arguments elem, n
-
-#! @Returns List of <A>n</A> copies of <A>elem</A>
-DeclareGlobalFunction( "Replicate" );
 
 #! @Section Representation theoretic functions
 

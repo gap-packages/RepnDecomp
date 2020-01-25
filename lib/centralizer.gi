@@ -96,7 +96,7 @@ end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices
 InstallGlobalFunction( CentralizerOfRepresentation, function(rho)
-    return List(CentralizerBlocksOfRepresentation(rho), BlockDiagonalMatrix);
+    return List(CentralizerBlocksOfRepresentation(rho), BlockDiagonalMatrix@);
 end );
 
 # Given an orthonormal basis for the centralizer (w.r.t the product

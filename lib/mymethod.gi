@@ -48,7 +48,7 @@ InstallMethod( REPN_ComputeUsingMyMethod, "for linear reps", [ IsGroupHomomorphi
     # Don't use the blocks that don't appear
     centralizer_blocks := SizesToBlocks(Filtered(all_sizes, r -> r.nblocks > 0));
 
-    new_rho_cent_basis := List(centralizer_blocks, BlockDiagonalMatrix);
+    new_rho_cent_basis := List(centralizer_blocks, BlockDiagonalMatrix@);
 
     # This is the block diagonal rep with minimal size blocks
     new_rho := DirectSumOfRepresentations(summands);
