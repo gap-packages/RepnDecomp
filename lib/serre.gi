@@ -1,5 +1,3 @@
-LoadPackage("IO");
-
 # These are the implementations of Serre's formulas from his book
 # Linear Representations of Finite Groups.
 
@@ -396,10 +394,20 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
     end;
 
     parallel := ValueOption("parallel");
-    if IsInt(parallel) then
-        irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := parallel));
-    elif parallel <> fail then
-        irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := 4));
+
+    if parallel <> fail then
+        # if the parallel option is set
+        if IsPackageMarkedForLoading("IO", ">= 4.7.0") then
+            if IsInt(parallel) then
+                irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := parallel));
+            else
+                # we default the number of jobs to 4 since everyone
+                # has 4 threads, at least
+                irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := 4));
+            fi;
+        else
+            Error("I need the package IO >= 4.7.0 to use the parallel option!");
+        fi;
     else
         irred_decomp := List(irreps, do_decompose);
     fi;

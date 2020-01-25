@@ -1,5 +1,3 @@
-LoadPackage("GRAPE");
-
 # BUILD AN IsCohCfg@ OBJECT
 CohCfgFromPermGroup@ := function(arg) # computes the number of orbitals, and a transversal.
 # arg[1] = G, the group;
