@@ -21,6 +21,10 @@
 #! and this will be used instead of computing a complete list
 #! ourselves. If you already know which irreps will appear in $\rho$,
 #! for instance, this will save time.
+#!
+#! <P/>
+#! @InsertChunk Example_CanonicalDecomposition
+#! <P/>
 DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 
 #! @Arguments rho
@@ -30,6 +34,10 @@ DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 
 #! @Description Computes the decomposition of $V$ into irreducible
 #! subprepresentations.
+#!
+#! <P/>
+#! @InsertChunk Example_IrreducibleDecomposition
+#! <P/>
 DeclareGlobalFunction( "IrreducibleDecomposition", IsGroupHomomorphism );
 
 #! @Arguments rho
@@ -79,4 +87,8 @@ DeclareGlobalFunction( "IrreducibleDecompositionCollected", IsGroupHomomorphism 
 #!
 #! Pass the option `irreps` with the complete list of irreps of $\rho$
 #! to avoid recomputing this list (could be very expensive)
+#!
+#! <P/>
+#! @InsertChunk Example_REPN_ComputeUsingSerre
+#! <P/>
 DeclareAttribute( "REPN_ComputeUsingSerre", IsGroupHomomorphism );
