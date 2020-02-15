@@ -48,9 +48,7 @@
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X83F160967ED7EE14">4.4 <span class="Heading">Matrices and homomorphisms</span></a>
 </span>
 <div class="ContSSBlock">
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X8668A3897972C08E">4.4-1 BlockDiagonalMatrix</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7D17785482F143B0">4.4-2 ComposeHomFunction</a></span>
-<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X79D2F263840ED625">4.4-3 Replicate</a></span>
+<span class="ContSS"><br /><span class="nocss">&nbsp;&nbsp;</span><a href="chap4_mj.html#X7D17785482F143B0">4.4-1 ComposeHomFunction</a></span>
 </div></div>
 <div class="ContSect"><span class="tocline"><span class="nocss">&nbsp;</span><a href="chap4_mj.html#X7C3EDA5E7A24196C">4.5 <span class="Heading">Representation theoretic functions</span></a>
 </span>
@@ -157,28 +155,14 @@
 
 <h4>4.4 <span class="Heading">Matrices and homomorphisms</span></h4>
 
-<p><a id="X8668A3897972C08E" name="X8668A3897972C08E"></a></p>
-
-<h5>4.4-1 BlockDiagonalMatrix</h5>
-
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; BlockDiagonalMatrix</code>( <var class="Arg">blocks</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: Matrix given by putting the given matrix <var class="Arg">blocks</var> on the diagonal</p>
-
 <p><a id="X7D17785482F143B0" name="X7D17785482F143B0"></a></p>
 
-<h5>4.4-2 ComposeHomFunction</h5>
+<h5>4.4-1 ComposeHomFunction</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; ComposeHomFunction</code>( <var class="Arg">hom</var>, <var class="Arg">func</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: Homomorphism g given by g(x) = func(hom(x)).</p>
 
 <p>This is mainly for convenience, since it handles all GAP accounting issues regarding the range, ByImages vs ByFunction, etc.</p>
-
-<p><a id="X79D2F263840ED625" name="X79D2F263840ED625"></a></p>
-
-<h5>4.4-3 Replicate</h5>
-
-<div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; Replicate</code>( <var class="Arg">elem</var>, <var class="Arg">n</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: List of <var class="Arg">n</var> copies of <var class="Arg">elem</var></p>
 
 <p><a id="X7C3EDA5E7A24196C" name="X7C3EDA5E7A24196C"></a></p>
 

@@ -105,23 +105,13 @@
   
   [1X4.4 [33X[0;0YMatrices and homomorphisms[133X[101X
   
-  [1X4.4-1 BlockDiagonalMatrix[101X
-  
-  [33X[1;0Y[29X[2XBlockDiagonalMatrix[102X( [3Xblocks[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10YMatrix given by putting the given matrix [3Xblocks[103X on the diagonal[133X
-  
-  [1X4.4-2 ComposeHomFunction[101X
+  [1X4.4-1 ComposeHomFunction[101X
   
   [33X[1;0Y[29X[2XComposeHomFunction[102X( [3Xhom[103X, [3Xfunc[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10YHomomorphism g given by g(x) = func(hom(x)).[133X
   
   [33X[0;0YThis  is  mainly for convenience, since it handles all GAP accounting issues
   regarding the range, ByImages vs ByFunction, etc.[133X
-  
-  [1X4.4-3 Replicate[101X
-  
-  [33X[1;0Y[29X[2XReplicate[102X( [3Xelem[103X, [3Xn[103X ) [32X function[133X
-  [6XReturns:[106X  [33X[0;10YList of [3Xn[103X copies of [3Xelem[103X[133X
   
   
   [1X4.5 [33X[0;0YRepresentation theoretic functions[133X[101X

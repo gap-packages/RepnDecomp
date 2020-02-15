@@ -6,10 +6,10 @@
          [1X Decompose representations of finite groups into irreducibles [101X
   
   
-                                     1.0.1
+                                     1.1.0
   
   
-                                14 December 2019
+                                15 February 2020
   
   
                                Kaashif Hymabaccus
@@ -57,9 +57,7 @@
       4.3-4 TensorProductOfMatrices
       4.3-5 CharacterOfTensorProductOfRepresentations
     4.4 [33X[0;0YMatrices and homomorphisms[133X
-      4.4-1 BlockDiagonalMatrix
-      4.4-2 ComposeHomFunction
-      4.4-3 Replicate
+      4.4-1 ComposeHomFunction
     4.5 [33X[0;0YRepresentation theoretic functions[133X
       4.5-1 TensorProductRepLists
       4.5-2 DirectSumOfRepresentations

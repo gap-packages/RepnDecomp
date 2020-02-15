@@ -112,6 +112,28 @@
 
 <p>Computes the canonical decomposition of <span class="SimpleMath">\(V\)</span> into <span class="SimpleMath">\(\oplus_i\;V_i\)</span> using the formulas for projections <span class="SimpleMath">\(V \to V_i\)</span> due to Serre. You can pass in the option <code class="code">irreps</code> with a list of irreps of <span class="SimpleMath">\(G\)</span>, and this will be used instead of computing a complete list ourselves. If you already know which irreps will appear in <span class="SimpleMath">\(\rho\)</span>, for instance, this will save time.</p>
 
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># This is the trivial group</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">G := Group(());;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># The trivial group has only one representation per degree, so a</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># degree d representation decomposes into a single canonical summand</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># containing the whole space</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">rho := FuncToHom@RepnDecomp(G, g -&gt; IdentityMat(3));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">canonical_summands_G := CanonicalDecomposition(rho);</span>
+[ ( Cyclotomics^3 ) ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># More interesting example, S_3</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">H := SymmetricGroup(3);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># The standard representation: a permutation to the corresponding</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># permutation matrix.</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">tau := FuncToHom@RepnDecomp(H, h -&gt; PermutationMat(h, 3));;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Two canonical summands corresponding to the degree 2 and</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># trivial irreps (in that order)</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">canonical_summands_H := CanonicalDecomposition(tau);</span>
+[ &lt;vector space over Cyclotomics, with 2 generators&gt;,
+  &lt;vector space over Cyclotomics, with 1 generators&gt; ]
+</pre></div>
+
 <p><a id="X795C63F386C45308" name="X795C63F386C45308"></a></p>
 
 <h5>5.3-2 IrreducibleDecomposition</h5>
@@ -120,6 +142,28 @@
 <p>Returns: List of vector spaces <span class="SimpleMath">\(W_j\)</span> such that <span class="SimpleMath">\(V = \oplus_j W_j\)</span> and each <span class="SimpleMath">\(W_j\)</span> is an irreducible <span class="SimpleMath">\(G\)</span>-invariant vector space.</p>
 
 <p>Computes the decomposition of <span class="SimpleMath">\(V\)</span> into irreducible subprepresentations.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># The trivial group has 1 irrep of degree 1, so rho decomposes into 3</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># lines.</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">irred_decomp_G := IrreducibleDecomposition(rho);</span>
+[ rec( basis := [ [ 1, 0, 0 ] ] ), rec( basis := [ [ 0, 1, 0 ] ] ),
+  rec( basis := [ [ 0, 0, 1 ] ] ) ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># The spaces are returned in this format - explicitly keeping the</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># basis - since this basis block diagonalises rho into the irreps,</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># which are the smallest possible blocks. This is more obvious with</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># H.</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">irred_decomp_H := IrreducibleDecomposition(tau);</span>
+[ rec( basis := [ [ 1, 1, 1 ] ] ),
+  rec( basis := [ [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ] ) ]
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Using the basis vectors given there block diagonalises tau into</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># the two blocks corresponding to the two irreps:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">nice_basis := [ [ 1, 1, 1 ], [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tau_diag := ComposeHomFunction(tau, X -&gt; nice_basis^-1 * X * nice_basis);</span>
+[ (1,2,3), (1,2) ] -&gt; [ [ [ 1, 0, 0 ], [ 0, E(3), 0 ], [ 0, 0, E(3)^2 ] ],
+  [ [ 1, 0, 0 ], [ 0, 0, E(3)^2 ], [ 0, E(3), 0 ] ] ]
+</pre></div>
 
 <p><a id="X87E91CBE7992D126" name="X87E91CBE7992D126"></a></p>
 
@@ -170,6 +214,26 @@
 <p>Pass the option <code class="code">parallel</code> for the computations per-irrep to be done in parallel.</p>
 
 <p>Pass the option <code class="code">irreps</code> with the complete list of irreps of <span class="SimpleMath">\(\rho\)</span> to avoid recomputing this list (could be very expensive)</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Does the same thing we have done in the examples above, but all in</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># one step, with as many subcomputations reused as possible</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">REPN_ComputeUsingSerre(tau);</span>
+rec( basis := [ [ 1, 1, 1 ], [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ],
+  centralizer_basis := [ [ [ [ 1 ] ], [ [ 0, 0 ], [ 0, 0 ] ] ],
+      [ [ [ 0 ] ], [ [ 1, 0 ], [ 0, 1 ] ] ] ],
+  decomposition := [ [ rec( basis := [ [ 1, 1, 1 ] ] ) ], [  ],
+      [ rec( basis := [ [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ] ) ] ],
+  diagonal_rep := [ (1,2,3), (1,2) ] -&gt;
+    [ [ [ 1, 0, 0 ], [ 0, E(3), 0 ], [ 0, 0, E(3)^2 ] ],
+      [ [ 1, 0, 0 ], [ 0, 0, E(3)^2 ], [ 0, E(3), 0 ] ] ] )
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># You can also do the computation in parallel:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">REPN_ComputeUsingSerre(tau : parallel);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Or specify the irreps if you have already computed them:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">irreps_H := IrreducibleRepresentations(H);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">REPN_ComputeUsingSerre(tau : irreps := irreps_H);;</span>
+</pre></div>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0_mj.html">[Top of Book]</a>&nbsp;  <a href="chap0_mj.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap4_mj.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap6_mj.html">[Next Chapter]</a>&nbsp;  </div>

@@ -71,6 +71,36 @@
 
 </li>
 </ul>
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := SymmetricGroup(4);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">irreps := IrreducibleRepresentations(G);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># rho and tau are isomorphic - they just have a different block order</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">rho := DirectSumOfRepresentations([irreps[1], irreps[3], irreps[3]]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tau := DirectSumOfRepresentations([irreps[3], irreps[1], irreps[3]]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># tau2 is just tau with a basis change - still isomorphic</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">B := RandomInvertibleMat(5);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tau2 := ComposeHomFunction(tau, x -&gt; B^-1 * x * B);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># using the default implementation</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">M := LinearRepresentationIsomorphism(rho, tau);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(M, rho, tau);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">M := LinearRepresentationIsomorphism(tau, tau2);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(M, tau, tau2);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># using the kronecker sum implementation</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">M := LinearRepresentationIsomorphism(tau, tau2 : use_kronecker);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(M, tau, tau2);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># using the orbit sum implementation</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">M := LinearRepresentationIsomorphism(tau, tau2 : use_orbit_sum);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(M, tau, tau2);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># two distinct irreps are not isomorphic</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">M := LinearRepresentationIsomorphism(irreps[1], irreps[2]);</span>
+fail
+</pre></div>
+
 <p><a id="X841DE7D08491325F" name="X841DE7D08491325F"></a></p>
 
 <h5>2.1-2 LinearRepresentationIsomorphismSlow</h5>
@@ -80,11 +110,17 @@
 
 <p>Gives the same result as <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap2.html#X7F0D3CFB7800149A"><span class="RefLink">2.1-1</span></a>), but this function uses a simpler method which always involves summing over <span class="Math">G</span>, without using <code class="func">GroupSumBSGS</code> (<a href="chap4.html#X85E8A5FC844DC09A"><span class="RefLink">4.2-1</span></a>). This might be useful in some cases if computing a good BSGS is difficult. However, for all cases that have been tested, it is slow (as the name suggests).</p>
 
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Following on from the previous example</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">M := LinearRepresentationIsomorphismSlow(rho, tau);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(M, rho, tau);</span>
+true
+</pre></div>
+
 <p><a id="X85DAC9E583D8EFB9" name="X85DAC9E583D8EFB9"></a></p>
 
 <h4>2.2 <span class="Heading">Testing isomorphisms</span></h4>
-
-<p>Since representations of finite groups over <span class="Math">\mathbb{C}</span> are determined by their characters, it is easy to check whether two representations are isomorphic by checking if they have the same character. We try to use characters wherever possible.</p>
 
 <p><a id="X86EB9DD586958473" name="X86EB9DD586958473"></a></p>
 
@@ -93,6 +129,21 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; AreRepsIsomorphic</code>( <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as representations, false otherwise.</p>
 
+<p>Since representations of finite groups over <span class="Math">\mathbb{C}</span> are determined by their characters, it is easy to check whether two representations are isomorphic by checking if they have the same character. We try to use characters wherever possible.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Following on from the previous examples</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># Some isomorphic representations</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, tau);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, tau2);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># rho isn't iso to irreps[1] since rho is irreps[1] plus some other stuff</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, irreps[1]);</span>
+false
+</pre></div>
+
 <p><a id="X81080E1B7917B361" name="X81080E1B7917B361"></a></p>
 
 <h5>2.2-2 IsLinearRepresentationIsomorphism</h5>
@@ -100,15 +151,18 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsLinearRepresentationIsomorphism</code>( <var class="Arg">A</var>, <var class="Arg">rho</var>, <var class="Arg">tau</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: true if <var class="Arg">rho</var> and <var class="Arg">tau</var> are isomorphic as as representations with the isomorphism given by the linear map <var class="Arg">A</var></p>
 
-<p>This function tests if, for all <span class="Math">g \in G</span>, <span class="Math">A \rho(g) = \tau(g) A</span>. That is, true is returned iff <span class="Math">A</span> is the intertwining operator taking <span class="Math">\rho</span> to <span class="Math">\tau</span>. Note that it is always the case that:</p>
+<p>This function tests if, for all <span class="Math">g \in G</span>, <span class="Math">A \rho(g) = \tau(g) A</span>. That is, true is returned iff <span class="Math">A</span> is the intertwining operator taking <span class="Math">\rho</span> to <span class="Math">\tau</span>. that:</p>
 
 
 <div class="example"><pre>
- gap&gt; IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);
- true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># We have already seen this function used heavily in previous examples.</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># If two representations are isomorphic, the following is always true:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Note: this test is sensitive to ordering:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), tau, rho);</span>
+false
 </pre></div>
-
-<p>as long as an isomorphism between the given representations actually exists.</p>
 
 
 <div class="chlinkprevnextbot">&nbsp;<a href="chap0.html">[Top of Book]</a>&nbsp;  <a href="chap0.html#contents">[Contents]</a>&nbsp;  &nbsp;<a href="chap1.html">[Previous Chapter]</a>&nbsp;  &nbsp;<a href="chap3.html">[Next Chapter]</a>&nbsp;  </div>

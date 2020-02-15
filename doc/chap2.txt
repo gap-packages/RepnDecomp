@@ -29,6 +29,35 @@
   [30X    [33X[0;6YThe  default, sums over the whole group to compute the projection onto
         the fixed subspace.[133X
   
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27XG := SymmetricGroup(4);;[127X[104X
+    [4X[25Xgap>[125X [27Xirreps := IrreducibleRepresentations(G);;[127X[104X
+    [4X[25Xgap>[125X [27X# rho and tau are isomorphic - they just have a different block order[127X[104X
+    [4X[25X>[125X [27Xrho := DirectSumOfRepresentations([irreps[1], irreps[3], irreps[3]]);;[127X[104X
+    [4X[25Xgap>[125X [27Xtau := DirectSumOfRepresentations([irreps[3], irreps[1], irreps[3]]);;[127X[104X
+    [4X[25Xgap>[125X [27X# tau2 is just tau with a basis change - still isomorphic[127X[104X
+    [4X[25X>[125X [27XB := RandomInvertibleMat(5);;[127X[104X
+    [4X[25Xgap>[125X [27Xtau2 := ComposeHomFunction(tau, x -> B^-1 * x * B);;[127X[104X
+    [4X[25Xgap>[125X [27X# using the default implementation[127X[104X
+    [4X[25X>[125X [27XM := LinearRepresentationIsomorphism(rho, tau);;[127X[104X
+    [4X[25Xgap>[125X [27XIsLinearRepresentationIsomorphism(M, rho, tau);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XM := LinearRepresentationIsomorphism(tau, tau2);;[127X[104X
+    [4X[25Xgap>[125X [27XIsLinearRepresentationIsomorphism(M, tau, tau2);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27X# using the kronecker sum implementation[127X[104X
+    [4X[25X>[125X [27XM := LinearRepresentationIsomorphism(tau, tau2 : use_kronecker);;[127X[104X
+    [4X[25Xgap>[125X [27XIsLinearRepresentationIsomorphism(M, tau, tau2);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27X# using the orbit sum implementation[127X[104X
+    [4X[25X>[125X [27XM := LinearRepresentationIsomorphism(tau, tau2 : use_orbit_sum);;[127X[104X
+    [4X[25Xgap>[125X [27XIsLinearRepresentationIsomorphism(M, tau, tau2);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27X# two distinct irreps are not isomorphic[127X[104X
+    [4X[25X>[125X [27XM := LinearRepresentationIsomorphism(irreps[1], irreps[2]);[127X[104X
+    [4X[28Xfail[128X[104X
+  [4X[32X[104X
+  
   [1X2.1-2 LinearRepresentationIsomorphismSlow[101X
   
   [33X[1;0Y[29X[2XLinearRepresentationIsomorphismSlow[102X( [3Xrho[103X, [3Xtau[103X ) [32X function[133X
@@ -40,19 +69,38 @@
   a  good  BSGS is difficult. However, for all cases that have been tested, it
   is slow (as the name suggests).[133X
   
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# Following on from the previous example[127X[104X
+    [4X[25X>[125X [27XM := LinearRepresentationIsomorphismSlow(rho, tau);;[127X[104X
+    [4X[25Xgap>[125X [27XIsLinearRepresentationIsomorphism(M, rho, tau);[127X[104X
+    [4X[28Xtrue[128X[104X
+  [4X[32X[104X
+  
   
   [1X2.2 [33X[0;0YTesting isomorphisms[133X[101X
-  
-  [33X[0;0YSince  representations  of  finite  groups over [23X\mathbb{C}[123X are determined by
-  their  characters,  it  is  easy  to  check  whether two representations are
-  isomorphic  by  checking  if  they  have  the  same character. We try to use
-  characters wherever possible.[133X
   
   [1X2.2-1 AreRepsIsomorphic[101X
   
   [33X[1;0Y[29X[2XAreRepsIsomorphic[102X( [3Xrho[103X, [3Xtau[103X ) [32X function[133X
   [6XReturns:[106X  [33X[0;10Ytrue  if  [3Xrho[103X  and  [3Xtau[103X  are  isomorphic as representations, false
             otherwise.[133X
+  
+  [33X[0;0YSince  representations  of  finite  groups over [23X\mathbb{C}[123X are determined by
+  their  characters,  it  is  easy  to  check  whether two representations are
+  isomorphic  by  checking  if  they  have  the  same character. We try to use
+  characters wherever possible.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# Following on from the previous examples[127X[104X
+    [4X[25X>[125X [27X# Some isomorphic representations[127X[104X
+    [4X[25X>[125X [27XAreRepsIsomorphic(rho, tau);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27XAreRepsIsomorphic(rho, tau2);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27X# rho isn't iso to irreps[1] since rho is irreps[1] plus some other stuff[127X[104X
+    [4X[25X>[125X [27XAreRepsIsomorphic(rho, irreps[1]);[127X[104X
+    [4X[28Xfalse[128X[104X
+  [4X[32X[104X
   
   [1X2.2-2 IsLinearRepresentationIsomorphism[101X
   
@@ -62,12 +110,15 @@
   
   [33X[0;0YThis  function  tests  if,  for all [23Xg \in G[123X, [23XA \rho(g) = \tau(g) A[123X. That is,
   true  is  returned  iff  [23XA[123X is the intertwining operator taking [23X\rho[123X to [23X\tau[123X.
-  Note that it is always the case that:[133X
+  that:[133X
   
-  [4X[32X  Code  [32X[104X
-    [4X gap> IsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);[104X
-    [4X true[104X
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# We have already seen this function used heavily in previous examples.[127X[104X
+    [4X[25X>[125X [27X# If two representations are isomorphic, the following is always true:[127X[104X
+    [4X[25X>[125X [27XIsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), rho, tau);[127X[104X
+    [4X[28Xtrue[128X[104X
+    [4X[25Xgap>[125X [27X# Note: this test is sensitive to ordering:[127X[104X
+    [4X[25X>[125X [27XIsLinearRepresentationIsomorphism(LinearRepresentationIsomorphism(rho, tau), tau, rho);[127X[104X
+    [4X[28Xfalse[128X[104X
   [4X[32X[104X
-  
-  [33X[0;0Yas long as an isomorphism between the given representations actually exists.[133X
   

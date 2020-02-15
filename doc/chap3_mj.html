@@ -50,7 +50,38 @@
 <h5>3.1-1 UnitaryRepresentation</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; UnitaryRepresentation</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
-<p>Returns: A record with fields L and unitary_rep such that <var class="Arg">rho</var> is isomorphic to unitary_rep, differing by a change of basis L.</p>
+<p>Returns: A record with fields basis_change and unitary_rep such that <var class="Arg">rho</var> is isomorphic to unitary_rep, differing by a change of basis basis_change. Meaning if <span class="SimpleMath">\(L\)</span> is basis_change and <span class="SimpleMath">\(\rho_u\)</span> is the unitarised <var class="Arg">rho</var>, then <span class="SimpleMath">\(\forall g \in G: \; L \rho_u(g) L^{-1} = \rho(g)\)</span>.</p>
+
+<p>Unitarises the given representation quickly, summing over the group using a base and strong generating set and unitarising with <code class="func">LDLDecomposition</code> (<a href="chap3_mj.html#X78F7DFD186A4E7CA"><span class="RefLink">3.1-3</span></a>).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := SymmetricGroup(3);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">irreps := IrreducibleRepresentations(G);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># It happens that we are given unitary irreps, so</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># rho is also unitary (its blocks are unitary)</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">rho := DirectSumOfRepresentations([irreps[1], irreps[2]]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">IsUnitaryRepresentation(rho);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Arbitrary change of basis</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">A := [ [ -1, 1 ], [ -2, -1 ] ];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">tau := ComposeHomFunction(rho, x -&gt; A^-1 * x * A);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Not unitary, but still isomorphic to rho</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">IsUnitaryRepresentation(tau);</span>
+false
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, tau);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Now we unitarise tau</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">tau_u := UnitaryRepresentation(tau);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># We get a record with the unitarised rep:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">AreRepsIsomorphic(tau, tau_u.unitary_rep);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, tau_u.unitary_rep);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># The basis change is also in the record:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">ForAll(G, g -&gt; tau_u.basis_change * Image(tau_u.unitary_rep, g) = Image(tau, g) * tau_u.basis_change);</span>
+true
+</pre></div>
 
 <p><a id="X87D121227C027253" name="X87D121227C027253"></a></p>
 
@@ -59,12 +90,22 @@
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; IsUnitaryRepresentation</code>( <var class="Arg">rho</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: Whether <var class="Arg">rho</var> is unitary, i.e. for all <span class="SimpleMath">\(g \in G\)</span>, <span class="SimpleMath">\(\rho(g^{-1}) = \rho(g)^*\)</span> (where <span class="SimpleMath">\(^*\)</span> denotes the conjugate transpose).</p>
 
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># TODO: this example</span>
+</pre></div>
+
 <p><a id="X78F7DFD186A4E7CA" name="X78F7DFD186A4E7CA"></a></p>
 
 <h5>3.1-3 LDLDecomposition</h5>
 
 <div class="func"><table class="func" width="100%"><tr><td class="tdleft"><code class="func">&#8227; LDLDecomposition</code>( <var class="Arg">A</var> )</td><td class="tdright">(&nbsp;function&nbsp;)</td></tr></table></div>
 <p>Returns: a record with two fields, L and D such that <span class="SimpleMath">\(A = L\mbox{diag}(D)L^*\)</span>. <span class="SimpleMath">\(D\)</span> is the <span class="SimpleMath">\(1 \times n\)</span> vector which gives the diagonal matrix <span class="SimpleMath">\(\mbox{diag}(D)\)</span> (where <var class="Arg">A</var> is an <span class="SimpleMath">\(n \times n\)</span> matrix).</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># TODO: this example</span>
+</pre></div>
 
 <p><a id="X7974D0C580C833D1" name="X7974D0C580C833D1"></a></p>
 

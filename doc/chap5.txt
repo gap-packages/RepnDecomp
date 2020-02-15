@@ -75,6 +75,27 @@
   computing  a  complete list ourselves. If you already know which irreps will
   appear in [23X\rho[123X, for instance, this will save time.[133X
   
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# This is the trivial group[127X[104X
+    [4X[25X>[125X [27XG := Group(());;[127X[104X
+    [4X[25Xgap>[125X [27X# The trivial group has only one representation per degree, so a[127X[104X
+    [4X[25X>[125X [27X# degree d representation decomposes into a single canonical summand[127X[104X
+    [4X[25X>[125X [27X# containing the whole space[127X[104X
+    [4X[25X>[125X [27Xrho := FuncToHom@RepnDecomp(G, g -> IdentityMat(3));;[127X[104X
+    [4X[25Xgap>[125X [27Xcanonical_summands_G := CanonicalDecomposition(rho);[127X[104X
+    [4X[28X[ ( Cyclotomics^3 ) ][128X[104X
+    [4X[25Xgap>[125X [27X# More interesting example, S_3[127X[104X
+    [4X[25X>[125X [27XH := SymmetricGroup(3);;[127X[104X
+    [4X[25Xgap>[125X [27X# The standard representation: a permutation to the corresponding[127X[104X
+    [4X[25X>[125X [27X# permutation matrix.[127X[104X
+    [4X[25X>[125X [27Xtau := FuncToHom@RepnDecomp(H, h -> PermutationMat(h, 3));;[127X[104X
+    [4X[25Xgap>[125X [27X# Two canonical summands corresponding to the degree 2 and[127X[104X
+    [4X[25X>[125X [27X# trivial irreps (in that order)[127X[104X
+    [4X[25X>[125X [27Xcanonical_summands_H := CanonicalDecomposition(tau);[127X[104X
+    [4X[28X[ <vector space over Cyclotomics, with 2 generators>,[128X[104X
+    [4X[28X  <vector space over Cyclotomics, with 1 generators> ][128X[104X
+  [4X[32X[104X
+  
   [1X5.3-2 IrreducibleDecomposition[101X
   
   [33X[1;0Y[29X[2XIrreducibleDecomposition[102X( [3Xrho[103X ) [32X function[133X
@@ -82,6 +103,27 @@
             is an irreducible [23XG[123X-invariant vector space.[133X
   
   [33X[0;0YComputes the decomposition of [23XV[123X into irreducible subprepresentations.[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# The trivial group has 1 irrep of degree 1, so rho decomposes into 3[127X[104X
+    [4X[25X>[125X [27X# lines.[127X[104X
+    [4X[25X>[125X [27Xirred_decomp_G := IrreducibleDecomposition(rho);[127X[104X
+    [4X[28X[ rec( basis := [ [ 1, 0, 0 ] ] ), rec( basis := [ [ 0, 1, 0 ] ] ),[128X[104X
+    [4X[28X  rec( basis := [ [ 0, 0, 1 ] ] ) ][128X[104X
+    [4X[25Xgap>[125X [27X# The spaces are returned in this format - explicitly keeping the[127X[104X
+    [4X[25X>[125X [27X# basis - since this basis block diagonalises rho into the irreps,[127X[104X
+    [4X[25X>[125X [27X# which are the smallest possible blocks. This is more obvious with[127X[104X
+    [4X[25X>[125X [27X# H.[127X[104X
+    [4X[25X>[125X [27Xirred_decomp_H := IrreducibleDecomposition(tau);[127X[104X
+    [4X[28X[ rec( basis := [ [ 1, 1, 1 ] ] ),[128X[104X
+    [4X[28X  rec( basis := [ [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ] ) ][128X[104X
+    [4X[25Xgap>[125X [27X# Using the basis vectors given there block diagonalises tau into[127X[104X
+    [4X[25X>[125X [27X# the two blocks corresponding to the two irreps:[127X[104X
+    [4X[25X>[125X [27Xnice_basis := [ [ 1, 1, 1 ], [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ];;[127X[104X
+    [4X[25Xgap>[125X [27Xtau_diag := ComposeHomFunction(tau, X -> nice_basis^-1 * X * nice_basis);[127X[104X
+    [4X[28X[ (1,2,3), (1,2) ] -> [ [ [ 1, 0, 0 ], [ 0, E(3), 0 ], [ 0, 0, E(3)^2 ] ],[128X[104X
+    [4X[28X  [ [ 1, 0, 0 ], [ 0, 0, E(3)^2 ], [ 0, E(3), 0 ] ] ][128X[104X
+  [4X[32X[104X
   
   [1X5.3-3 IrreducibleDecompositionCollected[101X
   
@@ -129,4 +171,23 @@
   
   [33X[0;0YPass  the  option  [10Xirreps[110X  with the complete list of irreps of [23X\rho[123X to avoid
   recomputing this list (could be very expensive)[133X
+  
+  [4X[32X  Example  [32X[104X
+    [4X[25Xgap>[125X [27X# Does the same thing we have done in the examples above, but all in[127X[104X
+    [4X[25X>[125X [27X# one step, with as many subcomputations reused as possible[127X[104X
+    [4X[25X>[125X [27XREPN_ComputeUsingSerre(tau);[127X[104X
+    [4X[28Xrec( basis := [ [ 1, 1, 1 ], [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ],[128X[104X
+    [4X[28X  centralizer_basis := [ [ [ [ 1 ] ], [ [ 0, 0 ], [ 0, 0 ] ] ],[128X[104X
+    [4X[28X      [ [ [ 0 ] ], [ [ 1, 0 ], [ 0, 1 ] ] ] ],[128X[104X
+    [4X[28X  decomposition := [ [ rec( basis := [ [ 1, 1, 1 ] ] ) ], [  ],[128X[104X
+    [4X[28X      [ rec( basis := [ [ 1, E(3), E(3)^2 ], [ 1, E(3)^2, E(3) ] ] ) ] ],[128X[104X
+    [4X[28X  diagonal_rep := [ (1,2,3), (1,2) ] ->[128X[104X
+    [4X[28X    [ [ [ 1, 0, 0 ], [ 0, E(3), 0 ], [ 0, 0, E(3)^2 ] ],[128X[104X
+    [4X[28X      [ [ 1, 0, 0 ], [ 0, 0, E(3)^2 ], [ 0, E(3), 0 ] ] ] )[128X[104X
+    [4X[25Xgap>[125X [27X# You can also do the computation in parallel:[127X[104X
+    [4X[25X>[125X [27XREPN_ComputeUsingSerre(tau : parallel);;[127X[104X
+    [4X[25Xgap>[125X [27X# Or specify the irreps if you have already computed them:[127X[104X
+    [4X[25X>[125X [27Xirreps_H := IrreducibleRepresentations(H);;[127X[104X
+    [4X[25Xgap>[125X [27XREPN_ComputeUsingSerre(tau : irreps := irreps_H);;[127X[104X
+  [4X[32X[104X
   

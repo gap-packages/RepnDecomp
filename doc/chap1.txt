@@ -32,15 +32,14 @@
   [33X[0;0YHere's an example of a representation [3Xrho[103X in GAP:[133X
   
   [4X[32X  Example  [32X[104X
-    [4X[28X gap> G := SymmetricGroup(3);[128X[104X
-    [4X[28X Sym( [ 1 .. 3 ] )[128X[104X
-    [4X[28X gap> images := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));[128X[104X
-    [4X[28X [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],[128X[104X
-    [4X[28X   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ][128X[104X
-    [4X[28X gap> rho := GroupHomomorphismByImages(G, Group(images));[128X[104X
-    [4X[28X [ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],[128X[104X
-    [4X[28X   [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ][128X[104X
-    [4X[28X [128X[104X
+    [4X[25Xgap>[125X [27XG := SymmetricGroup(3);[127X[104X
+    [4X[28XSym( [ 1 .. 3 ] )[128X[104X
+    [4X[25Xgap>[125X [27Ximages := List(GeneratorsOfGroup(G), g -> PermutationMat(g, 3));[127X[104X
+    [4X[28X[ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],[128X[104X
+    [4X[28X  [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ][128X[104X
+    [4X[25Xgap>[125X [27Xrho := GroupHomomorphismByImages(G, Group(images));[127X[104X
+    [4X[28X[ (1,2,3), (1,2) ] -> [ [ [ 0, 1, 0 ], [ 0, 0, 1 ], [ 1, 0, 0 ] ],[128X[104X
+    [4X[28X  [ [ 0, 1, 0 ], [ 1, 0, 0 ], [ 0, 0, 1 ] ] ][128X[104X
   [4X[32X[104X
   
   
