@@ -25,7 +25,7 @@
 #! <P/>
 #! @InsertChunk Example_CanonicalDecomposition
 #! <P/>
-DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
+DeclareGlobalFunction( "CanonicalDecomposition" );
 
 #! @Arguments rho
 
@@ -38,7 +38,7 @@ DeclareGlobalFunction( "CanonicalDecomposition", IsGroupHomomorphism );
 #! <P/>
 #! @InsertChunk Example_IrreducibleDecomposition
 #! <P/>
-DeclareGlobalFunction( "IrreducibleDecomposition", IsGroupHomomorphism );
+DeclareGlobalFunction( "IrreducibleDecomposition" );
 
 #! @Arguments rho
 
@@ -49,7 +49,7 @@ DeclareGlobalFunction( "IrreducibleDecomposition", IsGroupHomomorphism );
 #! @Description Computes the decomposition of $V$ into irreducible
 #! subrepresentations, grouping together the isomorphic
 #! subrepresentations.
-DeclareGlobalFunction( "IrreducibleDecompositionCollected", IsGroupHomomorphism );
+DeclareGlobalFunction( "IrreducibleDecompositionCollected" );
 
 #! @Arguments rho
 
