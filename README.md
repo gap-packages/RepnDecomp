@@ -76,6 +76,11 @@ Where `LDLDecomposition` is a function provided by this package.
 
 ## Testing
 
+Make sure your current directory is this repo, for example:
+
+    $ git clone https://github.com/gap-packages/RepnDecomp.git
+    $ cd RepnDecomp
+
 First, generate the tests from the documentation:
 
     $ gap -q < makedoc.g
