@@ -68,9 +68,10 @@ This package has been applied to improve the block diagonalisation of
 matrices involved in a semidefinite program for computing bounds on
 the crossing number of complete graphs [@deklerk:2007]. Our package
 can also be applied to other problems mentioned by @deklerk:2007,
-including the computation of bounds for the Lovász ϑ (and related ϑ')
-numbers for graphs, and the truss topology design problem described in
-@kanno:1970 for trusses with suitable symmetries.
+including the computation of bounds for the Lovász $\vartheta$ (and
+related $\vartheta'$) numbers for graphs, and the truss topology
+design problem described in @kanno:1970 for trusses with suitable
+symmetries.
 
 The algorithms used to implement this package are not all
 original. One algorithm for decomposing representations is original
