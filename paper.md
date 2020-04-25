@@ -41,8 +41,9 @@ are described in @serre:1977), there are no open-source computer
 programs that implement these methods, nor are details on how to
 achieve good performance of such an implementation published.
 
-We have produced a GAP [@gap:2020] package which provides the
-following functions:
+Using the GAP system [@gap:2020], we have produced a package
+[RepnDecomp](https://github.com/gap-packages/RepnDecomp) that provides
+the following functions:
 
 * Decompose a representation into a direct sum of irreducible
   representations
