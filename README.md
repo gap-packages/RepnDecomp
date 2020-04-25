@@ -30,17 +30,40 @@ degree at the University of Oxford, supervised by Dmitrii Pasechnik.
 
 ## Installation
 
-First, install GAP following the instructions
-[here](https://www.gap-system.org/Download/index.html). Then, create a
-directory `~/.gap/pkg`, which will contain your local packages and
-clone this into it. Commands to run:
+Make sure that, when you install GAP, you installed all of the
+packages! Our package uses GRAPE and IO for some functions.
+
+### Latest version included with GAP
+
+If you have version 4.11.0 or later of the
+[GAP system](https://www.gap-system.org/Download/index.html)
+installed, you do not have to install RepnDecomp manually since it is
+already distributed with GAP.
+
+### Latest released version
+
+If you would like the latest released version of RepnDecomp, and there
+has not yet been a release of GAP including it, then you can download
+the latest release
+[here](https://gap-packages.github.io/RepnDecomp/).
+
+Create the directory `~/.gap/pkg`, which will contain your local
+packages and extract the archive you downloaded into it. For example:
+
+    $ mkdir -p ~/.gap/pkg
+    $ tar -C ~/.gap/pkg -xvzf RepnDecomp-1.1.0.tar.gz
+
+### Development version
+
+If you would like to install the latest code directly from git master
+(unsuitable for anything but development of this package), then you
+can clone this repo directly into `~/.gap/pkg`:
 
     $ mkdir -p ~/.gap/pkg
     $ cd ~/.gap/pkg
     $ git clone https://github.com/gap-packages/RepnDecomp.git
 
-Make sure that, when you installed GAP, you installed all of the
-packages! Our package uses GRAPE and IO for some functions.
+### Post-installation
 
 Now, you can run GAP however you like, load the package and use the
 functions provided:
