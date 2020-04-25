@@ -22,28 +22,30 @@ bibliography: paper.bib
 # Summary
 
 A linear representation of a finite group is a homomorphism from a
-finite group G to the group of linear automorphisms of a vector
-space V. When studying problems in algebra and combinatorics, it is
-often useful to pass to a representation to more easily understand the
-structure of the problem. This is also useful for computation, since
-we can use representations to transform our algebraic problems into
-linear algebra. A key property of complex representations of finite
-groups is that all such representations are completely reducible,
-meaning we can decompose them into direct sums of irreducible
-representations. When working with matrices, this corresponds to
-finding a basis which block diagonalises the matrices of the
-representation optimally, i.e. with the smallest possible blocks. In
-cases where there are many small blocks, this can greatly improve the
-efficiency of computations done with the matrices.
+finite group G to the group of linear automorphisms of a vector space
+V. When studying problems in algebra and combinatorics, it is often
+useful to also study associated representations to better understand
+the structure of the problem. This is also useful for computation,
+since representations allow us to use tools from linear algebra to
+solve problems in group theory. A key property of complex
+representations of finite groups is that all such representations are
+completely reducible, meaning we can decompose them into direct sums
+of irreducible representations. When working with matrices, this
+corresponds to finding a basis which produces an optimal block
+diagonal form of the representation, with the smallest possible
+blocks. In cases where there are many small blocks, this can greatly
+improve the efficiency of computations done with the matrices.
 
 Currently, while methods for doing these decompositions are known (and
 are described in @serre:1977), there are no open-source computer
 programs that implement these methods, nor are details on how to
 achieve good performance of such an implementation published.
 
-Our package provides functions to:
+We have produced a GAP [@gap:2020] package which provides the
+following functions:
 
-* Decompose a representation into irreducibles
+* Decompose a representation into a direct sum of irreducible
+  representations
 * Compute the associated basis that gives an optimal block
   diagonalisation
 * Determine whether two representations are isomorphic and compute the
@@ -59,8 +61,8 @@ represented as square matrices. In fact, we only consider cases where
 the matrix coefficients are cyclotomic numbers - complex numbers in
 the $\mathbb{Q}$-vector space spanned by all powers of all roots of
 unity. Our methods are not specific to cyclotomic numbers, but the GAP
-algebra system only has facilities to compute with cyclotomics and not
-general complex numbers.
+system only has facilities to compute with cyclotomics and not general
+complex numbers.
 
 This package has been applied to improve the block diagonalisation of
 matrices involved in a semidefinite program for computing bounds on
