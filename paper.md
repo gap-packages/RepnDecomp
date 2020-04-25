@@ -81,4 +81,17 @@ however, we implement apparently novel speedups to make it feasible
 for groups of large order. Our method for unitarising a representation
 is based on @dixon:1970, again, with apparently novel speedups.
 
+The development of the package was part of Kaashif Hymabaccus'
+Master's thesis [@hymabaccus:2019].
+
+# Acknowledgements
+
+Kaashif Hymabaccus thanks the Collaborative Computational Project
+(CCP) in the area of Computational Discrete Mathematics, supported by
+the EPSRC (EP/M022641/1) for supporting his participation in a GAP
+workshop.
+
+Dmitrii Pasechnik was partially funded by the OpenDreamKit Horizon
+2020 European Research Infrastructures project (#676541).
+
 # References
