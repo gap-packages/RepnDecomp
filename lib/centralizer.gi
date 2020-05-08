@@ -130,7 +130,7 @@ InstallGlobalFunction( ClassSumCentralizer, function(rho, class, cent_basis)
         Error("<rho> is not unitary!");
     fi;
 
-    if not IsOrthonormalSet(cent_basis, InnerProduct@) then
+    if cent_basis <> fail and not IsOrthonormalSet(cent_basis, InnerProduct@) then
         Error("<cent_basis> is not an orthonormal set!");
     fi;
 

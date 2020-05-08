@@ -5,8 +5,8 @@ irreps := IrreducibleRepresentations(G);;
 rho := DirectSumOfRepresentations([irreps[4], irreps[5]]);;
 # Jumble rho up a bit so it's not so easy for the library.
 A := [ [ 3, -3, 2, -4, 0, 0 ], [ 4, 0, 1, -5, 1, 0 ], [ -3, -1, -2, 4, -1, -2 ],
-       [ 4, -4, -1, 5, -3, -1 ], [ 3, -2, 1, 0, 0, 0 ], [ 4, 2, 4, -1, -2, 1 ] ];
-rho := ComposeHomFunction(rho, B -> A^-1 * B * A);
+       [ 4, -4, -1, 5, -3, -1 ], [ 3, -2, 1, 0, 0, 0 ], [ 4, 2, 4, -1, -2, 1 ] ];;
+rho := ComposeHomFunction(rho, B -> A^-1 * B * A);;
 # We've constructed rho from two degree 3 irreps, so there are a few
 # things we can check for correctness:
 decomposition := REPN_ComputeUsingMyMethod(rho);;
