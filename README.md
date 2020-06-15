@@ -137,9 +137,8 @@ take some time.
 
 ## Paper
 
-This package has been submitted as a paper to the
-[Journal of Open Source Software](https://joss.theoj.org/), the paper
-can be found at `paper.md`.
+This package is described in a freely available [paper](https://joss.theoj.org/papers/10.21105/joss.01835) in
+[Journal of Open Source Software](https://joss.theoj.org/).
 
 ## Contributing
 
