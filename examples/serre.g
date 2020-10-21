@@ -15,9 +15,8 @@ H := SymmetricGroup(3);;
 tau := FuncToHom@RepnDecomp(H, h -> PermutationMat(h, 3));;
 # Two canonical summands corresponding to the degree 2 and
 # trivial irreps (in that order)
-canonical_summands_H := CanonicalDecomposition(tau);
-#! [ <vector space over Cyclotomics, with 2 generators>,
-#!   <vector space over Cyclotomics, with 1 generators> ]
+List(CanonicalDecomposition(tau), Dimension);
+#! [ 2, 1 ]
 #! @EndExample
 #! @EndChunk
 
