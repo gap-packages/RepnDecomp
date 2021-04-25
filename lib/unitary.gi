@@ -9,8 +9,8 @@ end );
 InstallGlobalFunction( LDLDecomposition, function(A)
     local n, L, D, i, j;
 
-    if A <> TransposedMat(A) then
-        Error("<A> is not symmetric!");
+    if A <> ConjugateTranspose@(A) then
+        Error("<A> is not conjugate symmetric!");
         return fail;
     fi;
 

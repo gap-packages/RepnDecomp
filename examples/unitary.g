@@ -37,6 +37,19 @@ ForAll(G, g -> tau_u.basis_change * Image(tau_u.unitary_rep, g) = Image(tau, g) 
 
 #! @BeginChunk Example_LDLDecomposition
 #! @BeginExample
-# TODO: this example
+A := [ [ 3, 2*E(3)+E(3)^2, -3 ], [ E(3)+2*E(3)^2, -3, 3 ], [ -3, 3, -6 ] ];;
+# A is a conjugate symmetric matrix
+A = ConjugateTranspose@RepnDecomp(A);
+#! true
+# Note that A is not symmetric - the LDL decomposition works for any
+# conjugate symmetric matrix.
+A = TransposedMat(A);
+#! false
+decomp := LDLDecomposition(A);;
+# The LDL decomposition is such that A = LDL^*, D diagonal, and L lower triangular.
+A = decomp.L * DiagonalMat(decomp.D) * ConjugateTranspose@RepnDecomp(decomp.L);
+#! true
+decomp.L[1][2] = 0 and decomp.L[1][3] = 0 and decomp.L[2][3] = 0;
+#! true
 #! @EndExample
 #! @EndChunk
