@@ -14,3 +14,4 @@ ReadPackage( "RepnDecomp", "lib/tensor.gd" );
 ReadPackage( "RepnDecomp", "lib/groupsum.gd" );
 ReadPackage( "RepnDecomp", "lib/mymethod.gd" );
 ReadPackage( "RepnDecomp", "lib/unitary.gd" );
+ReadPackage( "RepnDecomp", "lib/minimal.gd" );
