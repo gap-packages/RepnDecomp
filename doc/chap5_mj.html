@@ -86,6 +86,33 @@
 
 <p>Computes the same values as <code class="func">REPN_ComputeUsingSerre</code> (<a href="chap5_mj.html#X7C1CF0547D72D354"><span class="RefLink">5.3-4</span></a>), taking the same options. The heavy lifting of this method is done by <code class="func">LinearRepresentationIsomorphism</code> (<a href="chap2_mj.html#X7F0D3CFB7800149A"><span class="RefLink">2.1-1</span></a>), where there are some further options that can be passed to influence algorithms used.</p>
 
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">G := SymmetricGroup(4);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">irreps := IrreducibleRepresentations(G);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">rho := DirectSumOfRepresentations([irreps[4], irreps[5]]);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Jumble rho up a bit so it's not so easy for the library.</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">A := [ [ 3, -3, 2, -4, 0, 0 ], [ 4, 0, 1, -5, 1, 0 ], [ -3, -1, -2, 4, -1, -2 ],</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">       [ 4, -4, -1, 5, -3, -1 ], [ 3, -2, 1, 0, 0, 0 ], [ 4, 2, 4, -1, -2, 1 ] ];;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">rho := ComposeHomFunction(rho, B -&gt; A^-1 * B * A);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># We've constructed rho from two degree 3 irreps, so there are a few</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># things we can check for correctness:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">decomposition := REPN_ComputeUsingMyMethod(rho);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Two distinct irreps, so the centralizer has dimension 2</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">Length(decomposition.centralizer_basis) = 2;</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Two distinct irreps i.e. two invariant subspaces</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">Length(decomposition.decomposition) = 2;</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># All subspaces are dimension 3</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">ForAll(decomposition.decomposition, Vs -&gt; Length(Vs) = 1 and Dimension(Vs[1]) = 3);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># And finally, check that the block diagonalized representation</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># computed is actually isomorphic to rho:</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, decomposition.diagonal_rep);</span>
+true
+</pre></div>
+
 <p><a id="X7DB659DB7E48D502" name="X7DB659DB7E48D502"></a></p>
 
 <h5>5.2-2 REPN_ComputeUsingMyMethodCanonical</h5>
@@ -96,6 +123,22 @@
 <p>Performs the same computation as <code class="func">REPN_ComputeUsingMyMethod</code> (<a href="chap5_mj.html#X831574AD864C94A8"><span class="RefLink">5.2-1</span></a>), but first splits the representation into canonical summands using <code class="func">CanonicalDecomposition</code> (<a href="chap5_mj.html#X7E95B0367992BEC4"><span class="RefLink">5.3-1</span></a>). This might reduce the size of the matrices we need to work with significantly, so could be much faster.</p>
 
 <p>If the option <code class="code">parallel</code> is given, the decomposition of canonical summands into irreps is done in parallel, which could be much faster.</p>
+
+
+<div class="example"><pre>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># This is the same example as before, but splits into canonical</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># summands internally. It gives exactly the same results, up to</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput"># isomorphism.</span>
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">other_decomposition := REPN_ComputeUsingMyMethodCanonical(rho);;</span>
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Length(other_decomposition.centralizer_basis) = 2;</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">Length(other_decomposition.decomposition) = 2;</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">ForAll(other_decomposition.decomposition, Vs -&gt; Length(Vs) = 1 and Dimension(Vs[1]) = 3);</span>
+true
+<span class="GAPprompt">gap&gt;</span> <span class="GAPinput">AreRepsIsomorphic(rho, other_decomposition.diagonal_rep);</span>
+true
+</pre></div>
 
 <p><a id="X7C22F13E80A74438" name="X7C22F13E80A74438"></a></p>
 
@@ -129,9 +172,8 @@
 <span class="GAPprompt">&gt;</span> <span class="GAPinput">tau := FuncToHom@RepnDecomp(H, h -&gt; PermutationMat(h, 3));;</span>
 <span class="GAPprompt">gap&gt;</span> <span class="GAPinput"># Two canonical summands corresponding to the degree 2 and</span>
 <span class="GAPprompt">&gt;</span> <span class="GAPinput"># trivial irreps (in that order)</span>
-<span class="GAPprompt">&gt;</span> <span class="GAPinput">canonical_summands_H := CanonicalDecomposition(tau);</span>
-[ &lt;vector space over Cyclotomics, with 2 generators&gt;,
-  &lt;vector space over Cyclotomics, with 1 generators&gt; ]
+<span class="GAPprompt">&gt;</span> <span class="GAPinput">List(CanonicalDecomposition(tau), Dimension);</span>
+[ 2, 1 ]
 </pre></div>
 
 <p><a id="X795C63F386C45308" name="X795C63F386C45308"></a></p>
