@@ -1,7 +1,7 @@
 name: RepnDecomp
-version: "1.2.0"
+version: "1.2.1"
 license: "GPL-3.0"
-date: 2022-02-26
+date: 2022-03-02
 description: |
     Decompose representations of finite groups into irreducibles
 
@@ -36,14 +36,14 @@ packageinfo: https://gap-packages.github.io/RepnDecomp/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.2.0/RepnDecomp-1.2.0.tar.gz
+      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.2.1/RepnDecomp-1.2.1.tar.gz
     - name: .tar.bz2
-      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.2.0/RepnDecomp-1.2.0.tar.bz2
+      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.2.1/RepnDecomp-1.2.1.tar.bz2
 
 abstract: |
     The <span class='pkgname'>RepnDecomp</span> package provides functions implementing various algorithms for decomposing linear representations of finite groups.
 
-status: dev
+status: deposited
 doc-html: doc/chap0.html
 doc-pdf: doc/manual.pdf
 keywords: |
@@ -52,7 +52,7 @@ citeas: |
     <p class='BibEntry'>
     [<span class='BibKey'>HP22</span>]   <b class='BibAuthor'>Hymabaccus, K. and Pasechnik, D.</b>,
      <i class='BibTitle'>RepnDecomp, Decompose representations of finite groups into irreducibles,
-             Version 1.2.0</i>
+             Version 1.2.1</i>
      (<span class='BibYear'>2022</span>)<br />
     (<span class='BibNote'>GAP package</span>),
     <span class='BibHowpublished'><a href="https://gap-packages.github.io/RepnDecomp">https://gap-packages.github.io/RepnDecomp</a></span>.
@@ -60,11 +60,11 @@ citeas: |
     
 
 bibtex: |
-    @misc{ RepnDecomp1.2.0,
+    @misc{ RepnDecomp1.2.1,
       author =           {Hymabaccus, K. and Pasechnik, D.},
       title =            {{RepnDecomp},   Decompose  representations  of  finite
-                          groups into irreducibles, {V}ersion 1.2.0},
-      month =            {Feb},
+                          groups into irreducibles, {V}ersion 1.2.1},
+      month =            {Mar},
       year =             {2022},
       note =             {GAP package},
       howpublished =     {\href      {https://gap-packages.github.io/RepnDecomp}

@@ -6,10 +6,10 @@
          [1X Decompose representations of finite groups into irreducibles [101X
   
   
-                                     1.2.0
+                                     1.2.1
   
   
-                                26 February 2022
+                                  2 March 2022
   
   
                                Kaashif Hymabaccus
