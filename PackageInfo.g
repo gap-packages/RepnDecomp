@@ -65,7 +65,7 @@ AbstractHTML := "The <span class='pkgname'>RepnDecomp</span> package provides fu
 PackageDoc := rec(
   BookName  := "RepnDecomp",
   ArchiveURLSubset := ["doc"],
-  HTMLStart := "doc/chap0.html",
+  HTMLStart := "doc/chap0_mj.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
   LongTitle := "Decompose representations of finite groups into irreducibles",
