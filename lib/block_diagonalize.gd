@@ -15,7 +15,7 @@
 #! with dimension $d_i$ and multiplicity $m_i$. The basis returned by
 #! this operation gives each $\rho(g)$ as a block diagonal matrix
 #! which has $m_i$ blocks of size $d_i \times d_i$ for each $i$.
-DeclareGlobalFunction( "BlockDiagonalBasisOfRepresentation", IsGroupHomomorphism );
+DeclareGlobalFunction( "BlockDiagonalBasisOfRepresentation" );
 
 #! @Arguments rho
 
@@ -26,6 +26,6 @@ DeclareGlobalFunction( "BlockDiagonalBasisOfRepresentation", IsGroupHomomorphism
 #! Attr="BlockDiagonalBasisOfRepresentation" /> to calculate the basis
 #! change matrix and applies it to put $\rho$ into the block
 #! diagonalised form.
-DeclareGlobalFunction( "BlockDiagonalRepresentation", IsGroupHomomorphism );
+DeclareGlobalFunction( "BlockDiagonalRepresentation" );
 
 DeclareGlobalFunction( "BasisChangeMatrixSimilar" );
