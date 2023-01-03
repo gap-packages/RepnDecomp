@@ -1,7 +1,7 @@
 name: RepnDecomp
-version: "1.2.1"
+version: "1.3.0"
 license: "GPL-3.0"
-date: 2022-03-02
+date: 2023-01-02
 description: |
     Decompose representations of finite groups into irreducibles
 
@@ -36,41 +36,41 @@ packageinfo: https://gap-packages.github.io/RepnDecomp/PackageInfo.g
 
 downloads:
     - name: .tar.gz
-      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.2.1/RepnDecomp-1.2.1.tar.gz
+      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.3.0/RepnDecomp-1.3.0.tar.gz
     - name: .tar.bz2
-      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.2.1/RepnDecomp-1.2.1.tar.bz2
+      url: https://github.com/gap-packages/RepnDecomp/releases/download/v1.3.0/RepnDecomp-1.3.0.tar.bz2
 
 abstract: |
     The <span class='pkgname'>RepnDecomp</span> package provides functions implementing various algorithms for decomposing linear representations of finite groups.
 
 status: deposited
-doc-html: doc/chap0.html
+doc-html: doc/chap0_mj.html
 doc-pdf: doc/manual.pdf
 keywords: |
     representations, groups.
 citeas: |
     <p class='BibEntry'>
-    [<span class='BibKey'>HP22</span>]   <b class='BibAuthor'>Hymabaccus, K. and Pasechnik, D.</b>,
+    [<span class='BibKey'>HP23</span>]   <b class='BibAuthor'>Hymabaccus, K. and Pasechnik, D.</b>,
      <i class='BibTitle'>RepnDecomp, Decompose representations of finite groups into irreducibles,
-             Version 1.2.1</i>
-     (<span class='BibYear'>2022</span>)<br />
+             Version 1.3.0</i>
+     (<span class='BibYear'>2023</span>)<br />
     (<span class='BibNote'>GAP package</span>),
     <span class='BibHowpublished'><a href="https://gap-packages.github.io/RepnDecomp">https://gap-packages.github.io/RepnDecomp</a></span>.
     </p>
     
 
 bibtex: |
-    @misc{ RepnDecomp1.2.1,
+    @misc{ RepnDecomp1.3.0,
       author =           {Hymabaccus, K. and Pasechnik, D.},
       title =            {{RepnDecomp},   Decompose  representations  of  finite
-                          groups into irreducibles, {V}ersion 1.2.1},
-      month =            {Mar},
-      year =             {2022},
+                          groups into irreducibles, {V}ersion 1.3.0},
+      month =            {Jan},
+      year =             {2023},
       note =             {GAP package},
       howpublished =     {\href      {https://gap-packages.github.io/RepnDecomp}
                           {\texttt{https://gap-packages.github.io/}\discretionary
                           {}{}{}\texttt{RepnDecomp}}},
       keywords =         {representations; groups},
-      printedkey =       {HP22}
+      printedkey =       {HP23}
     }
 

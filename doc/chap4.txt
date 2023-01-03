@@ -70,7 +70,7 @@
   [1X4.3-1 IsTensorProductOfMatricesObj[101X
   
   [33X[1;0Y[29X[2XIsTensorProductOfMatricesObj[102X( [3Xarg[103X ) [32X filter[133X
-  [6XReturns:[106X  [33X[0;10Y[10Xtrue[110X or [10Xfalse[110X[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YPosition  [23Xi[123X  in  this  representation  stores  the  matrix [23XA_i[123X in the tensor
   product [23XA_1 \otimes A_2[123X.[133X
@@ -78,7 +78,7 @@
   [1X4.3-2 IsTensorProductPairRep[101X
   
   [33X[1;0Y[29X[2XIsTensorProductPairRep[102X( [3Xarg[103X ) [32X filter[133X
-  [6XReturns:[106X  [33X[0;10Y[10Xtrue[110X or [10Xfalse[110X[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YPosition  1  stores the full Kronecker product of the matrices, this is very
   space inefficient and supposed to be used as a last resort.[133X
@@ -86,7 +86,7 @@
   [1X4.3-3 IsTensorProductKroneckerRep[101X
   
   [33X[1;0Y[29X[2XIsTensorProductKroneckerRep[102X( [3Xarg[103X ) [32X filter[133X
-  [6XReturns:[106X  [33X[0;10Y[10Xtrue[110X or [10Xfalse[110X[133X
+  [6XReturns:[106X  [33X[0;10Y[9Xtrue[109X or [9Xfalse[109X[133X
   
   [33X[0;0YMore  convenient  constructor  for  a  tensor product (automatically handles
   family)[133X
