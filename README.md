@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gap-packages/RepnDecomp.svg?branch=master)](https://travis-ci.org/gap-packages/RepnDecomp)
+[![Build Status](https://github.com/gap-packages/RepnDecomp/workflows/CI/badge.svg?branch=master)](https://github.com/gap-packages/RepnDecomp/actions?query=workflow%3ACI+branch%3Amaster)
 [![Code Coverage](https://codecov.io/github/gap-packages/RepnDecomp/coverage.svg?branch=master&token=)](https://codecov.io/gh/gap-packages/RepnDecomp)
 
 # Computing decompositions of representations
