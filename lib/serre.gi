@@ -339,7 +339,7 @@ end;
 # method to get irreducibles from that. Uses orthonormal basis for
 # C_rho if given.
 IrreducibleDecompositionCollectedHybrid@ := function(rho)
-    local irreps, G, irred_decomp, do_decompose, parallel;
+    local irreps, G, irred_decomp, do_decompose, parallel, ParListByFork;
     G := Source(rho);
     irreps := ValueOption("irreps");
     if irreps = fail then
@@ -352,6 +352,11 @@ IrreducibleDecompositionCollectedHybrid@ := function(rho)
                                                                  IrrepCanonicalSummand@(rho,
                                                                                         irrep));
     parallel := ValueOption("parallel");
+    if IsBoundGlobal("ParListByFork") then
+      ParListByFork := ValueGlobal("ParListByFork");
+    else
+      parallel := fail;
+    fi;
     if IsInt(parallel) then
         irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := parallel));
     elif parallel <> fail then
@@ -364,7 +369,7 @@ IrreducibleDecompositionCollectedHybrid@ := function(rho)
 end;
 
 InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism ], function(rho)
-    local irreps, irr_chars, centralizer_basis, irred_decomp, new_bases, basis, basis_change, diag_rho, char_rho_basis, all_sizes, sizes, centralizer_blocks, G, parallel, do_decompose;
+    local irreps, irr_chars, centralizer_basis, irred_decomp, new_bases, basis, basis_change, diag_rho, char_rho_basis, all_sizes, sizes, centralizer_blocks, G, parallel, do_decompose, ParListByFork;
 
     G := Source(rho);
 
@@ -394,7 +399,11 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
     end;
 
     parallel := ValueOption("parallel");
-
+    if IsBoundGlobal("ParListByFork") then
+        ParListByFork := ValueGlobal("ParListByFork");
+    elif parallel <> fail then
+        Error("I need the package IO >= 4.7.0 to use the parallel option!");
+    fi;
     if parallel <> fail then
         # if the parallel option is set
         if IsPackageMarkedForLoading("IO", ">= 4.7.0") then
