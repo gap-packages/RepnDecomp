@@ -354,8 +354,8 @@ IrreducibleDecompositionCollectedHybrid@ := function(rho)
     parallel := ValueOption("parallel");
     if IsBoundGlobal("ParListByFork") then
       ParListByFork := ValueGlobal("ParListByFork");
-    else
-      parallel := fail;
+    elif parallel <> fail then
+        Error("The GAP package IO must be loaded to use the parallel option!");
     fi;
     if IsInt(parallel) then
         irred_decomp := ParListByFork(irreps, do_decompose, rec(NumberJobs := parallel));
@@ -402,7 +402,7 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
     if IsBoundGlobal("ParListByFork") then
         ParListByFork := ValueGlobal("ParListByFork");
     elif parallel <> fail then
-        Error("I need the package IO >= 4.7.0 to use the parallel option!");
+        Error("The GAP package IO must be loaded to use the parallel option!");
     fi;
     if parallel <> fail then
         # if the parallel option is set
