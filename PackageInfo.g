@@ -10,8 +10,8 @@ SetPackageInfo( rec(
 
 PackageName := "RepnDecomp",
 Subtitle := "Decompose representations of finite groups into irreducibles",
-Version := "1.3.0",
-Date := "02/01/2023", # dd/mm/yyyy format
+Version := "1.3.1",
+Date := "10/09/2025", # dd/mm/yyyy format
 License := "GPL-3.0",
 
 Persons := [
@@ -30,10 +30,10 @@ Persons := [
     IsMaintainer := true,
     FirstNames := "Dmitrii",
     LastName := "Pasechnik",
-    WWWHome := "http://pasechnik.info",
-    Email := "dima@e.email",
-    Place := "Oxford",
-    Institution := "University of Oxford",
+    WWWHome := "https://pasechnik.info/dima",
+    Email := "dima@pasechnik.info",
+    Place := "Evanston",
+    Institution := "Northwestern University",
   ),
 ],
 
