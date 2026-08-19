@@ -33,6 +33,50 @@ degree at the University of Oxford, supervised by Dmitrii Pasechnik.
 Make sure that, when you install GAP, you installed all of the
 packages! Our package uses GRAPE and IO for some functions.
 
+### macOS with Homebrew
+
+Install GAP and its package distribution from the GAP Homebrew tap:
+
+```console
+$ brew install gap-system/gap/gap
+```
+
+This includes RepnDecomp and its required GAP packages. To check that the
+installed package loads, run:
+
+```console
+$ gap -q -c 'Print("RepnDecomp loaded: ", LoadPackage("RepnDecomp"), "\n"); QUIT;'
+RepnDecomp loaded: true
+```
+
+For development, clone the repository anywhere convenient and link the
+checkout into GAP's per-user package directory. The per-user copy takes
+precedence over the version bundled by Homebrew:
+
+```console
+$ git clone https://github.com/gap-packages/RepnDecomp.git
+$ cd RepnDecomp
+$ mkdir -p "$HOME/.gap/pkg"
+$ ln -s "$PWD" "$HOME/.gap/pkg/RepnDecomp"
+```
+
+Verify that GAP finds the development checkout rather than its bundled copy:
+
+```console
+$ gap -q -c 'LoadPackage("RepnDecomp"); Print(PackageInfo("RepnDecomp")[1].InstallationPath, "\n"); QUIT;'
+/path/to/RepnDecomp/
+```
+
+Generate the documentation tests and run the test suite from the checkout:
+
+```console
+$ gap -q < makedoc.g
+$ gap -q tst/testall.g
+```
+
+Generating the PDF version of the manual additionally requires a LaTeX
+installation, but LaTeX is not required to load RepnDecomp or run its tests.
+
 ### Latest version included with GAP
 
 If you have version 4.11.0 or later of the
