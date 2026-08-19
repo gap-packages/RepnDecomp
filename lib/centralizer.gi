@@ -96,7 +96,19 @@ end );
 
 # Same as DecomposeCentralizerBlocks but converts to full matrices
 InstallGlobalFunction( CentralizerOfRepresentation, function(rho)
-    return List(CentralizerBlocksOfRepresentation(rho), BlockDiagonalMatrix@);
+    local decomposition, basis_change, block_basis;
+
+    decomposition := ComputeUsingMethod@(rho);
+    basis_change := TransposedMat(decomposition.basis);
+    block_basis := List(decomposition.centralizer_basis,
+                        BlockDiagonalMatrix@);
+
+    # The standard block generators commute with the block-diagonalized
+    # representation.  Conjugate them back so that this function returns the
+    # centralizer in the coordinates of the representation supplied by the
+    # caller.
+    return List(block_basis,
+                C -> basis_change * C * basis_change^-1);
 end );
 
 # Given an orthonormal basis for the centralizer (w.r.t the product

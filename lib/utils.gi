@@ -268,13 +268,14 @@ OrthonormalBasis@ := function(v)
 end;
 
 InstallGlobalFunction( IsOrthonormalSet, function(S, prod)
-    return ForAll(S, v1 -> ForAll(S, function(v2)
-                                     if v1 = v2 then
-                                         return prod(v1, v2) = 1;
-                                     else
-                                         return prod(v1, v2) = 0;
-                                     fi;
-                                 end ));
+    return ForAll([1..Length(S)],
+                  i -> ForAll([1..Length(S)], function(j)
+                      if i = j then
+                          return prod(S[i], S[j]) = 1;
+                      else
+                          return prod(S[i], S[j]) = 0;
+                      fi;
+                  end ));
 end );
 
 KroneckerList@ := function(reps)
