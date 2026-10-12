@@ -155,6 +155,14 @@ InstallGlobalFunction( CanonicalDecomposition, function(rho)
     # The group we are taking representations of
     G := Source(rho);
 
+    # All projector calculations below act on vectors by matrices.  Preserve
+    # the public convenience of accepting permutation representations by
+    # converting once and then consistently using the linear representation.
+    rho := ConvertRhoIfNeeded@(rho);
+    if rho = fail then
+        Error("<rho> must be a finite linear or permutation representation");
+    fi;
+
     # The list of irreps W_i of G over F appearing in rho
     irreps := ValueOption("irreps");
 
@@ -164,8 +172,7 @@ InstallGlobalFunction( CanonicalDecomposition, function(rho)
 
     # We might need to convert here, since this function needs a
     # linear rep
-    irreps := RelevantIrreps@(ConvertRhoIfNeeded@(rho),
-                              irreps);
+    irreps := RelevantIrreps@(rho, irreps);
 
     # if there's only 1 irrep, the canonical summand is just the whole
     # space!
