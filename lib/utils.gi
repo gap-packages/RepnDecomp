@@ -137,6 +137,15 @@ IrrVectorOfRepresentation@ := function(rho, irr_chars)
 
     char_rho := List(classes, class -> Trace(Image(rho, Representative(class))));
 
+    # A class function lists its values along the classes of its
+    # character table, which may be ordered differently from classes
+    irr_chars := List(irr_chars, function(irr_char)
+                         if not IsClassFunction(irr_char) then
+                             return irr_char;
+                         fi;
+                         return List(classes, class -> Representative(class)^irr_char);
+                     end);
+
     # Write char_rho in the irr_chars basis for class functions
     char_rho_basis := List(irr_chars,
                            irr_char -> InnerProductOfCharacters@(char_rho, irr_char, G));
