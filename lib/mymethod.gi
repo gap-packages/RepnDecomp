@@ -35,14 +35,14 @@ InstallMethod( REPN_ComputeUsingMyMethod, "for linear reps", [ IsGroupHomomorphi
     # its character in char_rho
     isomorphic_collected := List([1..Size(char_rho_basis)],
                                  i -> Replicate@(rec(rep := irreps[i],
-                                                     dim := chars[i][1]),
+                                                     dim := DegreeOfRepresentation(irreps[i])),
                                                  char_rho_basis[i]));
 
     summands := List(Flat(isomorphic_collected), r -> r.rep);
 
     # We can also compute the basis for the centralizer ring, since we
     # know the block sizes and relevant dimensions
-    all_sizes := List([1..Size(chars)], i -> rec(dimension := chars[i][1],
+    all_sizes := List([1..Size(chars)], i -> rec(dimension := DegreeOfRepresentation(irreps[i]),
                                                  nblocks := char_rho_basis[i]));
 
     # Don't use the blocks that don't appear

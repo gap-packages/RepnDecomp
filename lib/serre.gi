@@ -424,9 +424,8 @@ InstallMethod( REPN_ComputeUsingSerre, "for linear reps", [ IsGroupHomomorphism 
 
     char_rho_basis := IrrVectorOfRepresentation@(rho, irr_chars);
 
-    # Calculate sizes based on the fact irr_char[1] is the degree
     all_sizes := List([1..Size(irr_chars)],
-                      i -> rec(dimension := irr_chars[i][1],
+                      i -> rec(dimension := DegreeOfRepresentation(irreps[i]),
                                nblocks := char_rho_basis[i]));
 
     # Now we remove all of the ones with nblocks = 0 (doesn't affect

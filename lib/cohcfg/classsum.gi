@@ -147,7 +147,8 @@ ProjIrr@ := function(arg)
     if not IsBound(arg[2]) then 
         G := CCGroup@(T);
         ct := CharacterTable(G);
-        irrs := Irr(ct);
+        # ct may order the classes differently from the class sums
+        irrs := List(Irr(ct), chi -> List(ClassSums@(T).reps, g -> g^chi));
     else 
         irrs := arg[2]; # TODO instead of accepting irreducibles as a list, accept a character table and connect it to the group
     fi;
