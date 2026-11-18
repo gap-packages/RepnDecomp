@@ -1,6 +1,10 @@
 InstallGlobalFunction( GroupSumBSGS, function(G, summand)
     local H, n, chain, groups, m, sum, i, cosets, iso, zero, g, S, right_reps;
 
+    if IsTrivial(G) then
+        return summand(One(G));
+    fi;
+
     # stab chain computation only works on permutation groups
     iso := IsomorphismPermGroup(G);
     H := Image(iso, G);
